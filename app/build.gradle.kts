@@ -45,7 +45,4 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
-    // ✅ 新增的日历库依赖（直接写字符串）
-    implementation("com.prolificinteractive:material-calendarview:1.4.3")
 }
