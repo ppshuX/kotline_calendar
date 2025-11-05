@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase
 /**
  * 应用数据库（单例模式）
  */
-@Database(entities = [Event::class], version = 1, exportSchema = false)
+@Database(entities = [Event::class], version = 2, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     
     abstract fun eventDao(): EventDao
@@ -23,7 +23,9 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "calendar_database"
-                ).build()
+                )
+                    .fallbackToDestructiveMigration()  // 简单粗暴：删除旧数据重建
+                    .build()
                 INSTANCE = instance
                 instance
             }

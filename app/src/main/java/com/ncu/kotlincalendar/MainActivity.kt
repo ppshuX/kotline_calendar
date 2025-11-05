@@ -1,13 +1,20 @@
 package com.ncu.kotlincalendar
 
+import android.Manifest
 import android.app.TimePickerDialog
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.CalendarView
+import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -28,6 +35,7 @@ class MainActivity : AppCompatActivity() {
     // 数据库
     private lateinit var database: AppDatabase
     private lateinit var eventDao: EventDao
+    private lateinit var reminderManager: ReminderManager
     private val eventsList = mutableListOf<Event>()
     private var selectedDateMillis: Long = System.currentTimeMillis()
     
@@ -35,9 +43,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         
-        // 初始化数据库
+        // 初始化数据库和提醒管理器
         database = AppDatabase.getDatabase(this)
         eventDao = database.eventDao()
+        reminderManager = ReminderManager(this)
         
         // 初始化视图
         calendarView = findViewById(R.id.calendarView)
@@ -83,6 +92,26 @@ class MainActivity : AppCompatActivity() {
         }
         
         Toast.makeText(this, "📅 日历已加载，数据会自动保存", Toast.LENGTH_SHORT).show()
+        
+        // 请求通知权限（Android 13+）
+        requestNotificationPermission()
+    }
+    
+    // 请求通知权限
+    private fun requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                    1001
+                )
+            }
+        }
     }
     
     private fun showDate(timeInMillis: Long) {
@@ -98,6 +127,12 @@ class MainActivity : AppCompatActivity() {
         val etTitle = dialogView.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.etTitle)
         val etTime = dialogView.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.etTime)
         val etDesc = dialogView.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.etDescription)
+        val spinnerReminder = dialogView.findViewById<Spinner>(R.id.spinnerReminder)
+        
+        // 设置提醒选项
+        val reminderOptions = arrayOf("不提醒", "提前5分钟", "提前15分钟", "提前30分钟", "提前1小时", "提前1天")
+        val reminderMinutes = arrayOf(0, 5, 15, 30, 60, 24 * 60)
+        spinnerReminder?.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, reminderOptions)
         
         // 用于存储选择的日期时间
         val calendar = Calendar.getInstance()
@@ -107,6 +142,12 @@ class MainActivity : AppCompatActivity() {
             etTitle?.setText(eventToEdit.title)
             etDesc?.setText(eventToEdit.description)
             calendar.timeInMillis = eventToEdit.dateTime
+            
+            // 设置提醒选项
+            val reminderIndex = reminderMinutes.indexOf(eventToEdit.reminderMinutes)
+            if (reminderIndex >= 0) {
+                spinnerReminder?.setSelection(reminderIndex)
+            }
         } else {
             // 新增模式，使用选中的日期
             calendar.timeInMillis = selectedDateMillis
@@ -132,14 +173,15 @@ class MainActivity : AppCompatActivity() {
             .setPositiveButton("保存") { dialog, _ ->
                 val titleText = etTitle?.text.toString().trim()
                 val descText = etDesc?.text.toString().trim()
+                val selectedReminderMinutes = reminderMinutes[spinnerReminder?.selectedItemPosition ?: 0]
                 
                 if (titleText.isNotEmpty()) {
                     if (eventToEdit != null) {
                         // 编辑模式：更新现有日程
-                        updateEvent(eventToEdit.id, titleText, descText, calendar.timeInMillis)
+                        updateEvent(eventToEdit.id, titleText, descText, calendar.timeInMillis, selectedReminderMinutes)
                     } else {
                         // 新增模式：添加新日程
-                        addEvent(titleText, descText, calendar.timeInMillis)
+                        addEvent(titleText, descText, calendar.timeInMillis, selectedReminderMinutes)
                     }
                 } else {
                     Toast.makeText(this, "标题不能为空", Toast.LENGTH_SHORT).show()
@@ -190,15 +232,33 @@ class MainActivity : AppCompatActivity() {
     }
     
     // 添加日程
-    private fun addEvent(title: String, description: String = "", dateTime: Long = selectedDateMillis) {
+    private fun addEvent(title: String, description: String = "", dateTime: Long = selectedDateMillis, reminderMinutes: Int = 0) {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val event = Event(
                     title = title,
                     description = description,
-                    dateTime = dateTime
+                    dateTime = dateTime,
+                    reminderMinutes = reminderMinutes
                 )
-                eventDao.insert(event)
+                val eventId = eventDao.insert(event)
+                
+                // 设置提醒
+                if (reminderMinutes > 0) {
+                    val savedEvent = event.copy(id = eventId)
+                    withContext(Dispatchers.Main) {
+                        reminderManager.setReminder(savedEvent)
+                        
+                        // 计算提醒时间并显示
+                        val reminderTime = dateTime - (reminderMinutes * 60 * 1000)
+                        val df = SimpleDateFormat("HH:mm", Locale.getDefault())
+                        Toast.makeText(
+                            this@MainActivity,
+                            "⏰ 将在 ${df.format(Date(reminderTime))} 提醒您",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
                 
                 // 重新加载数据
                 val events = eventDao.getAllEvents()
@@ -217,16 +277,29 @@ class MainActivity : AppCompatActivity() {
     }
     
     // 更新日程
-    private fun updateEvent(id: Long, title: String, description: String, dateTime: Long) {
+    private fun updateEvent(id: Long, title: String, description: String, dateTime: Long, reminderMinutes: Int = 0) {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
+                // 先取消旧提醒
+                withContext(Dispatchers.Main) {
+                    reminderManager.cancelReminder(id)
+                }
+                
                 val event = Event(
                     id = id,
                     title = title,
                     description = description,
-                    dateTime = dateTime
+                    dateTime = dateTime,
+                    reminderMinutes = reminderMinutes
                 )
                 eventDao.update(event)
+                
+                // 设置新提醒
+                if (reminderMinutes > 0) {
+                    withContext(Dispatchers.Main) {
+                        reminderManager.setReminder(event)
+                    }
+                }
                 
                 // 重新加载数据
                 val events = eventDao.getAllEvents()
@@ -292,6 +365,12 @@ class MainActivity : AppCompatActivity() {
     private fun deleteEvent(event: Event) {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
+                // 取消提醒
+                withContext(Dispatchers.Main) {
+                    reminderManager.cancelReminder(event.id)
+                }
+                
+                // 删除日程
                 eventDao.delete(event)
                 
                 // 重新加载

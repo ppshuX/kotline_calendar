@@ -15,7 +15,7 @@
 | Day 5 | Edit Function | ✅ |
 | Day 6 | Time Picker | ✅ |
 | Day 7 | Multiple Views | ⏳ |
-| Day 8 | Reminder | ⏳ |
+| Day 8 | Reminder (Notification) | ✅ |
 | Day 9 | Optimization | ⏳ |
 | Day 10 | Documentation | ⏳ |
 

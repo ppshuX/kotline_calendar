@@ -14,6 +14,7 @@ data class Event(
     val title: String,              // 标题
     val description: String = "",   // 描述
     val dateTime: Long,             // 日期时间（时间戳）
+    val reminderMinutes: Int = 0,   // 提前提醒分钟数（0=不提醒）
     val createdAt: Long = System.currentTimeMillis()  // 创建时间
 )
 
