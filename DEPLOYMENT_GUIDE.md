@@ -37,10 +37,15 @@ KotlinCalendar/
 - ✅ 本地 build 后提交，服务器不需要 Node.js
 
 ### **Android（adapp）**
-- ✅ Git 管理，仅本地开发
-- ✅ 不部署到服务器
-- ✅ adapp = Android Development App（移动端）
-- ⏳ acapp = AcWing App（未来计划）
+- ✅ Git 管理（版本控制）
+- ❌ **不部署到服务器**（Android 应用在手机上运行）
+- ✅ 本地编译成 APK 后安装到手机
+- ✅ 使用方式：
+  - USB 调试 → Android Studio 直接运行
+  - 生成 APK → 手动安装到手机
+  - 发布到应用商店（可选）
+- 📱 adapp = Android Development App（移动端）
+- ⏳ acapp = AcWing App（未来计划，Web 端集成）
 
 ---
 
