@@ -23,9 +23,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-#6avwo7=$9vse4txxj!phdfx5-ql(bc5otpoiw@x)u0i+^1-5h'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False  # 生产环境关闭调试模式
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'localhost',
+    'app7626.acapp.acwing.com.cn',  # 生产域名
+    '81.71.138.122',  # 服务器 IP
+]
 
 
 # Application definition
@@ -131,8 +136,14 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # CORS 配置
-CORS_ALLOW_ALL_ORIGINS = True  # 开发环境，生产环境需要配置具体域名
+CORS_ALLOWED_ORIGINS = [
+    'https://app7626.acapp.acwing.com.cn',  # 生产域名
+    'http://localhost:5173',  # 本地开发（Vue3）
+    'http://127.0.0.1:5173',
+]
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_HEADERS = ['*']
+CORS_ALLOW_METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
 
 # REST Framework 配置
 REST_FRAMEWORK = {

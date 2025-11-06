@@ -2,6 +2,14 @@
 
 本文档说明如何管理和部署整个项目（后端 + 前端 + Android）
 
+## 🌐 生产环境信息
+
+- **域名**: https://app7626.acapp.acwing.com.cn
+- **服务器 IP**: 81.71.138.122
+- **SSH 登录**: `ssh acs@app7626.acapp.acwing.com.cn`
+- **API 地址**: https://app7626.acapp.acwing.com.cn/api
+- **前端地址**: https://app7626.acapp.acwing.com.cn
+
 ---
 
 ## 📂 项目结构
