@@ -7,7 +7,7 @@ REMOTE_PATH="~/kotlin_calendar/web"
 
 echo "🚀 开始部署前端..."
 
-# 1. Build Vue3
+# 1. Build Vue3（输出到 web/ 目录）
 echo "📦 正在 Build Vue3 项目..."
 cd web_frontend
 npm run build
@@ -17,9 +17,12 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
+echo "✅ Build 完成，文件已生成到 ../web/"
+
 # 2. 上传到服务器
 echo "📤 正在上传到服务器..."
-scp -r dist/* ${SERVER}:${REMOTE_PATH}/
+cd ../web
+scp -r * ${SERVER}:${REMOTE_PATH}/
 
 if [ $? -ne 0 ]; then
     echo "❌ 上传失败！"
