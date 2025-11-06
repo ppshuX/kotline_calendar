@@ -13,7 +13,7 @@ class Event(models.Model):
     title = models.CharField(max_length=200, verbose_name='标题')
     description = models.TextField(blank=True, verbose_name='描述')
     start_time = models.DateTimeField(verbose_name='开始时间')
-    end_time = models.DateTimeField(verbose_name='结束时间')
+    end_time = models.DateTimeField(null=True, blank=True, verbose_name='结束时间')
     location = models.CharField(max_length=200, blank=True, verbose_name='地点')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='更新时间')
