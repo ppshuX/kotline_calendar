@@ -1,17 +1,14 @@
 # ==================== 前端（Web） ====================
-# Vue3 前端 build 产物（不提交到 Git）
-web/index.html
-web/js/
-web/css/
-web/images/
-web/audios/
-web/favicon.ico
-web/assets/
+# Web 部署目录（全部 build 产物，不提交到 Git）
+web/
 
 # Vue3 源码依赖和产物
-web/calendar_web/node_modules/
-web/calendar_web/dist/
-web/calendar_web/.DS_Store
+web_frontend/node_modules/
+web_frontend/dist/
+web_frontend/.DS_Store
+
+# 旧目录（待删除）
+web/calendar_web/
 
 # ==================== 后端（Backend） ====================
 # Python

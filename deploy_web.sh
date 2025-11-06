@@ -9,7 +9,7 @@ echo "🚀 开始部署前端..."
 
 # 1. Build Vue3
 echo "📦 正在 Build Vue3 项目..."
-cd calendar_web
+cd web_frontend
 npm run build
 
 if [ $? -ne 0 ]; then
