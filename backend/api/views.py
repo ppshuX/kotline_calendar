@@ -77,27 +77,26 @@ class PublicCalendarViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 # ==================== 用户认证 API ====================
-# 临时禁用，等安装simplejwt后启用
-# @api_view(['POST'])
-# @permission_classes([AllowAny])
-# def register(request):
-#     """用户注册"""
-#     serializer = UserRegisterSerializer(data=request.data)
-#     if serializer.is_valid():
-#         user = serializer.save()
-#         return Response({
-#             'message': '注册成功',
-#             'user': UserSerializer(user).data
-#         }, status=status.HTTP_201_CREATED)
-#     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def register(request):
+    """用户注册"""
+    serializer = UserRegisterSerializer(data=request.data)
+    if serializer.is_valid():
+        user = serializer.save()
+        return Response({
+            'message': '注册成功',
+            'user': UserSerializer(user).data
+        }, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
-# def get_current_user(request):
-#     """获取当前登录用户信息"""
-#     serializer = UserSerializer(request.user)
-#     return Response(serializer.data)
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_current_user(request):
+    """获取当前登录用户信息"""
+    serializer = UserSerializer(request.user)
+    return Response(serializer.data)
 
 
 # ==================== 农历 API ====================
