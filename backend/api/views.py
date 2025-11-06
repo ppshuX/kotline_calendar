@@ -1,9 +1,14 @@
 from rest_framework import viewsets, status
-from rest_framework.decorators import api_view, action
+from rest_framework.decorators import api_view, action, permission_classes
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import User
 from .models import Event, PublicCalendar
-from .serializers import EventSerializer, PublicCalendarSerializer
+from .serializers import (
+    EventSerializer, PublicCalendarSerializer,
+    UserRegisterSerializer, UserSerializer
+)
 from lunarcalendar import Converter, Solar
 
 
@@ -59,9 +64,11 @@ class PublicCalendarViewSet(viewsets.ReadOnlyModelViewSet):
             ics_lines.extend([
                 "BEGIN:VEVENT",
                 f"UID:event-{event.id}@kotlincalendar.com",
-                f"DTSTART:{event.date_time.strftime('%Y%m%dT%H%M%S')}",
+                f"DTSTART:{event.start_time.strftime('%Y%m%dT%H%M%S')}",
+                f"DTEND:{event.end_time.strftime('%Y%m%dT%H%M%S')}",
                 f"SUMMARY:{event.title}",
                 f"DESCRIPTION:{event.description}",
+                f"LOCATION:{event.location}",
                 "END:VEVENT",
             ])
         
@@ -69,6 +76,30 @@ class PublicCalendarViewSet(viewsets.ReadOnlyModelViewSet):
         return "\n".join(ics_lines)
 
 
+# ==================== 用户认证 API ====================
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def register(request):
+    """用户注册"""
+    serializer = UserRegisterSerializer(data=request.data)
+    if serializer.is_valid():
+        user = serializer.save()
+        return Response({
+            'message': '注册成功',
+            'user': UserSerializer(user).data
+        }, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_current_user(request):
+    """获取当前登录用户信息"""
+    serializer = UserSerializer(request.user)
+    return Response(serializer.data)
+
+
+# ==================== 农历 API ====================
 @api_view(['GET'])
 def get_lunar_date(request):
     """农历 API"""

@@ -12,18 +12,19 @@ class Event(models.Model):
     )
     title = models.CharField(max_length=200, verbose_name='标题')
     description = models.TextField(blank=True, verbose_name='描述')
-    date_time = models.DateTimeField(verbose_name='日期时间')
-    reminder_minutes = models.IntegerField(default=0, verbose_name='提前提醒分钟数')
+    start_time = models.DateTimeField(verbose_name='开始时间')
+    end_time = models.DateTimeField(verbose_name='结束时间')
+    location = models.CharField(max_length=200, blank=True, verbose_name='地点')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='更新时间')
     
     class Meta:
-        ordering = ['date_time']
+        ordering = ['start_time']
         verbose_name = '日程'
         verbose_name_plural = '日程列表'
     
     def __str__(self):
-        return f"{self.title} - {self.date_time.strftime('%Y-%m-%d %H:%M')}"
+        return f"{self.title} - {self.start_time.strftime('%Y-%m-%d %H:%M')}"
 
 
 class PublicCalendar(models.Model):
