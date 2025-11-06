@@ -1,14 +1,9 @@
 # ==================== 前端（Web） ====================
-# Web 部署目录（构建产物提交到 Git，方便服务器 git pull）
-# web/  # 已改为提交构建产物
+# Vue3 源码（只在本地开发，不提交 Git）
+web_frontend/
 
-# Vue3 源码依赖和产物
-web_frontend/node_modules/
-web_frontend/dist/
-web_frontend/.DS_Store
-
-# 旧目录（待删除）
-web/calendar_web/
+# Web 部署目录（构建产物提交 Git，服务器 git pull 获取）
+# web/  ← 不忽略，需要提交
 
 # ==================== 后端（Backend） ====================
 # Python
