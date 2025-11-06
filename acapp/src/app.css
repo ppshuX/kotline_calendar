@@ -1,0 +1,266 @@
+/* KotlinCalendar - AcWing App 样式 */
+/* BEM 命名规范，kc- 前缀（KotlinCalendar） */
+
+* {
+  box-sizing: border-box;
+}
+
+.kc-calendar {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+  color: #333;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* ========== 头部 ========== */
+.kc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #e8e8e8;
+}
+
+.kc-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+/* ========== 按钮 ========== */
+.kc-btn {
+  background: #409eff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.kc-btn:hover {
+  background: #66b1ff;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(64, 158, 255, 0.3);
+}
+
+.kc-btn:active {
+  transform: translateY(0);
+}
+
+.kc-btn--primary {
+  background: #67c23a;
+}
+
+.kc-btn--primary:hover {
+  background: #85ce61;
+}
+
+.kc-btn--small {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+.kc-btn--danger {
+  background: #f56c6c;
+}
+
+.kc-btn--danger:hover {
+  background: #f78989;
+}
+
+/* ========== 日历网格 ========== */
+.kc-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  background: #e8e8e8;
+  border: 1px solid #e8e8e8;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.kc-week-header {
+  background: #f5f7fa;
+  padding: 12px;
+  text-align: center;
+  font-weight: 600;
+  color: #606266;
+  font-size: 14px;
+}
+
+.kc-day {
+  background: white;
+  padding: 20px 8px;
+  text-align: center;
+  min-height: 60px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 16px;
+}
+
+.kc-day:hover {
+  background: #ecf5ff;
+}
+
+.kc-day--disabled {
+  background: #fafafa;
+  color: #c0c4cc;
+  cursor: not-allowed;
+}
+
+.kc-day--disabled:hover {
+  background: #fafafa;
+}
+
+.kc-day--today {
+  background: #409eff;
+  color: white;
+  font-weight: bold;
+}
+
+.kc-day--today:hover {
+  background: #66b1ff;
+}
+
+/* ========== 日程列表 ========== */
+.kc-events {
+  margin-top: 24px;
+}
+
+.kc-events-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.kc-events-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #1a1a1a;
+}
+
+.kc-loading,
+.kc-empty {
+  text-align: center;
+  padding: 40px;
+  color: #909399;
+  font-size: 14px;
+}
+
+.kc-event-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  margin-bottom: 12px;
+  background: #f5f7fa;
+  border-radius: 6px;
+  border-left: 4px solid #409eff;
+  transition: all 0.2s;
+}
+
+.kc-event-item:hover {
+  background: #ecf5ff;
+  transform: translateX(4px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.kc-event-content {
+  flex: 1;
+}
+
+.kc-event-content h4 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  color: #303133;
+}
+
+.kc-event-content p {
+  margin: 4px 0;
+  font-size: 13px;
+  color: #606266;
+}
+
+.kc-event-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* ========== 对话框 ========== */
+.kc-dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.kc-dialog {
+  background: white;
+  padding: 24px;
+  border-radius: 8px;
+  min-width: 400px;
+  max-width: 600px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.kc-dialog h3 {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+}
+
+/* ========== 响应式 ========== */
+@media (max-width: 768px) {
+  .kc-calendar {
+    padding: 12px;
+  }
+
+  .kc-title {
+    font-size: 18px;
+  }
+
+  .kc-btn {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+
+  .kc-day {
+    padding: 12px 4px;
+    min-height: 50px;
+    font-size: 14px;
+  }
+
+  .kc-event-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .kc-event-actions {
+    margin-top: 12px;
+    width: 100%;
+  }
+
+  .kc-dialog {
+    min-width: 300px;
+    margin: 20px;
+  }
+}
+

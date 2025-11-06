@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KotlinCalendar - AcWing</title>
+  
+  <!-- Vue 3 CDN（生产版本） -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
+  
+  <!-- 可选：jQuery CDN -->
+  <!-- <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script> -->
+  
+  <!-- 业务样式 -->
+  <link rel="stylesheet" href="src/app.css">
+</head>
+<body>
+  <!-- AcWing 平台会提供容器 -->
+  <div id="calendar-container"></div>
+  
+  <!-- 业务逻辑 -->
+  <script src="src/app.js"></script>
+  
+  <!-- 本地测试：手动初始化 -->
+  <script>
+    // AcWing 平台会自动调用 new Calendar(container)
+    // 这里是本地测试用的
+    if (typeof Calendar !== 'undefined') {
+      const calendar = new Calendar(
+        document.getElementById('calendar-container')
+      );
+      console.log('日历已初始化');
+    }
+  </script>
+</body>
+</html>
+
