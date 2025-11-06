@@ -1,6 +1,6 @@
 # ==================== 前端（Web） ====================
-# Web 部署目录（全部 build 产物，不提交到 Git）
-web/
+# Web 部署目录（构建产物提交到 Git，方便服务器 git pull）
+# web/  # 已改为提交构建产物
 
 # Vue3 源码依赖和产物
 web_frontend/node_modules/
