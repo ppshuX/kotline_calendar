@@ -10,9 +10,10 @@
 
 ```
 KotlinCalendar/
-├── acapp/          # Android 客户端（Kotlin + Room + Retrofit）
+├── adapp/          # Android 客户端（Kotlin + Room + Retrofit）
 ├── backend/        # Django 后端 API（Python + DRF）
-└── web/            # Vue3 Web 管理端（JavaScript + Vue3）
+├── web/            # Vue3 Web 前端（Build 产物）
+└── web_frontend/   # Vue3 源码（仅本地开发）
 ```
 
 ### 架构图
@@ -81,11 +82,11 @@ KotlinCalendar/
 
 ## 🚀 快速开始
 
-### 1. Android 客户端
+### 1. Android 客户端（adapp）
 
 ```bash
 # 打开 Android Studio
-cd acapp
+cd adapp
 ./gradlew assembleDebug
 ```
 
@@ -297,12 +298,15 @@ npm run build
 
 ## 📝 开发日志
 
-详见：[acapp/PHASE_RECORD/](acapp/PHASE_RECORD/)
+- Phase 1: Android 客户端开发（Kotlin + Room）
+- Phase 2: Django 后端搭建（REST API）
+- Phase 3: Vue3 Web 前端（FullCalendar）
+- Phase 4: 网络集成和部署
 
-- Day 1-8: Android 客户端开发
-- Day 9: Django 后端搭建
-- Day 10: 网络集成和订阅功能
-- Day 11: 文档和演示
+## 🎯 端命名说明
+
+- **adapp** = Android App（移动端）
+- **acapp** = AcWing App（未来计划，AcWing 平台集成）
 
 ---
 

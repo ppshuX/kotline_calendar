@@ -16,11 +16,10 @@
 
 ```
 KotlinCalendar/
-├── backend/              # Django 后端（Git 管理 + 服务器部署）
-├── web/
-│   ├── calendar_web/     # Vue3 源码（Git 管理，仅本地）
-│   └── (js/css/images)   # Build 产物（服务器部署，Git 忽略）
-└── acapp/                # Android App（Git 管理，仅本地）
+├── adapp/                # Android App（Android Development App）
+├── backend/              # Django 后端 API
+├── web/                  # Vue3 Build 产物（提交到 Git，服务器部署）
+└── web_frontend/         # Vue3 源码（不提交 Git，仅本地开发）
 ```
 
 ---
@@ -37,9 +36,11 @@ KotlinCalendar/
 - ✅ **Build 产物**（`web/`）：**提交到 Git**，服务器 `git pull` 部署
 - ✅ 本地 build 后提交，服务器不需要 Node.js
 
-### **Android（acapp）**
+### **Android（adapp）**
 - ✅ Git 管理，仅本地开发
 - ✅ 不部署到服务器
+- ✅ adapp = Android Development App（移动端）
+- ⏳ acapp = AcWing App（未来计划）
 
 ---
 
