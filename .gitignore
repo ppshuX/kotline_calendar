@@ -37,22 +37,11 @@ backend/gunicorn.pid
 backend/venv/
 backend/env/
 
-# ==================== Android（acapp） ====================
-# Gradle
-acapp/.gradle/
-acapp/build/
-acapp/app/build/
-acapp/local.properties
-
-# Android Studio
-acapp/.idea/
-acapp/*.iml
-acapp/.DS_Store
-
-# Android
-acapp/captures/
-acapp/.externalNativeBuild/
-acapp/.cxx/
+# ==================== Android（adapp） ====================
+# Android 源码（只在本地，服务器不需要）
+adapp/*
+# 但保留 README.md 说明文档
+!adapp/README.md
 
 # ==================== 文档（仅本地保留） ====================
 # 详细文档保留在本地查看，不上传
