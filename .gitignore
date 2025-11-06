@@ -1,0 +1,62 @@
+# ==================== 前端（Web） ====================
+# Vue3 前端 build 产物（不提交到 Git）
+web/index.html
+web/js/
+web/css/
+web/images/
+web/audios/
+web/favicon.ico
+web/assets/
+
+# Vue3 源码依赖和产物
+web/calendar_web/node_modules/
+web/calendar_web/dist/
+web/calendar_web/.DS_Store
+
+# ==================== 后端（Backend） ====================
+# Python
+backend/__pycache__/
+backend/**/__pycache__/
+backend/*.pyc
+backend/**/*.pyc
+backend/*.pyo
+backend/**/*.pyo
+
+# Django
+backend/db.sqlite3
+backend/db.sqlite3-journal
+backend/logs/
+backend/*.log
+backend/*.pid
+backend/uwsgi.pid
+backend/gunicorn.pid
+
+# 虚拟环境
+backend/venv/
+backend/env/
+
+# ==================== Android（acapp） ====================
+# Gradle
+acapp/.gradle/
+acapp/build/
+acapp/app/build/
+acapp/local.properties
+
+# Android Studio
+acapp/.idea/
+acapp/*.iml
+acapp/.DS_Store
+
+# Android
+acapp/captures/
+acapp/.externalNativeBuild/
+acapp/.cxx/
+
+# ==================== 通用 ====================
+.DS_Store
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
