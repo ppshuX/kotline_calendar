@@ -11,6 +11,9 @@ from .calendars import PublicCalendarViewSet
 # Authentication Views
 from .auth import register, get_current_user, acwing_login, qq_login
 
+# User Profile Views
+from .user import get_user_stats, get_bindings, update_profile, change_password, unbind_acwing, unbind_qq
+
 # OAuth Callback
 from .oauth_callback import acwing_oauth_callback
 
@@ -25,6 +28,12 @@ __all__ = [
     'get_current_user',
     'acwing_login',
     'qq_login',
+    'get_user_stats',
+    'get_bindings',
+    'update_profile',
+    'change_password',
+    'unbind_acwing',
+    'unbind_qq',
     'acwing_oauth_callback',
     'get_lunar_date',
 ]

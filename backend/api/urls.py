@@ -9,6 +9,12 @@ from .views import (
     acwing_login,
     acwing_oauth_callback,
     qq_login,
+    get_user_stats,
+    get_bindings,
+    update_profile,
+    change_password,
+    unbind_acwing,
+    unbind_qq,
     get_lunar_date,
 )
 
@@ -32,6 +38,14 @@ urlpatterns = [
     
     # QQ 登录
     path('auth/qq/login/', qq_login, name='qq_login'),
+    
+    # 用户个人中心
+    path('user/stats/', get_user_stats, name='user_stats'),
+    path('user/bindings/', get_bindings, name='user_bindings'),
+    path('user/profile/', update_profile, name='update_profile'),
+    path('user/change-password/', change_password, name='change_password'),
+    path('user/unbind/acwing/', unbind_acwing, name='unbind_acwing'),
+    path('user/unbind/qq/', unbind_qq, name='unbind_qq'),
     
     # 农历
     path('lunar/', get_lunar_date, name='lunar'),
