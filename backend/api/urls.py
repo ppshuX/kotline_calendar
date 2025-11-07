@@ -7,8 +7,10 @@ from .views import (
     register,
     get_current_user,
     acwing_login,
+    get_acwing_login_url,
     acwing_oauth_callback,
     qq_login,
+    get_qq_login_url,
     get_user_stats,
     get_bindings,
     update_profile,
@@ -33,11 +35,13 @@ urlpatterns = [
     path('auth/me/', get_current_user, name='current_user'),
     
     # AcWing 登录
-    path('auth/acwing/login/', acwing_login, name='acwing_login'),
+    path('auth/acwing/login/', get_acwing_login_url, name='get_acwing_login_url'),  # GET: 获取授权 URL
+    path('auth/acwing/callback/', acwing_login, name='acwing_login'),  # POST: 处理回调
     path('oauth2/receive_code/', acwing_oauth_callback, name='acwing_oauth_callback'),
     
     # QQ 登录
-    path('auth/qq/login/', qq_login, name='qq_login'),
+    path('auth/qq/login/', get_qq_login_url, name='get_qq_login_url'),  # GET: 获取授权 URL
+    path('auth/qq/callback/', qq_login, name='qq_login'),  # POST: 处理回调
     
     # 用户个人中心
     path('user/stats/', get_user_stats, name='user_stats'),

@@ -290,3 +290,33 @@ def qq_login(request):
             'error': error_msg
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_acwing_login_url(request):
+    """获取 AcWing 登录授权 URL"""
+    ACWING_APPID = getattr(settings, 'ACWING_APPID', '7626')
+    REDIRECT_URI = 'https://app7626.acapp.acwing.com.cn/oauth2/receive_code/'
+    
+    # 构建授权 URL
+    apply_code_url = f"https://www.acwing.com/third_party/api/oauth2/web/authorize/?appid={ACWING_APPID}&redirect_uri={REDIRECT_URI}&scope=userinfo&state=acwing"
+    
+    return Response({
+        'apply_code_url': apply_code_url
+    })
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_qq_login_url(request):
+    """获取 QQ 登录授权 URL"""
+    QQ_APPID = getattr(settings, 'QQ_APPID', '')
+    REDIRECT_URI = 'https://app7626.acapp.acwing.com.cn/qq/callback'
+    
+    # 构建授权 URL
+    apply_code_url = f"https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id={QQ_APPID}&redirect_uri={REDIRECT_URI}&state=qq"
+    
+    return Response({
+        'apply_code_url': apply_code_url
+    })
+
