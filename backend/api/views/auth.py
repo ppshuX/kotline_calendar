@@ -295,14 +295,21 @@ def qq_login(request):
 @permission_classes([AllowAny])
 def get_acwing_login_url(request):
     """获取 AcWing 登录授权 URL"""
+    import uuid
+
     ACWING_APPID = getattr(settings, 'ACWING_APPID', '7626')
-    REDIRECT_URI = 'https://app7626.acapp.acwing.com.cn/oauth2/receive_code/'
+    REDIRECT_URI = 'https://app7626.acapp.acwing.com.cn/acwing/callback'
+    state = f"acwing_{uuid.uuid4().hex}"
     
     # 构建授权 URL
-    apply_code_url = f"https://www.acwing.com/third_party/api/oauth2/web/authorize/?appid={ACWING_APPID}&redirect_uri={REDIRECT_URI}&scope=userinfo&state=acwing"
+    apply_code_url = (
+        "https://www.acwing.com/third_party/api/oauth2/web/authorize/"
+        f"?appid={ACWING_APPID}&redirect_uri={REDIRECT_URI}&scope=userinfo&state={state}"
+    )
     
     return Response({
-        'apply_code_url': apply_code_url
+        'apply_code_url': apply_code_url,
+        'state': state,
     })
 
 
