@@ -101,8 +101,10 @@ def acwing_login(request):
             user = acwing_user.user
             # 更新用户名（如果AcWing上修改了）
             if user.username != username:
-                user.username = username
-                user.save()
+                # 检查新用户名是否已被其他用户占用
+                if not User.objects.filter(username=username).exclude(id=user.id).exists():
+                    user.username = username
+                    user.save()
         else:
             # 新用户，创建账号
             # 检查用户名是否已存在，如果存在则添加后缀
