@@ -1,0 +1,43 @@
+# ==================== 复制到服务器 ~/kotlin_calendar/backend/.env ====================
+# 使用方法：
+# 1. 全选复制下面的内容
+# 2. SSH 到服务器：ssh acs@app7626.acapp.acwing.com.cn
+# 3. 编辑文件：nano ~/kotlin_calendar/backend/.env
+# 4. 粘贴内容，保存退出
+# ==============================================================================
+
+# ==================== Django 配置 ====================
+DEBUG=False
+SECRET_KEY=django-insecure-#6avwo7=$9vse4txxj!phdfx5-ql(bc5otpoiw@x)u0i+^1-5h
+
+# ==================== AcWing OAuth ====================
+ACWING_APPID=7626
+ACWING_SECRET=7030aff130bd41c9876413211fe406af
+
+# ==================== QQ OAuth ====================
+QQ_APPID=102818448
+QQ_APPKEY=sZ0B7nDQP8Bzb1JP
+
+# ==================== 邮件配置 (QQ邮箱) ====================
+EMAIL_HOST=smtp.qq.com
+EMAIL_PORT=587
+EMAIL_USE_TLS=True
+EMAIL_HOST_USER=2064747320@qq.com
+EMAIL_HOST_PASSWORD=zwcqgzukwkfyeaja
+DEFAULT_FROM_EMAIL=Ralendar <2064747320@qq.com>
+
+# ==================== Celery/Redis 配置 ====================
+CELERY_BROKER_URL=redis://localhost:6379/0
+CELERY_RESULT_BACKEND=redis://localhost:6379/0
+
+# ==================== 提醒设置 ====================
+REMINDER_ADVANCE_MINUTES=15
+
+# ==================== 数据库（可选，共享 Roamio 数据库）====================
+# USE_SHARED_DB=False
+# DB_HOST=your-mysql-host.rds.aliyuncs.com
+# DB_PORT=3306
+# DB_NAME=roamio_production
+# DB_USER=ralendar_user
+# DB_PASSWORD=your-secure-password
+
