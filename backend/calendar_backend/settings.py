@@ -25,7 +25,8 @@ load_dotenv(BASE_DIR / '.env')
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-#6avwo7=$9vse4txxj!phdfx5-ql(bc5otpoiw@x)u0i+^1-5h'
+# 如果使用共享数据库，必须与 Roamio 使用相同的 SECRET_KEY
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-#6avwo7=$9vse4txxj!phdfx5-ql(bc5otpoiw@x)u0i+^1-5h')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False  # 生产环境关闭调试模式
@@ -92,12 +93,33 @@ WSGI_APPLICATION = 'calendar_backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+# 判断是否使用共享数据库（Roamio MySQL）
+USE_SHARED_DB = os.environ.get('USE_SHARED_DB', 'False') == 'True'
+
+if USE_SHARED_DB:
+    # 使用 Roamio 的 MySQL 数据库（共享数据库方案）
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': os.environ.get('DB_NAME', 'roamio_production'),
+            'USER': os.environ.get('DB_USER', 'ralendar_user'),
+            'PASSWORD': os.environ.get('DB_PASSWORD', ''),
+            'HOST': os.environ.get('DB_HOST', 'localhost'),
+            'PORT': os.environ.get('DB_PORT', '3306'),
+            'OPTIONS': {
+                'charset': 'utf8mb4',
+                'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            }
+        }
     }
-}
+else:
+    # 使用本地 SQLite（开发环境）
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 # Password validation
