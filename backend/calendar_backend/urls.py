@@ -21,7 +21,8 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('api.urls')),
+    path('api/', include('api.urls')),        # 保留旧版本（向后兼容）
+    path('api/v1/', include('api.urls')),     # v1 版本（Roamio 对接使用）
     path('api-auth/', include('rest_framework.urls')),
 ]
 
