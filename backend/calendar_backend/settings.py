@@ -208,3 +208,6 @@ DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER)
 
 # 提醒设置
 REMINDER_ADVANCE_MINUTES = int(os.environ.get('REMINDER_ADVANCE_MINUTES', 15))  # 提前 15 分钟提醒
+
+# ==================== 百度地图配置 ====================
+BAIDU_MAP_AK = os.environ.get('BAIDU_MAP_AK', '')  # 百度地图 API Key
