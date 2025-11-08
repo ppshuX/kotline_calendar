@@ -1,10 +1,10 @@
-# ==================== 复制到服务器 ~/kotlin_calendar/backend/.env ====================
+# ==================== Ralendar 生产环境配置模板 ====================
 # 使用方法：
-# 1. 全选复制下面的内容
+# 1. 复制此文件内容到服务器
 # 2. SSH 到服务器：ssh acs@app7626.acapp.acwing.com.cn
 # 3. 编辑文件：nano ~/kotlin_calendar/backend/.env
-# 4. 粘贴内容，保存退出
-# ==============================================================================
+# 4. 粘贴内容并保存
+# ========================================================================
 
 # ==================== Django 配置 ====================
 DEBUG=False
@@ -32,12 +32,4 @@ CELERY_RESULT_BACKEND=redis://localhost:6379/0
 
 # ==================== 提醒设置 ====================
 REMINDER_ADVANCE_MINUTES=15
-
-# ==================== 数据库（可选，共享 Roamio 数据库）====================
-# USE_SHARED_DB=False
-# DB_HOST=your-mysql-host.rds.aliyuncs.com
-# DB_PORT=3306
-# DB_NAME=roamio_production
-# DB_USER=ralendar_user
-# DB_PASSWORD=your-secure-password
 
