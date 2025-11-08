@@ -31,11 +31,15 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     """用户信息序列化器"""
     photo = serializers.SerializerMethodField()
+    acwing_openid = serializers.SerializerMethodField()
+    qq_openid = serializers.SerializerMethodField()
+    has_password = serializers.SerializerMethodField()
     
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'date_joined', 'photo']
-        read_only_fields = ['id', 'date_joined', 'photo']
+        fields = ['id', 'username', 'email', 'date_joined', 'photo', 
+                  'acwing_openid', 'qq_openid', 'has_password']
+        read_only_fields = ['id', 'date_joined', 'photo', 'acwing_openid', 'qq_openid', 'has_password']
     
     def get_photo(self, obj):
         """获取用户头像（优先 AcWing，其次 QQ）"""
@@ -44,6 +48,22 @@ class UserSerializer(serializers.ModelSerializer):
         elif hasattr(obj, 'qq_profile'):
             return obj.qq_profile.photo_url
         return None
+    
+    def get_acwing_openid(self, obj):
+        """获取 AcWing OpenID（用于判断是否绑定）"""
+        if hasattr(obj, 'acwing_profile'):
+            return obj.acwing_profile.openid
+        return None
+    
+    def get_qq_openid(self, obj):
+        """获取 QQ OpenID（用于判断是否绑定）"""
+        if hasattr(obj, 'qq_profile'):
+            return obj.qq_profile.openid
+        return None
+    
+    def get_has_password(self, obj):
+        """判断用户是否设置了密码"""
+        return obj.has_usable_password()
 
 
 # ==================== 事件相关 ====================
