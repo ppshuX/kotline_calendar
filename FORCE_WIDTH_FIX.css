@@ -1,0 +1,26 @@
+/* ========================================
+   紧急修复：强制对话框宽度为屏幕90%
+   如果正常方法不生效，把这段代码加到 EventDialog.vue 的 <style> 里
+   ======================================== */
+
+@media (max-width: 768px) {
+  /* 最高优先级：多个选择器 + !important */
+  body .el-overlay .event-dialog,
+  .el-overlay .el-overlay-dialog .event-dialog,
+  .el-dialog.event-dialog,
+  [class*="event-dialog"] {
+    width: 90vw !important;
+    max-width: 90vw !important;
+    min-width: 90vw !important;
+  }
+  
+  body .el-overlay .event-detail-dialog,
+  .el-overlay .el-overlay-dialog .event-detail-dialog,
+  .el-dialog.event-detail-dialog,
+  [class*="event-detail-dialog"] {
+    width: 90vw !important;
+    max-width: 90vw !important;
+    min-width: 90vw !important;
+  }
+}
+
