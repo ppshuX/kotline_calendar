@@ -57,7 +57,7 @@ def send_event_reminder_email(event_id):
 
 {f'📝 备注：{event.description}' if event.description else ''}
 
-{'🔔 这是来自 Roamio 旅行计划的提醒' if event.is_from_roamio else ''}
+{'🔔 这是来自 Ralendar 旅行计划的提醒' if event.is_from_roamio else ''}
 
 ---
 Ralendar 日历系统
