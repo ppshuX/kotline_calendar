@@ -73,18 +73,25 @@ https://app7626.acapp.acwing.com.cn
     <style>
         body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
         .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
-        .header {{ background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 20px; border-radius: 8px 8px 0 0; }}
+        .logo {{ text-align: center; margin-bottom: 20px; }}
+        .logo img {{ width: 80px; height: 80px; border-radius: 12px; }}
+        .header {{ background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 20px; border-radius: 8px 8px 0 0; text-align: center; }}
+        .header h2 {{ margin: 0; font-size: 24px; }}
         .content {{ background: #f9f9f9; padding: 20px; border-radius: 0 0 8px 8px; }}
         .event-card {{ background: white; padding: 20px; border-radius: 8px; margin: 20px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }}
         .event-title {{ font-size: 20px; font-weight: bold; color: #667eea; margin-bottom: 10px; }}
         .event-info {{ margin: 10px 0; }}
         .event-info strong {{ color: #667eea; }}
         .footer {{ text-align: center; color: #999; font-size: 12px; margin-top: 20px; }}
+        .footer img {{ width: 40px; height: 40px; border-radius: 8px; margin-bottom: 10px; }}
         .button {{ display: inline-block; background: #667eea; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-top: 15px; }}
     </style>
 </head>
 <body>
     <div class="container">
+        <div class="logo">
+            <img src="https://app7626.acapp.acwing.com.cn/logo.png" alt="Ralendar">
+        </div>
         <div class="header">
             <h2>📅 日程提醒</h2>
         </div>
@@ -105,7 +112,8 @@ https://app7626.acapp.acwing.com.cn
             <p>祝您生活愉快！</p>
         </div>
         <div class="footer">
-            <p>Ralendar 日历系统</p>
+            <img src="https://app7626.acapp.acwing.com.cn/logo.png" alt="Ralendar">
+            <p><strong>Ralendar 日历系统</strong></p>
             <p><a href="https://app7626.acapp.acwing.com.cn" style="color: #667eea;">https://app7626.acapp.acwing.com.cn</a></p>
         </div>
     </div>
