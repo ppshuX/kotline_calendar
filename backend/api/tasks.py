@@ -145,41 +145,51 @@ def check_and_send_reminders():
     每分钟执行一次
     
     逻辑：
-    1. 查找未来 N 分钟内开始的事件
-    2. 过滤出：
-       - 启用了邮件提醒（email_reminder=True）
-       - 尚未发送通知（notification_sent=False）
-       - 用户有邮箱地址
-    3. 异步发送提醒邮件
+    1. 查找所有启用邮件提醒且尚未发送的事件
+    2. 计算每个事件的实际提醒时间（start_time - reminder_minutes）
+    3. 只发送那些提醒时间在当前分钟内的事件
     """
     now = timezone.now()
-    advance_minutes = getattr(settings, 'REMINDER_ADVANCE_MINUTES', 15)
     
-    # 计算时间范围：现在 到 未来 N 分钟
-    reminder_start = now
-    reminder_end = now + timedelta(minutes=advance_minutes)
+    # 查找未来最多 60 分钟内的所有待提醒事件
+    # （支持用户设置的最大提前提醒时间，如提前1天=1440分钟）
+    max_advance = timedelta(minutes=1440)  # 最大支持提前1天
+    reminder_end = now + max_advance
     
-    # 查找需要提醒的事件
-    events_to_remind = Event.objects.filter(
-        start_time__gte=reminder_start,
-        start_time__lte=reminder_end,
-        email_reminder=True,
-        notification_sent=False,
-        user__email__isnull=False,
+    # 查找所有可能需要提醒的事件
+    candidate_events = Event.objects.filter(
+        start_time__gte=now,  # 事件还没开始
+        start_time__lte=reminder_end,  # 事件在时间窗口内
+        email_reminder=True,  # 启用了邮件提醒
+        notification_sent=False,  # 尚未发送
+        user__email__isnull=False,  # 有邮箱
         user__email__gt='',
     ).select_related('user')
     
-    count = events_to_remind.count()
+    sent_count = 0
     
-    if count > 0:
-        print(f"🔔 发现 {count} 个需要提醒的事件")
+    for event in candidate_events:
+        # 计算实际的提醒时间
+        reminder_time = event.start_time - timedelta(minutes=event.reminder_minutes)
         
-        # 为每个事件创建异步任务
-        for event in events_to_remind:
+        # 检查是否应该在当前时刻发送提醒
+        # 容差范围：提醒时间 <= 当前时间 < 提醒时间 + 2分钟
+        # （考虑到 Celery Beat 可能有1-2分钟的延迟）
+        time_diff = (now - reminder_time).total_seconds() / 60
+        
+        if 0 <= time_diff < 2:
+            # 应该发送提醒
             send_event_reminder_email.delay(event.id)
-            print(f"  - {event.title} ({event.start_time})")
-    else:
-        print(f"✓ 未来 {advance_minutes} 分钟内没有需要提醒的事件")
+            sent_count += 1
+            print(f"🔔 发送提醒：{event.title}")
+            print(f"   事件时间：{timezone.localtime(event.start_time)}")
+            print(f"   提前：{event.reminder_minutes}分钟")
+            print(f"   用户：{event.user.email}")
     
-    return count
+    if sent_count > 0:
+        print(f"✅ 本次发送了 {sent_count} 个提醒")
+    else:
+        print(f"✓ 当前没有需要发送的提醒")
+    
+    return sent_count
 
