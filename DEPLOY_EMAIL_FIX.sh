@@ -18,18 +18,25 @@ echo ""
 echo "===== 2. 重启 Celery 服务 ====="
 cd backend
 
-# 停止旧进程
+# 停止旧进程（使用 -9 强制终止，确保完全停止）
 echo "停止旧的 Celery 进程..."
-sudo pkill -f 'celery worker'
-sudo pkill -f 'celery beat'
-sleep 2
+sudo pkill -9 -f 'celery worker'
+sudo pkill -9 -f 'celery beat'
+sleep 3
+
+# 再次检查是否还有残留进程
+if ps aux | grep -v grep | grep 'celery' > /dev/null; then
+    echo "⚠️ 发现残留进程，再次清理..."
+    sudo pkill -9 -f celery
+    sleep 2
+fi
 
 # 创建日志目录
 mkdir -p logs
 
-# 启动新进程
-echo "启动 Celery Worker..."
-nohup python3 -m celery -A calendar_backend worker --loglevel=info > logs/celery_worker.log 2>&1 &
+# 启动新进程（使用 --concurrency=1 确保单进程，避免重复发送）
+echo "启动 Celery Worker (单进程模式)..."
+nohup python3 -m celery -A calendar_backend worker --concurrency=1 --loglevel=info > logs/celery_worker.log 2>&1 &
 WORKER_PID=$!
 
 echo "启动 Celery Beat..."
