@@ -73,10 +73,10 @@ https://app7626.acapp.acwing.com.cn
     <style>
         body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
         .container {{ max-width: 600px; margin: 0 auto; padding: 20px; background: white; }}
-        .logo-section {{ text-align: center; padding: 20px 0; }}
-        .logo-section img {{ width: 100px; height: 100px; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }}
-        .header {{ background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 20px; border-radius: 8px 8px 0 0; text-align: center; }}
-        .header h2 {{ margin: 0; font-size: 24px; }}
+        .header {{ background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 30px 20px; border-radius: 12px; text-align: center; }}
+        .header-content {{ display: flex; align-items: center; justify-content: center; gap: 15px; }}
+        .header-logo {{ width: 50px; height: 50px; border-radius: 10px; background: white; padding: 5px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }}
+        .header h2 {{ margin: 0; font-size: 26px; font-weight: 600; }}
         .content {{ background: #f9f9f9; padding: 20px; border-radius: 0 0 8px 8px; }}
         .event-card {{ background: white; padding: 20px; border-radius: 8px; margin: 20px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }}
         .event-title {{ font-size: 20px; font-weight: bold; color: #667eea; margin-bottom: 10px; }}
@@ -88,11 +88,11 @@ https://app7626.acapp.acwing.com.cn
 </head>
 <body>
     <div class="container">
-        <div class="logo-section">
-            <img src="https://app7626.acapp.acwing.com.cn/logo.png" alt="Ralendar Logo">
-        </div>
         <div class="header">
-            <h2>📅 日程提醒</h2>
+            <div class="header-content">
+                <img src="https://app7626.acapp.acwing.com.cn/logo.png" alt="Ralendar" class="header-logo">
+                <h2>日程提醒</h2>
+            </div>
         </div>
         <div class="content">
             <p>您好 <strong>{event.user.username}</strong>，</p>
@@ -111,7 +111,7 @@ https://app7626.acapp.acwing.com.cn
             <p>祝您生活愉快！</p>
         </div>
         <div class="footer">
-            <p><strong>Ralendar 日历系统</strong></p>
+            <p><strong>Ralendar 智能日历系统</strong></p>
             <p><a href="https://app7626.acapp.acwing.com.cn" style="color: #667eea;">https://app7626.acapp.acwing.com.cn</a></p>
         </div>
     </div>
