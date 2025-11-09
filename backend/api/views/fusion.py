@@ -390,14 +390,15 @@ def update_event(request, event_id):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['DELETE'])
+@api_view(['DELETE', 'GET'])  # 支持 DELETE 和 GET（获取单个事件详情）
 @authentication_classes([])
 @permission_classes([AllowAny])
 def delete_event(request, event_id):
     """
-    删除事件（支持 UnionID 跨应用认证）
+    删除事件或获取事件详情（RESTful 风格，支持 UnionID）
     
-    **DELETE** `/api/v1/fusion/events/{id}/`
+    **DELETE** `/api/v1/fusion/events/{id}/` - 删除事件
+    **GET** `/api/v1/fusion/events/{id}/` - 获取事件详情
     
     ### 请求头
     ```
@@ -447,15 +448,22 @@ def delete_event(request, event_id):
     except Event.DoesNotExist:
         return Response({'error': '事件不存在或无权限'}, status=status.HTTP_404_NOT_FOUND)
     
-    # 删除事件
-    event_title = event.title
-    event.delete()
-    logger.info(f"[Fusion API - DELETE] ✅ 删除事件 {event_id}: {event_title}")
+    # RESTful: 根据请求方法执行不同操作
+    if request.method == 'GET':
+        # 获取事件详情
+        serializer = EventSerializer(event)
+        logger.info(f"[Fusion API - GET] ✅ 获取事件 {event_id}: {event.title}")
+        return Response(serializer.data)
     
-    return Response({
-        'success': True,
-        'message': f'事件 "{event_title}" 已删除'
-    })
+    elif request.method == 'DELETE':
+        # 删除事件
+        event_title = event.title
+        event.delete()
+        logger.info(f"[Fusion API - DELETE] ✅ 删除事件 {event_id}: {event_title}")
+        return Response({
+            'success': True,
+            'message': f'事件 "{event_title}" 已删除'
+        })
 
 
 @api_view(['GET'])
