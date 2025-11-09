@@ -23,7 +23,8 @@ from .holidays import get_holidays, check_holiday, get_today_holidays
 
 # Fusion Views (Roamio × Ralendar)
 from .fusion import (
-    batch_create_events, 
+    batch_create_events,
+    get_user_events,
     get_trip_events, 
     delete_trip_events,
     mark_notification_sent,
@@ -55,6 +56,7 @@ __all__ = [
     'get_today_holidays',
     # Fusion APIs
     'batch_create_events',
+    'get_user_events',
     'get_trip_events',
     'delete_trip_events',
     'mark_notification_sent',
