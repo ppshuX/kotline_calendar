@@ -51,6 +51,7 @@ adapp/*
 .env
 *.env
 !.env.example
+backend/ENV_PRODUCTION_READY_TO_COPY.txt
 
 # ==================== 通用 ====================
 .DS_Store
