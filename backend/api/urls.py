@@ -27,7 +27,7 @@ urlpatterns = [
     path('user/', include('api.url_patterns.user')),
     
     # 融合功能路由 (Roamio × Ralendar)
-    path('', include('api.url_patterns.fusion')),
+    path('fusion/', include('api.url_patterns.fusion')),
     
     # 工具类路由 (农历、节假日)
     path('', include('api.url_patterns.utils')),
