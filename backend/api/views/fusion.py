@@ -316,27 +316,28 @@ def get_user_events(request):
     })
 
 
-@api_view(['PUT'])
+@api_view(['GET', 'PUT', 'DELETE'])  # One function handles all methods!
 @authentication_classes([])
 @permission_classes([AllowAny])
-def update_event(request, event_id):
+def manage_event(request, event_id):
     """
-    更新事件（支持 UnionID 跨应用认证）
+    Manage single event (RESTful with UnionID support)
     
-    **PUT** `/api/v1/fusion/events/{id}/`
+    **GET**    `/api/v1/fusion/events/{id}/` - Get event detail
+    **PUT**    `/api/v1/fusion/events/{id}/` - Update event
+    **DELETE** `/api/v1/fusion/events/{id}/` - Delete event
     
-    ### 请求头
+    ### Headers
     ```
     Authorization: Bearer <roamio_token>
     ```
     
-    ### 请求体
+    ### Request Body (PUT only)
     ```json
     {
         "unionid": "UID_xxx...",
-        "title": "新标题",
-        "start_time": "2025-11-10T10:00:00Z",
-        ...
+        "title": "New Title",
+        "start_time": "2025-11-10T10:00:00Z"
     }
     ```
     """
@@ -374,95 +375,36 @@ def update_event(request, event_id):
     if not ralendar_user:
         return Response({'error': '无法识别用户'}, status=status.HTTP_400_BAD_REQUEST)
     
-    # 查找事件并验证所有权
+    # Find event and verify ownership
     try:
         event = Event.objects.get(id=event_id, user=ralendar_user)
     except Event.DoesNotExist:
-        return Response({'error': '事件不存在或无权限'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'error': 'Event not found or no permission'}, status=status.HTTP_404_NOT_FOUND)
     
-    # 更新事件
-    serializer = EventSerializer(event, data=request.data, partial=True)
-    if serializer.is_valid():
-        serializer.save()
-        logger.info(f"[Fusion API - PUT] ✅ 更新事件 {event_id}: {event.title}")
-        return Response(serializer.data)
-    
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['DELETE', 'GET'])  # 支持 DELETE 和 GET（获取单个事件详情）
-@authentication_classes([])
-@permission_classes([AllowAny])
-def delete_event(request, event_id):
-    """
-    删除事件或获取事件详情（RESTful 风格，支持 UnionID）
-    
-    **DELETE** `/api/v1/fusion/events/{id}/` - 删除事件
-    **GET** `/api/v1/fusion/events/{id}/` - 获取事件详情
-    
-    ### 请求头
-    ```
-    Authorization: Bearer <roamio_token>
-    ```
-    
-    ### URL 参数（可选）
-    - unionid: 加速匹配
-    """
-    # Token 验证 + 三层用户匹配
-    auth_header = request.META.get('HTTP_AUTHORIZATION', '')
-    if not auth_header.startswith('Bearer '):
-        return Response({'error': '缺少认证 Token'}, status=status.HTTP_401_UNAUTHORIZED)
-    
-    token_str = auth_header.split(' ')[1]
-    try:
-        token = AccessToken(token_str)
-        roamio_user_id = token['user_id']
-    except TokenError as e:
-        return Response({'error': f'Token 无效: {str(e)}'}, status=status.HTTP_401_UNAUTHORIZED)
-    
-    # 三层匹配（从 URL 参数或 Token 获取）
-    unionid = request.GET.get('unionid', '') or token.payload.get('unionid', '')
-    openid = request.GET.get('openid', '') or token.payload.get('openid', '')
-    
-    ralendar_user = None
-    if unionid:
-        qq_user = QQUser.objects.filter(unionid=unionid).first()
-        if qq_user:
-            ralendar_user = qq_user.user
-    if not ralendar_user and openid:
-        qq_user = QQUser.objects.filter(openid=openid).first()
-        if qq_user:
-            ralendar_user = qq_user.user
-    if not ralendar_user:
-        try:
-            ralendar_user = User.objects.get(id=roamio_user_id)
-        except User.DoesNotExist:
-            pass
-    
-    if not ralendar_user:
-        return Response({'error': '无法识别用户'}, status=status.HTTP_400_BAD_REQUEST)
-    
-    # 查找事件并验证所有权
-    try:
-        event = Event.objects.get(id=event_id, user=ralendar_user)
-    except Event.DoesNotExist:
-        return Response({'error': '事件不存在或无权限'}, status=status.HTTP_404_NOT_FOUND)
-    
-    # RESTful: 根据请求方法执行不同操作
+    # RESTful: handle different methods
     if request.method == 'GET':
-        # 获取事件详情
+        # Get event detail
         serializer = EventSerializer(event)
-        logger.info(f"[Fusion API - GET] ✅ 获取事件 {event_id}: {event.title}")
+        logger.info(f"[Fusion API - GET] Get event {event_id}: {event.title}")
         return Response(serializer.data)
+    
+    elif request.method == 'PUT':
+        # Update event
+        serializer = EventSerializer(event, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            logger.info(f"[Fusion API - PUT] Update event {event_id}: {event.title}")
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     elif request.method == 'DELETE':
-        # 删除事件
+        # Delete event
         event_title = event.title
         event.delete()
-        logger.info(f"[Fusion API - DELETE] ✅ 删除事件 {event_id}: {event_title}")
+        logger.info(f"[Fusion API - DELETE] Delete event {event_id}: {event_title}")
         return Response({
             'success': True,
-            'message': f'事件 "{event_title}" 已删除'
+            'message': f'Event "{event_title}" deleted'
         })
 
 

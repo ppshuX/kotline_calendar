@@ -25,8 +25,7 @@ from .holidays import get_holidays, check_holiday, get_today_holidays
 from .fusion import (
     batch_create_events,
     get_user_events,
-    update_event,
-    delete_event,
+    manage_event,
     get_trip_events, 
     delete_trip_events,
     mark_notification_sent,
@@ -59,8 +58,7 @@ __all__ = [
     # Fusion APIs
     'batch_create_events',
     'get_user_events',
-    'update_event',
-    'delete_event',
+    'manage_event',
     'get_trip_events',
     'delete_trip_events',
     'mark_notification_sent',
