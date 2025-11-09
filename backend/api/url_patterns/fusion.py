@@ -5,6 +5,7 @@
 from django.urls import path
 from ..views import (
     batch_create_events,
+    get_user_events,
     get_trip_events,
     delete_trip_events,
     mark_notification_sent,
@@ -16,6 +17,7 @@ from ..views import (
 urlpatterns = [
     # 批量操作
     path('events/batch/', batch_create_events, name='batch_create_events'),
+    path('events/', get_user_events, name='get_user_events'),  # ← 新增！支持 UnionID 的获取事件接口
     path('sync/from-roamio/', sync_from_roamio, name='sync_from_roamio'),
     
     # 按旅行查询

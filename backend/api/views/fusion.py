@@ -222,6 +222,101 @@ def batch_create_events(request):
 
 
 @api_view(['GET'])
+@authentication_classes([])  # 手动处理认证
+@permission_classes([AllowAny])
+def get_user_events(request):
+    """
+    获取用户的所有事件（支持 UnionID 跨应用认证）
+    
+    **GET** `/api/v1/fusion/events/`
+    
+    ### 请求头
+    ```
+    Authorization: Bearer <roamio_token>
+    ```
+    
+    ### 可选参数
+    - unionid: QQ UnionID（推荐）
+    - openid: QQ OpenID（备选）
+    
+    ### 响应示例
+    ```json
+    {
+        "user_id": 2,
+        "username": "W ૧ H",
+        "events_count": 10,
+        "events": [...]
+    }
+    ```
+    """
+    # 1. 手动验证 Token（复用 batch_create_events 的逻辑）
+    auth_header = request.META.get('HTTP_AUTHORIZATION', '')
+    if not auth_header.startswith('Bearer '):
+        return Response(
+            {'error': '缺少认证 Token'},
+            status=status.HTTP_401_UNAUTHORIZED
+        )
+    
+    token_str = auth_header.split(' ')[1]
+    
+    try:
+        token = AccessToken(token_str)
+        roamio_user_id = token['user_id']
+    except TokenError as e:
+        return Response(
+            {'error': f'Token 无效: {str(e)}'},
+            status=status.HTTP_401_UNAUTHORIZED
+        )
+    
+    # 2. 三层用户匹配（复用 batch_create_events 的逻辑）
+    unionid = request.GET.get('unionid', '') or token.payload.get('unionid', '')
+    openid = request.GET.get('openid', '') or token.payload.get('openid', '')
+    
+    ralendar_user = None
+    
+    # 第1层：UnionID
+    if unionid:
+        logger.info(f"[Fusion API - GET] 🔍 UnionID 匹配: {unionid[:20]}...")
+        qq_user = QQUser.objects.filter(unionid=unionid).first()
+        if qq_user:
+            ralendar_user = qq_user.user
+            logger.info(f"[Fusion API - GET] ✅ UnionID 匹配成功: {ralendar_user.username}")
+    
+    # 第2层：OpenID
+    if not ralendar_user and openid:
+        logger.info(f"[Fusion API - GET] 🔍 OpenID 匹配: {openid[:20]}...")
+        qq_user = QQUser.objects.filter(openid=openid).first()
+        if qq_user:
+            ralendar_user = qq_user.user
+            logger.info(f"[Fusion API - GET] ✅ OpenID 匹配成功: {ralendar_user.username}")
+    
+    # 第3层：user_id
+    if not ralendar_user:
+        try:
+            ralendar_user = User.objects.get(id=roamio_user_id)
+            logger.info(f"[Fusion API - GET] ✅ user_id 匹配成功: {ralendar_user.username}")
+        except User.DoesNotExist:
+            pass
+    
+    if not ralendar_user:
+        return Response(
+            {'error': '无法识别用户', 'detail': '请提供 unionid 或 openid'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    # 3. 获取用户的所有事件
+    events = Event.objects.filter(user=ralendar_user).order_by('-start_time')
+    serializer = EventSerializer(events, many=True)
+    
+    return Response({
+        'user_id': ralendar_user.id,
+        'username': ralendar_user.username,
+        'events_count': events.count(),
+        'events': serializer.data
+    })
+
+
+@api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_trip_events(request, trip_slug):
     """
