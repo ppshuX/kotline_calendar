@@ -82,7 +82,7 @@ def batch_create_events(request):
     
     # 2. 通过 UnionID 匹配用户
     # 方案 A: 从请求中获取 unionid（推荐）
-    unionid = data.get('unionid', '')
+    unionid = request.data.get('unionid', '')  # 修复：使用 request.data 而不是 data
     
     # 方案 B: 从 Token payload 中获取（如果 Roamio 包含了的话）
     if not unionid:
@@ -122,6 +122,7 @@ def batch_create_events(request):
             status=status.HTTP_400_BAD_REQUEST
         )
     
+    # 3. 处理请求数据
     data = request.data
     
     # 调试日志
