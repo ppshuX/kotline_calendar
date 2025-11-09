@@ -1,8 +1,9 @@
 """
 融合相关视图 - 支持 Roamio × Ralendar 跨项目功能
 """
+import logging
 from rest_framework import status
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from django.utils import timezone
@@ -13,8 +14,8 @@ from rest_framework_simplejwt.exceptions import TokenError
 from ..models import Event, QQUser
 from ..serializers import EventSerializer
 
-
-from rest_framework.decorators import authentication_classes
+# 初始化 logger
+logger = logging.getLogger('django')
 
 @api_view(['POST'])
 @authentication_classes([])  # 禁用全局认证，完全手动处理
@@ -126,8 +127,6 @@ def batch_create_events(request):
     data = request.data
     
     # 调试日志
-    import logging
-    logger = logging.getLogger('django')
     logger.info(f"[Fusion API] 收到请求")
     logger.info(f"[Fusion API] 原始数据: {data}")
     logger.info(f"[Fusion API] Roamio user_id: {roamio_user_id}")
