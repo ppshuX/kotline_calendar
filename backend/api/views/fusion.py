@@ -353,9 +353,9 @@ def manage_event(request, event_id):
     except TokenError as e:
         return Response({'error': f'Token 无效: {str(e)}'}, status=status.HTTP_401_UNAUTHORIZED)
     
-    # 三层匹配
-    unionid = request.data.get('unionid', '') or token.payload.get('unionid', '')
-    openid = request.data.get('openid', '') or token.payload.get('openid', '')
+    # 三层匹配（支持 URL 参数和请求体）
+    unionid = request.GET.get('unionid', '') or request.data.get('unionid', '') or token.payload.get('unionid', '')
+    openid = request.GET.get('openid', '') or request.data.get('openid', '') or token.payload.get('openid', '')
     
     ralendar_user = None
     if unionid:
