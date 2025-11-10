@@ -237,7 +237,7 @@ class EventAdmin(admin.ModelAdmin):
     ]
     
     list_filter = [
-        'is_from_roamio',
+        'source_app',
         'email_reminder',
         'notification_sent',
         ('start_time', admin.DateFieldListFilter),
@@ -249,7 +249,7 @@ class EventAdmin(admin.ModelAdmin):
     
     date_hierarchy = 'start_time'
     
-    readonly_fields = ['created_at', 'related_trip_id', 'related_trip_slug']
+    readonly_fields = ['created_at', 'related_trip_slug', 'source_app', 'source_id']
     
     fieldsets = (
         ('基本信息', {
@@ -263,7 +263,7 @@ class EventAdmin(admin.ModelAdmin):
             'fields': ('email_reminder', 'reminder_minutes', 'notification_sent')
         }),
         ('来源信息', {
-            'fields': ('is_from_roamio', 'related_trip_id', 'related_trip_slug'),
+            'fields': ('source_app', 'source_id', 'related_trip_slug'),
             'classes': ('collapse',)
         }),
         ('元数据', {
@@ -353,7 +353,7 @@ class QQUserAdmin(admin.ModelAdmin):
     
     search_fields = ['openid', 'unionid', 'user__username']
     
-    readonly_fields = ['openid', 'unionid', 'avatar_url']
+    readonly_fields = ['openid', 'unionid', 'photo_url']
     
     def user_link(self, obj):
         """用户链接"""
@@ -381,7 +381,7 @@ class QQUserAdmin(admin.ModelAdmin):
     
     def has_avatar(self, obj):
         """是否有头像"""
-        if obj.avatar_url:
+        if obj.photo_url:
             return format_html('<span style="color: #27ae60;">✅</span>')
         return format_html('<span style="color: #95a5a6;">—</span>')
     has_avatar.short_description = '头像'
@@ -395,7 +395,7 @@ class QQUserInline(admin.StackedInline):
     model = QQUser
     can_delete = False
     verbose_name = 'QQ 账号信息'
-    readonly_fields = ['openid', 'unionid', 'avatar_url']
+    readonly_fields = ['openid', 'unionid', 'photo_url']
 
 
 class CustomUserAdmin(BaseUserAdmin):
@@ -441,10 +441,10 @@ admin.site.register(User, CustomUserAdmin)
 @admin.register(LunarCalendar)
 class LunarCalendarAdmin(admin.ModelAdmin):
     """农历管理"""
-    list_display = ['solar_date', 'lunar_full_date', 'zodiac']
-    list_filter = [('solar_date', admin.DateFieldListFilter)]
-    search_fields = ['lunar_full_date', 'zodiac']
-    ordering = ['-solar_date']
+    list_display = ['date', 'lunar_date_cn', 'zodiac']
+    list_filter = [('date', admin.DateFieldListFilter)]
+    search_fields = ['lunar_date_cn', 'zodiac']
+    ordering = ['-date']
 
 
 @admin.register(DailyFortune)
@@ -458,8 +458,8 @@ class DailyFortuneAdmin(admin.ModelAdmin):
 @admin.register(UserFortune)
 class UserFortuneAdmin(admin.ModelAdmin):
     """用户运势配置"""
-    list_display = ['user', 'zodiac_sign']
-    search_fields = ['user__username', 'zodiac_sign']
+    list_display = ['user', 'zodiac', 'constellation']
+    search_fields = ['user__username', 'zodiac', 'constellation']
 
 
 # ============================================================
