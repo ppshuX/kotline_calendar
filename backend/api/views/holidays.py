@@ -125,7 +125,7 @@ def get_holidays(request):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def check_holiday(request):
-    """检查指定日期是否是节假日"""
+    """检查指定日期的节假日（包括法定、国际、传统节日）"""
     date_str = request.GET.get('date')
     
     if not date_str:
@@ -137,21 +137,72 @@ def check_holiday(request):
         except ValueError:
             return Response({'error': '日期格式错误，请使用 YYYY-MM-DD 格式'}, status=400)
     
+    # 获取法定节假日信息
     holiday_info = get_holiday_info(target_date)
     
-    if holiday_info:
-        return Response({
-            'date': target_date.strftime('%Y-%m-%d'),
-            **holiday_info
-        })
-    else:
-        return Response({
-            'date': target_date.strftime('%Y-%m-%d'),
-            'is_holiday': False,
-            'is_workday': True,
-            'holiday_name': None,
-            'holiday_type': None
-        })
+    # 构建完整的节日信息（和 get_today_holidays 一样的结构）
+    result = {
+        'date': target_date.strftime('%Y-%m-%d'),
+        'holiday': holiday_info if holiday_info and holiday_info['is_holiday'] else None,
+        'traditional_festivals': [],
+        'international_festivals': []
+    }
+    
+    # 检查国际节日和传统节日（复用 get_today_holidays 的逻辑）
+    month_day = target_date.strftime('%m-%d')
+    
+    # 国际节日字典（带Emoji）
+    international_festivals_dict = {
+        '01-01': {'name': '元旦', 'emoji': '🎊'},
+        '02-14': {'name': '情人节', 'emoji': '💕'},
+        '03-08': {'name': '国际妇女节', 'emoji': '👩'},
+        '03-12': {'name': '植树节', 'emoji': '🌳'},
+        '04-01': {'name': '愚人节', 'emoji': '🤡'},
+        '05-01': {'name': '国际劳动节', 'emoji': '💪'},
+        '05-04': {'name': '青年节', 'emoji': '🎓'},
+        '06-01': {'name': '国际儿童节', 'emoji': '🧒'},
+        '07-01': {'name': '建党节', 'emoji': '🎉'},
+        '08-01': {'name': '建军节', 'emoji': '🎖️'},
+        '09-10': {'name': '教师节', 'emoji': '📚'},
+        '10-01': {'name': '国庆节', 'emoji': '🇨🇳'},
+        '11-11': {'name': '光棍节 / 双11购物节', 'emoji': '1️⃣'},
+        '12-24': {'name': '平安夜', 'emoji': '🎄'},
+        '12-25': {'name': '圣诞节', 'emoji': '🎅'}
+    }
+    
+    # 传统节日（农历，2025年对应的公历日期）
+    traditional_festivals_dict = {
+        '01-28': {'name': '除夕', 'emoji': '🏮'},
+        '01-29': {'name': '春节', 'emoji': '🧨'},
+        '02-12': {'name': '元宵节', 'emoji': '🏮'},
+        '05-31': {'name': '端午节', 'emoji': '🐉'},
+        '10-06': {'name': '中秋节', 'emoji': '🥮'},
+        '10-29': {'name': '重阳节', 'emoji': '🍵'}
+    }
+    
+    # 添加国际节日（避免与法定节假日重复）
+    if month_day in international_festivals_dict:
+        festival = international_festivals_dict[month_day]
+        # 如果已经有法定节假日，检查名称是否重复
+        if not (result['holiday'] and result['holiday']['holiday_name'] == festival['name']):
+            result['international_festivals'].append({
+                'name': festival['name'],
+                'emoji': festival['emoji'],
+                'type': 'international'
+            })
+    
+    # 添加传统节日（避免与法定节假日重复）
+    if month_day in traditional_festivals_dict:
+        festival = traditional_festivals_dict[month_day]
+        # 如果已经有法定节假日，检查名称是否重复
+        if not (result['holiday'] and result['holiday']['holiday_name'] == festival['name']):
+            result['traditional_festivals'].append({
+                'name': festival['name'],
+                'emoji': festival['emoji'],
+                'type': 'traditional'
+            })
+    
+    return Response(result)
 
 
 @api_view(['GET'])
