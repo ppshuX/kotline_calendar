@@ -93,15 +93,16 @@ WSGI_APPLICATION = 'calendar_backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-# 判断是否使用共享数据库（Roamio MySQL）
-USE_SHARED_DB = os.environ.get('USE_SHARED_DB', 'False') == 'True'
+# 数据库配置
+# 环境变量控制：development (SQLite) 或 production (MySQL)
+ENVIRONMENT = os.environ.get('ENVIRONMENT', 'development')
 
-if USE_SHARED_DB:
-    # 使用 Roamio 的 MySQL 数据库（共享数据库方案）
+if ENVIRONMENT == 'production':
+    # 生产环境：使用 Ralendar 独立 MySQL 数据库
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'NAME': os.environ.get('DB_NAME', 'roamio_production'),
+            'NAME': os.environ.get('DB_NAME', 'ralendar_production'),  # Ralendar 独立数据库
             'USER': os.environ.get('DB_USER', 'ralendar_user'),
             'PASSWORD': os.environ.get('DB_PASSWORD', ''),
             'HOST': os.environ.get('DB_HOST', 'localhost'),
@@ -113,7 +114,7 @@ if USE_SHARED_DB:
         }
     }
 else:
-    # 使用本地 SQLite（开发环境）
+    # 开发环境：使用本地 SQLite
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
