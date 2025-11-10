@@ -395,7 +395,12 @@ class QQUserInline(admin.StackedInline):
     model = QQUser
     can_delete = False
     verbose_name = 'QQ 账号信息'
+    verbose_name_plural = 'QQ 账号信息'
     readonly_fields = ['openid', 'unionid', 'photo_url']
+    
+    def has_add_permission(self, request, obj=None):
+        """不允许在这里添加 QQ 账号"""
+        return False
 
 
 class CustomUserAdmin(BaseUserAdmin):
@@ -413,14 +418,17 @@ class CustomUserAdmin(BaseUserAdmin):
     
     def event_count(self, obj):
         """事件数量"""
-        count = obj.event_set.count()
-        if count > 0:
-            return format_html(
-                '<a href="/admin/api/event/?user__id__exact={}">{} 个</a>',
-                obj.id,
-                count
-            )
-        return '0'
+        try:
+            count = obj.events.count()
+            if count > 0:
+                return format_html(
+                    '<a href="/admin/api/event/?user__id__exact={}">{} 个</a>',
+                    obj.id,
+                    count
+                )
+            return '0'
+        except Exception as e:
+            return '—'
     event_count.short_description = '事件数'
     
     def date_joined_display(self, obj):
