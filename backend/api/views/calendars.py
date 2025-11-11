@@ -34,13 +34,21 @@ class PublicCalendarViewSet(viewsets.ReadOnlyModelViewSet):
         # 序列化事件数据
         events_data = []
         for event in events:
+            # 判断是否为全天事件（开始和结束时间都是整点且相差24小时）
+            is_all_day = False
+            if event.end_time:
+                time_diff = event.end_time - event.start_time
+                is_all_day = (time_diff.days >= 1 and 
+                             event.start_time.hour == 0 and 
+                             event.start_time.minute == 0)
+            
             events_data.append({
                 'title': event.title,
                 'description': event.description or '',
                 'location': event.location or '',
                 'start_time': event.start_time.isoformat(),
-                'end_time': event.end_time.isoformat(),
-                'all_day': event.all_day,
+                'end_time': event.end_time.isoformat() if event.end_time else event.start_time.isoformat(),
+                'all_day': is_all_day,
                 'reminder_minutes': event.reminder_minutes,
             })
         
