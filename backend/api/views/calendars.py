@@ -15,6 +15,50 @@ class PublicCalendarViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = PublicCalendarSerializer
     lookup_field = 'url_slug'
     
+    @action(detail=False, methods=['get'], url_path='available')
+    def available_calendars(self, request):
+        """获取所有可订阅的日历列表（Android使用）"""
+        calendars = PublicCalendar.objects.filter(is_public=True)
+        
+        # 日历元数据（颜色和图标）
+        calendar_metadata = {
+            'china-holidays': {
+                'color': '#FF6B6B',
+                'icon': '🏮'
+            },
+            'lunar-festivals': {
+                'color': '#4ECDC4',
+                'icon': '🎊'
+            },
+            'world-days': {
+                'color': '#95E1D3',
+                'icon': '🌍'
+            }
+        }
+        
+        calendars_data = []
+        for calendar in calendars:
+            metadata = calendar_metadata.get(calendar.url_slug, {
+                'color': '#667eea',
+                'icon': '📅'
+            })
+            
+            calendars_data.append({
+                'id': calendar.id,
+                'name': calendar.name,
+                'slug': calendar.url_slug,
+                'description': calendar.description,
+                'color': metadata['color'],
+                'icon': metadata['icon'],
+                'event_count': calendar.events.count(),
+                'is_public': calendar.is_public
+            })
+        
+        return Response({
+            'success': True,
+            'calendars': calendars_data
+        })
+    
     @action(detail=True, methods=['get'])
     def feed(self, request, url_slug=None):
         """返回 iCalendar 格式的日历订阅"""
