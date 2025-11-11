@@ -12,20 +12,22 @@ cd ~/kotlin_calendar || exit 1
 echo "📥 拉取代码..."
 git pull origin master
 
-# 3. 激活虚拟环境
-echo "🐍 激活虚拟环境..."
-source venv/bin/activate
-
-# 4. 进入后端目录
+# 3. 进入后端目录
 cd backend || exit 1
 
-# 5. 初始化公开日历数据
+# 4. 初始化公开日历数据
 echo "📅 初始化公开日历..."
-python manage.py init_public_calendars
+python3 manage.py init_public_calendars
 
-# 6. 重启服务
-echo "🔄 重启 Gunicorn 服务..."
-sudo systemctl restart gunicorn
+# 5. 重启服务（尝试多种方式）
+echo "🔄 重启服务..."
+if command -v systemctl &> /dev/null; then
+    sudo systemctl restart gunicorn
+elif command -v supervisorctl &> /dev/null; then
+    sudo supervisorctl restart gunicorn
+else
+    pkill -HUP gunicorn || echo "⚠️  请手动重启服务"
+fi
 
 echo "✅ 部署完成！"
 echo ""
