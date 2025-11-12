@@ -542,7 +542,23 @@ function handleSubscribe() {
   
   /* 日历高度减小 */
   .calendar-wrapper {
-    height: 450px;  /* 移动端日历更小 */
+    height: 380px;  /* 移动端日历更小 */
+  }
+  
+  /* 整体缩小间距 */
+  .calendar-page :deep(.fc) {
+    font-size: 13px;
+  }
+  
+  /* 日期单元格缩小 */
+  .calendar-page :deep(.fc-daygrid-day) {
+    min-height: 50px !important;
+  }
+  
+  /* 周标题缩小 */
+  .calendar-page :deep(.fc-col-header-cell) {
+    padding: 6px 2px;
+    font-size: 12px;
   }
 }
 

@@ -275,41 +275,42 @@ onMounted(() => {
 
 @media (max-width: 768px) {
   .weather-bar {
-    padding: 14px 16px;
-    margin-bottom: 16px;
+    padding: 10px 12px;
+    margin-bottom: 12px;
+    border-radius: 12px;
   }
 
   .weather-bar-content {
-    flex-direction: column;
-    gap: 12px;
-    align-items: flex-start;
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
   }
 
   .weather-main {
-    gap: 12px;
+    gap: 8px;
+    flex: 1;
   }
 
   .weather-icon {
-    font-size: 40px;
+    font-size: 32px;
   }
 
   .temperature {
-    font-size: 28px;
+    font-size: 22px;
   }
 
   .weather-desc {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .weather-secondary {
-    font-size: 13px;
-    gap: 8px;
+    font-size: 11px;
+    gap: 6px;
   }
 
   .weather-location {
-    font-size: 14px;
-    padding: 6px 12px;
-    align-self: flex-end;
+    font-size: 12px;
+    padding: 4px 10px;
   }
 
   .city-grid {
@@ -319,28 +320,29 @@ onMounted(() => {
 
 @media (max-width: 576px) {
   .weather-bar {
-    padding: 12px;
+    padding: 8px 10px;
   }
 
   .weather-icon {
-    font-size: 36px;
+    font-size: 28px;
   }
 
   .temperature {
-    font-size: 24px;
+    font-size: 20px;
   }
 
   .weather-desc {
-    font-size: 14px;
+    font-size: 13px;
   }
 
   .weather-secondary {
-    font-size: 12px;
-    gap: 6px;
+    font-size: 10px;
+    gap: 4px;
   }
 
   .weather-location {
-    font-size: 13px;
+    font-size: 11px;
+    padding: 3px 8px;
   }
 }
 </style>
