@@ -93,6 +93,18 @@ def get_weather(request):
         # 提取天气数据（取第一个结果）
         live = lives[0]
         
+        # 计算体感温度（简易公式）
+        try:
+            temp = float(live.get('temperature', 0))
+            humidity = float(live.get('humidity', 50))
+            # 简易体感温度公式：体感 = 实际温度 - (风速影响) + (湿度影响)
+            # 高湿度会让体感更热/更冷
+            humidity_effect = (humidity - 50) * 0.05  # 湿度偏离50%的影响
+            feels_like = temp + humidity_effect
+            feels_like_str = f"{int(round(feels_like))}"
+        except (ValueError, TypeError):
+            feels_like_str = live.get('temperature', '--')  # 降级使用实际温度
+        
         weather_data = {
             'location': live.get('city', location),  # 城市名称
             'temperature': live.get('temperature', '--'),  # 温度
@@ -100,7 +112,7 @@ def get_weather(request):
             'windDir': live.get('winddirection', '--'),  # 风向
             'windScale': live.get('windpower', '--'),  # 风力等级
             'humidity': live.get('humidity', '--'),  # 相对湿度
-            'feelsLike': '--',  # 高德不提供体感温度
+            'feelsLike': feels_like_str,  # 计算的体感温度
             'updateTime': live.get('reporttime', '')  # 更新时间
         }
         

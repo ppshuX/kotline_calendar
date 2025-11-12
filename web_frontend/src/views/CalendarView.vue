@@ -148,7 +148,10 @@ const loadHolidaysForSelectedDate = async (dateStr) => {
     return
   }
   
-  const holidays = await getHolidaysForDate(dateStr)
+  // 提取日期部分（YYYY-MM-DD），去掉时间和时区
+  const dateOnly = dateStr.split('T')[0]
+  
+  const holidays = await getHolidaysForDate(dateOnly)
   todayHolidays.value = holidays
 }
 
