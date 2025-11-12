@@ -39,6 +39,11 @@
         <i class="bi bi-plus-lg"></i>
       </button>
       
+      <!-- AI创建按钮：登录后显示 -->
+      <button v-if="isLoggedIn" class="floating-ai-btn" @click="showAIDialog = true">
+        <i class="bi bi-magic"></i>
+      </button>
+      
       <!-- 未登录引导按钮 -->
       <button v-else class="floating-login-btn" @click="router.push('/login')">
         <i class="bi bi-box-arrow-in-right"></i>
@@ -59,6 +64,11 @@
       @edit="editEvent"
       @delete="deleteEvent"
     />
+
+    <AIEventDialog
+      v-model="showAIDialog"
+      @create="handleAICreate"
+    />
   </div>
 </template>
 
@@ -73,6 +83,7 @@ import WeatherBar from '../components/calendar/WeatherBar.vue'
 import EventDialog from '../components/calendar/EventDialog.vue'
 import EventDetail from '../components/calendar/EventDetail.vue'
 import CalendarSidebar from '../components/calendar/CalendarSidebar.vue'
+import AIEventDialog from '../components/calendar/AIEventDialog.vue'
 import { useCalendarEvents } from '../composables/useCalendarEvents'
 import { useHolidayData } from '../composables/useHolidayData'
 import { useSidebarTabs } from '../composables/useSidebarTabs'
@@ -171,6 +182,9 @@ const { activeTab, tabs } = useSidebarTabs('fortune', isLoggedIn)
 // 选中的日期（用于过滤日程列表）
 const selectedDateForFilter = ref('')
 const selectedDateLabel = ref('')
+
+// AI创建日程对话框
+const showAIDialog = ref(false)
 
 // 注意：节日数据在 onMounted 中统一加载，避免重复调用
 
@@ -466,6 +480,31 @@ function handleLogout() {
 function handleSubscribe() {
   console.info('subscribe action placeholder')
 }
+
+// 处理AI创建的日程
+const handleAICreate = async (eventData) => {
+  if (!checkLoginStatus()) {
+    return
+  }
+  
+  // 构建完整的日程数据
+  const newEvent = {
+    title: eventData.title,
+    start_time: eventData.time 
+      ? `${eventData.date}T${eventData.time}:00` 
+      : `${eventData.date}T09:00:00`,  // 默认早上9点
+    end_time: eventData.time 
+      ? `${eventData.date}T${eventData.time}:00` 
+      : `${eventData.date}T10:00:00`,  // 默认1小时
+    description: eventData.description || '',
+    location: '',
+    all_day: !eventData.time,  // 没有时间就是全天事件
+    reminder_minutes: eventData.reminder_minutes || 15
+  }
+  
+  // 调用保存方法
+  await saveEvent(newEvent)
+}
 </script>
 
 <style>
@@ -609,6 +648,36 @@ function handleSubscribe() {
 }
 
 .floating-add-btn:active {
+  transform: scale(0.95);
+}
+
+/* AI创建按钮 */
+.floating-ai-btn {
+  position: fixed;
+  right: 24px;
+  bottom: 100px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f093fb, #f5576c);
+  color: white;
+  border: none;
+  font-size: 22px;
+  box-shadow: 0 6px 20px rgba(245, 87, 108, 0.4);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.floating-ai-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 24px rgba(245, 87, 108, 0.5);
+}
+
+.floating-ai-btn:active {
   transform: scale(0.95);
 }
 

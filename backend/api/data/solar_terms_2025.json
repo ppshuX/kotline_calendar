@@ -1,30 +1,149 @@
 {
-  "year": 2025,
-  "solar_terms": [
-    {"date": "01-05", "name": "小寒", "description": "天气寒冷，宜养生保暖", "advice": "适合静养、读书、整理"},
-    {"date": "01-20", "name": "大寒", "description": "一年中最冷的时节", "advice": "注意保暖，少出远门"},
-    {"date": "02-03", "name": "立春", "description": "春季开始，万物复苏", "advice": "适合规划新计划、开业、求职"},
-    {"date": "02-18", "name": "雨水", "description": "降雨增多，气温回升", "advice": "适合播种、开始新项目"},
-    {"date": "03-05", "name": "惊蛰", "description": "春雷惊醒蛰伏的昆虫", "advice": "万物生长，适合行动、拓展"},
-    {"date": "03-20", "name": "春分", "description": "昼夜平分，春意盎然", "advice": "适合平衡规划、调整状态"},
-    {"date": "04-04", "name": "清明", "description": "天清地明，祭祖扫墓", "advice": "适合祭祀、缅怀、踏青"},
-    {"date": "04-20", "name": "谷雨", "description": "雨生百谷，播种佳时", "advice": "适合耕种、创业、学习新技能"},
-    {"date": "05-05", "name": "立夏", "description": "夏季开始，气温升高", "advice": "适合外出活动、社交聚会"},
-    {"date": "05-21", "name": "小满", "description": "麦类作物籽粒饱满", "advice": "适合巩固成果、积累经验"},
-    {"date": "06-05", "name": "芒种", "description": "有芒作物成熟", "advice": "适合收获、总结、展望"},
-    {"date": "06-21", "name": "夏至", "description": "白昼最长，阳气最盛", "advice": "适合进取、拓展、运动"},
-    {"date": "07-07", "name": "小暑", "description": "天气炎热，注意防暑", "advice": "避免剧烈活动，宜静心养性"},
-    {"date": "07-22", "name": "大暑", "description": "一年中最热的时节", "advice": "注意防暑降温，少外出"},
-    {"date": "08-07", "name": "立秋", "description": "秋季开始，暑去凉来", "advice": "适合收获、总结、规划"},
-    {"date": "08-23", "name": "处暑", "description": "炎热结束，秋高气爽", "advice": "适合户外活动、旅行"},
-    {"date": "09-07", "name": "白露", "description": "天气转凉，露水增多", "advice": "注意添衣，宜养生"},
-    {"date": "09-23", "name": "秋分", "description": "昼夜平分，丰收时节", "advice": "适合收获成果、分享喜悦"},
-    {"date": "10-08", "name": "寒露", "description": "露水将凝，气温下降", "advice": "注意保暖，宜整理总结"},
-    {"date": "10-23", "name": "霜降", "description": "天气渐冷，初霜出现", "advice": "注意防寒，适合储备"},
-    {"date": "11-07", "name": "立冬", "description": "冬季开始，万物收藏", "advice": "适合休整、规划、学习"},
-    {"date": "11-22", "name": "小雪", "description": "开始降雪，气温降低", "advice": "宜静不宜动，适合思考"},
-    {"date": "12-07", "name": "大雪", "description": "降雪增多，严寒将至", "advice": "注意保暖，少外出"},
-    {"date": "12-21", "name": "冬至", "description": "阴极阳生，白昼最短", "advice": "适合休养生息，为来年蓄力"}
-  ]
+    "year": 2025,
+    "solar_terms": [
+        {
+            "date": "01-05",
+            "name": "小寒",
+            "description": "天气寒冷，宜养生保暖",
+            "advice": "适合静养、读书、整理"
+        },
+        {
+            "date": "01-20",
+            "name": "大寒",
+            "description": "一年中最冷的时节",
+            "advice": "注意保暖，少出远门"
+        },
+        {
+            "date": "02-03",
+            "name": "立春",
+            "description": "春季开始，万物复苏",
+            "advice": "适合规划新计划、开业、求职"
+        },
+        {
+            "date": "02-18",
+            "name": "雨水",
+            "description": "降雨增多，气温回升",
+            "advice": "适合播种、开始新项目"
+        },
+        {
+            "date": "03-05",
+            "name": "惊蛰",
+            "description": "春雷惊醒蛰伏的昆虫",
+            "advice": "万物生长，适合行动、拓展"
+        },
+        {
+            "date": "03-20",
+            "name": "春分",
+            "description": "昼夜平分，春意盎然",
+            "advice": "适合平衡规划、调整状态"
+        },
+        {
+            "date": "04-04",
+            "name": "清明",
+            "description": "天清地明，祭祖扫墓",
+            "advice": "适合祭祀、缅怀、踏青"
+        },
+        {
+            "date": "04-20",
+            "name": "谷雨",
+            "description": "雨生百谷，播种佳时",
+            "advice": "适合耕种、创业、学习新技能"
+        },
+        {
+            "date": "05-05",
+            "name": "立夏",
+            "description": "夏季开始，气温升高",
+            "advice": "适合外出活动、社交聚会"
+        },
+        {
+            "date": "05-21",
+            "name": "小满",
+            "description": "麦类作物籽粒饱满",
+            "advice": "适合巩固成果、积累经验"
+        },
+        {
+            "date": "06-05",
+            "name": "芒种",
+            "description": "有芒作物成熟",
+            "advice": "适合收获、总结、展望"
+        },
+        {
+            "date": "06-21",
+            "name": "夏至",
+            "description": "白昼最长，阳气最盛",
+            "advice": "适合进取、拓展、运动"
+        },
+        {
+            "date": "07-07",
+            "name": "小暑",
+            "description": "天气炎热，注意防暑",
+            "advice": "避免剧烈活动，宜静心养性"
+        },
+        {
+            "date": "07-22",
+            "name": "大暑",
+            "description": "一年中最热的时节",
+            "advice": "注意防暑降温，少外出"
+        },
+        {
+            "date": "08-07",
+            "name": "立秋",
+            "description": "秋季开始，暑去凉来",
+            "advice": "适合收获、总结、规划"
+        },
+        {
+            "date": "08-23",
+            "name": "处暑",
+            "description": "炎热结束，秋高气爽",
+            "advice": "适合户外活动、旅行"
+        },
+        {
+            "date": "09-07",
+            "name": "白露",
+            "description": "天气转凉，露水增多",
+            "advice": "注意添衣，宜养生"
+        },
+        {
+            "date": "09-23",
+            "name": "秋分",
+            "description": "昼夜平分，丰收时节",
+            "advice": "适合收获成果、分享喜悦"
+        },
+        {
+            "date": "10-08",
+            "name": "寒露",
+            "description": "露水将凝，气温下降",
+            "advice": "注意保暖，宜整理总结"
+        },
+        {
+            "date": "10-23",
+            "name": "霜降",
+            "description": "天气渐冷，初霜出现",
+            "advice": "注意防寒，适合储备"
+        },
+        {
+            "date": "11-07",
+            "name": "立冬",
+            "description": "冬季开始，万物收藏",
+            "advice": "适合休整、规划、学习"
+        },
+        {
+            "date": "11-22",
+            "name": "小雪",
+            "description": "开始降雪，气温降低",
+            "advice": "宜静不宜动，适合思考"
+        },
+        {
+            "date": "12-07",
+            "name": "大雪",
+            "description": "降雪增多，严寒将至",
+            "advice": "注意保暖，少外出"
+        },
+        {
+            "date": "12-21",
+            "name": "冬至",
+            "description": "阴极阳生，白昼最短",
+            "advice": "适合休养生息，为来年蓄力"
+        }
+    ]
 }
-
