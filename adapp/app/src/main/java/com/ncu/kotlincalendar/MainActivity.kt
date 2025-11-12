@@ -16,6 +16,7 @@ import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import com.google.android.material.textfield.TextInputEditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -73,6 +74,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnNextMonth: ImageButton
     private lateinit var btnViewSwitch: Button
     private lateinit var btnAddEvent: Button
+    private lateinit var btnAICreate: Button
     private lateinit var btnSubscribe: Button
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: EventAdapter
@@ -179,6 +181,7 @@ class MainActivity : AppCompatActivity() {
         btnNextMonth = findViewById(R.id.btnNextMonth)
         btnViewSwitch = findViewById(R.id.btnViewSwitch)
         btnAddEvent = findViewById(R.id.btnAddEvent)
+        btnAICreate = findViewById(R.id.btnAICreate)
         btnSubscribe = findViewById(R.id.btnSubscribe)
         recyclerView = findViewById(R.id.recyclerView)
         tabLayout = findViewById(R.id.tabLayout)
@@ -1561,11 +1564,13 @@ class MainActivity : AppCompatActivity() {
             val event = Event(
                 id = 0,  // 新事件ID为0
                 title = title,
-                dateTime = Instant.parse(dateTime).toEpochMilli(),
                 description = description,
-                location = "",
-                isSubscribed = false,
-                calendarName = null
+                dateTime = Instant.parse(dateTime).toEpochMilli(),
+                reminderMinutes = eventData.reminder_minutes ?: 15,
+                subscriptionId = null,  // 用户创建的日程
+                locationName = "",
+                latitude = 0.0,
+                longitude = 0.0
             )
             
             // 保存到数据库
