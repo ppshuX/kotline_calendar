@@ -5,7 +5,7 @@ import json
 import logging
 from datetime import datetime, timedelta
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from django.conf import settings
 import requests
@@ -74,7 +74,7 @@ def call_qwen_api(prompt: str, system_prompt: str = None) -> str:
 
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])  # 临时允许匿名访问（开发测试阶段）
 def parse_event_from_text(request):
     """
     解析自然语言输入为日程事件
@@ -165,7 +165,7 @@ def parse_event_from_text(request):
 
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])  # 临时允许匿名访问（开发测试阶段）
 def summarize_schedule(request):
     """
     智能总结日程
@@ -233,7 +233,7 @@ def summarize_schedule(request):
 
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])  # 临时允许匿名访问（开发测试阶段）
 def chat_with_assistant(request):
     """
     对话式日程管理
