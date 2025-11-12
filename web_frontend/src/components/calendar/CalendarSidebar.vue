@@ -78,9 +78,10 @@ const currentTab = computed({
   padding: 20px;
   border-radius: 16px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-  min-height: 600px;
+  height: 650px;  /* 固定高度 */
   display: flex;
   flex-direction: column;
+  overflow: hidden;  /* 外部不滚动 */
 }
 
 .tab-content {
@@ -93,26 +94,39 @@ const currentTab = computed({
   margin-top: 12px;
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
   border: 1px solid rgba(102, 126, 234, 0.1);
+  overflow-y: auto;  /* 内部可滚动 */
+  overflow-x: hidden;
 }
 
 @media (max-width: 992px) {
   .right-sidebar {
-    min-height: 400px;
+    height: 500px;
     margin-top: 16px;
   }
 }
 
 @media (max-width: 768px) {
   .right-sidebar {
-    padding: 16px;
-    margin-top: 20px;
+    height: 450px;
+    padding: 14px;
+    margin-top: 16px;
+  }
+  
+  .tab-content {
+    padding: 12px;
+    font-size: 13px;
   }
 }
 
 @media (max-width: 576px) {
   .right-sidebar {
+    height: 400px;
     padding: 12px;
-    min-height: 300px;
+  }
+  
+  .tab-content {
+    padding: 10px;
+    font-size: 12px;
   }
 }
 </style>

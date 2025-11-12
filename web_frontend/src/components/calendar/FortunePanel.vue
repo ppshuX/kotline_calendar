@@ -353,26 +353,16 @@ onMounted(() => {
 }
 
 @media (max-width: 768px) {
-  .sidebar-header h4 {
-    font-size: 18px;
-  }
-  
-  .fortune-card {
-    padding: 14px;
-  }
-  
-  .card-icon {
-    font-size: 28px;
-  }
-  
-  .card-title {
-    font-size: 15px;
-  }
-}
-
-@media (max-width: 576px) {
   .fortune-content {
     gap: 12px;
+  }
+  
+  .sidebar-header h4 {
+    font-size: 16px;
+  }
+  
+  .sidebar-header p {
+    font-size: 11px;
   }
   
   .fortune-card {
@@ -386,24 +376,56 @@ onMounted(() => {
   .card-title {
     font-size: 14px;
   }
+}
+
+@media (max-width: 576px) {
+  .fortune-content {
+    gap: 10px;
+  }
+  
+  .sidebar-header h4 {
+    font-size: 15px;
+  }
+  
+  .sidebar-header p {
+    font-size: 10px;
+  }
+  
+  .fortune-card {
+    padding: 10px;
+  }
+  
+  .card-icon {
+    font-size: 20px;
+    margin-bottom: 6px;
+  }
+  
+  .card-title {
+    font-size: 13px;
+    margin-bottom: 8px;
+  }
   
   .stars {
-    font-size: 18px;
+    font-size: 16px;
   }
   
   .score-value {
-    font-size: 16px;
+    font-size: 14px;
+  }
+  
+  .fortune-desc {
+    font-size: 12px;
   }
   
   .almanac-label,
   .almanac-text,
   .lucky-label,
   .tip-text {
-    font-size: 13px;
+    font-size: 12px;
   }
   
   .lucky-value {
-    font-size: 14px;
+    font-size: 13px;
   }
 }
 </style>

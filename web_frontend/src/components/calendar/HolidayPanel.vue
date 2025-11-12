@@ -1,11 +1,20 @@
 <template>
   <div class="holiday-content">
-    <div class="sidebar-header text-center mb-3">
-      <h4>🎉 节日信息</h4>
-      <p class="text-secondary small mb-0">
-        {{ displayDateLabel }}
-      </p>
-    </div>
+    <!-- 节日详情页 -->
+    <FestivalDetail 
+      v-if="showingDetail" 
+      :festival="selectedFestival"
+      @close="showingDetail = false"
+    />
+    
+    <!-- 节日列表页 -->
+    <div v-else>
+      <div class="sidebar-header text-center mb-3">
+        <h4>🎉 节日信息</h4>
+        <p class="text-secondary small mb-0">
+          {{ displayDateLabel }}
+        </p>
+      </div>
 
     <!-- 农历信息卡片：总是显示 -->
     <div class="holiday-card lunar">
@@ -51,12 +60,17 @@
         <div class="holiday-type">享受平凡的一天 ☀️</div>
       </div>
     </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
-import { ElMessage } from 'element-plus'
+import { ref, computed } from 'vue'
+import FestivalDetail from './FestivalDetail.vue'
+
+// 详情页状态
+const showingDetail = ref(false)
+const selectedFestival = ref(null)
 
 const props = defineProps({
   todayHolidays: {
@@ -106,15 +120,9 @@ const getFestivalColorClass = (index) => {
 const showFestivalDetail = (festival) => {
   if (!festival || !festival.name) return
   
-  ElMessage({
-    message: `${festival.emoji || '🎊'} ${festival.name}`,
-    type: 'info',
-    duration: 2000,
-    customClass: 'festival-message'
-  })
-  
-  // TODO: 未来可以改成弹出详细信息对话框
-  console.log('节日详情:', festival)
+  selectedFestival.value = festival
+  showingDetail.value = true
+  console.log('显示节日详情:', festival)
 }
 </script>
 
@@ -122,10 +130,8 @@ const showFestivalDetail = (festival) => {
 .holiday-content {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
   height: 100%;
-  overflow-y: auto;
-  padding-right: 8px;
 }
 
 .sidebar-header h4 {
@@ -251,61 +257,66 @@ const showFestivalDetail = (festival) => {
 }
 
 @media (max-width: 768px) {
-  .sidebar-header h4 {
-    font-size: 18px;
-  }
-  
-  .section-title {
-    font-size: 15px;
-  }
-  
-  .holiday-card {
-    padding: 14px;
-    gap: 12px;
-    margin-bottom: 12px;
-  }
-
-  .holiday-icon {
-    font-size: 28px;
-  }
-
-  .holiday-name {
-    font-size: 16px;
-  }
-  
-  .holiday-type {
-    font-size: 13px;
-  }
-}
-
-@media (max-width: 576px) {
   .holiday-content {
-    gap: 16px;
+    gap: 12px;
   }
   
   .sidebar-header h4 {
     font-size: 16px;
   }
   
-  .section-title {
-    font-size: 14px;
+  .sidebar-header p {
+    font-size: 11px;
   }
   
   .holiday-card {
     padding: 12px;
     gap: 10px;
+    margin-bottom: 10px;
   }
-  
+
   .holiday-icon {
     font-size: 24px;
   }
-  
+
   .holiday-name {
-    font-size: 15px;
+    font-size: 14px;
   }
   
   .holiday-type {
     font-size: 12px;
+  }
+}
+
+@media (max-width: 576px) {
+  .holiday-content {
+    gap: 10px;
+  }
+  
+  .sidebar-header h4 {
+    font-size: 15px;
+  }
+  
+  .sidebar-header p {
+    font-size: 10px;
+  }
+  
+  .holiday-card {
+    padding: 10px;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  
+  .holiday-icon {
+    font-size: 20px;
+  }
+  
+  .holiday-name {
+    font-size: 13px;
+  }
+  
+  .holiday-type {
+    font-size: 11px;
   }
 }
 </style>
