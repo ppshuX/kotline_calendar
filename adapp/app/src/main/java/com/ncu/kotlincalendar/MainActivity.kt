@@ -1521,6 +1521,14 @@ class MainActivity : AppCompatActivity() {
                             btnParse.visibility = View.GONE
                             btnConfirm.visibility = View.VISIBLE
                             
+                            // 确保按钮可见（延迟执行以等待布局完成）
+                            dialogView.postDelayed({
+                                btnConfirm.requestFocus()
+                                // 滚动到底部
+                                val scrollView = dialogView.parent as? android.widget.ScrollView
+                                scrollView?.fullScroll(View.FOCUS_DOWN)
+                            }, 100)
+                            
                         } else {
                             // 解析失败
                             tvError.text = response.error ?: "AI解析失败，请尝试更清晰的描述"
