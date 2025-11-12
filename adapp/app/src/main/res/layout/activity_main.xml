@@ -328,6 +328,131 @@
                     android:minHeight="350dp"
                     android:visibility="visible" />
 
+                <!-- 天气信息 -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/weatherCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="2dp"
+                    app:strokeWidth="0dp"
+                    android:visibility="gone">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp"
+                        android:background="@drawable/gradient_weather_bg">
+
+                        <!-- 标题栏 -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginBottom="12dp">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="🌤️ 今日天气"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                android:textColor="#FFFFFF" />
+
+                            <TextView
+                                android:id="@+id/tvWeatherLocation"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="北京"
+                                android:textSize="14sp"
+                                android:textColor="#FFFFFF"
+                                android:alpha="0.9" />
+
+                        </LinearLayout>
+
+                        <!-- 天气主体信息 -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <!-- 温度 -->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/tvTemperature"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="25°"
+                                    android:textSize="48sp"
+                                    android:textStyle="bold"
+                                    android:textColor="#FFFFFF" />
+
+                                <TextView
+                                    android:id="@+id/tvWeatherDesc"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="晴"
+                                    android:textSize="16sp"
+                                    android:textColor="#FFFFFF"
+                                    android:layout_marginTop="4dp"
+                                    android:alpha="0.9" />
+
+                            </LinearLayout>
+
+                            <!-- 详细信息 -->
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="end">
+
+                                <TextView
+                                    android:id="@+id/tvFeelsLike"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="体感 23°"
+                                    android:textSize="14sp"
+                                    android:textColor="#FFFFFF"
+                                    android:alpha="0.8"
+                                    android:layout_marginBottom="4dp" />
+
+                                <TextView
+                                    android:id="@+id/tvHumidity"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="湿度 65%"
+                                    android:textSize="14sp"
+                                    android:textColor="#FFFFFF"
+                                    android:alpha="0.8"
+                                    android:layout_marginBottom="4dp" />
+
+                                <TextView
+                                    android:id="@+id/tvWind"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="东南风 3级"
+                                    android:textSize="14sp"
+                                    android:textColor="#FFFFFF"
+                                    android:alpha="0.8" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
                 <!-- 节日信息 -->
                 <LinearLayout
                     android:id="@+id/scrollViewHoliday"
