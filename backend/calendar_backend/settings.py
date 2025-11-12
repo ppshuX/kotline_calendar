@@ -237,3 +237,6 @@ REMINDER_ADVANCE_MINUTES = int(os.environ.get('REMINDER_ADVANCE_MINUTES', 15))  
 
 # ==================== 百度地图配置 ====================
 BAIDU_MAP_AK = os.environ.get('BAIDU_MAP_AK', '')  # 百度地图 API Key
+
+# ==================== AI 助手配置 ====================
+QWEN_API_KEY = os.environ.get('QWEN_API_KEY', '')  # 通义千问 API Key
