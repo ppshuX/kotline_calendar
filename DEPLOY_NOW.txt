@@ -1,0 +1,38 @@
+# ==================== 快速部署指令 ====================
+# 复制以下所有命令，一次性粘贴到SSH终端执行
+# ========================================================
+
+# 进入后端目录
+cd ~/kotlin_calendar/backend
+
+# 拉取最新代码
+git pull origin master
+
+# 重启uWSGI（让修改生效）
+pkill -f uwsgi && sleep 2 && uwsgi --ini scripts/uwsgi.ini --daemonize /tmp/uwsgi.log
+
+# 等待2秒
+sleep 2
+
+# 测试农历API
+echo "========== 测试农历API ==========="
+curl "https://app7626.acapp.acwing.com.cn/api/check-holiday/?date=2025-11-12"
+
+echo ""
+echo ""
+
+# 测试中秋节详情API（2025年中秋节=10月6日）
+echo "========== 测试中秋节详情API ==========="
+curl "https://app7626.acapp.acwing.com.cn/api/festivals/detail/?date=2025-10-06"
+
+echo ""
+echo ""
+
+# 测试光棍节详情API
+echo "========== 测试光棍节详情API ==========="
+curl "https://app7626.acapp.acwing.com.cn/api/festivals/detail/?date=2025-11-11"
+
+echo ""
+echo ""
+echo "✅ 部署完成！如果上面3个API都返回正确数据，说明部署成功！"
+
