@@ -1,6 +1,6 @@
 """
 工具类路由
-包括：农历转换、节假日查询
+包括：农历转换、节假日查询、AI助手
 """
 from django.urls import path
 from ..views import (
@@ -8,6 +8,11 @@ from ..views import (
     get_holidays,
     check_holiday,
     get_today_holidays,
+)
+from ..views.ai_assistant import (
+    parse_event_from_text,
+    summarize_schedule,
+    chat_with_assistant,
 )
 
 urlpatterns = [
@@ -18,5 +23,10 @@ urlpatterns = [
     path('holidays/', get_holidays, name='get_holidays'),
     path('holidays/check/', check_holiday, name='check_holiday'),
     path('holidays/today/', get_today_holidays, name='get_today_holidays'),
+    
+    # AI助手
+    path('ai/parse-event/', parse_event_from_text, name='ai_parse_event'),
+    path('ai/summarize/', summarize_schedule, name='ai_summarize'),
+    path('ai/chat/', chat_with_assistant, name='ai_chat'),
 ]
 
