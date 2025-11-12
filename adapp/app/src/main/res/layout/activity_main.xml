@@ -366,27 +366,12 @@
 
                     </LinearLayout>
 
-                    <!-- 节日内容卡片 -->
-                    <com.google.android.material.card.MaterialCardView
+                    <!-- 节日卡片容器（动态添加） -->
+                    <LinearLayout
+                        android:id="@+id/festivalCardsContainer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:cardBackgroundColor="#F3E5F5"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="2dp"
-                        app:contentPadding="16dp">
-
-                        <TextView
-                            android:id="@+id/tvHolidayContent"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="加载中..."
-                            android:textSize="20sp"
-                            android:textColor="#4A148C"
-                            android:lineSpacingExtra="8dp"
-                            android:minHeight="80dp"
-                            android:gravity="top" />
-
-                    </com.google.android.material.card.MaterialCardView>
+                        android:orientation="vertical" />
 
                 </LinearLayout>
 
