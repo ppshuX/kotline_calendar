@@ -952,8 +952,11 @@ class MainActivity : AppCompatActivity() {
                 loadHolidayInfo(date)
             }
             2 -> {
-                // ✅ 使用 FortuneManager 加载今日运势
-                fortuneManager.loadFortune()
+                // ✅ 使用 FortuneManager 加载今日运势（结合天气）
+                fortuneManager.loadFortune(
+                    weatherManager.currentWeather,
+                    weatherManager.currentTemperature
+                )
             }
         }
     }
@@ -1318,8 +1321,11 @@ class MainActivity : AppCompatActivity() {
             0 -> loadEventsForSelectedDate(millis)
             1 -> loadHolidayInfo(millis)
             2 -> {
-                // ✅ 使用 FortuneManager 加载今日运势
-                fortuneManager.loadFortune()
+                // ✅ 使用 FortuneManager 加载今日运势（结合天气）
+                fortuneManager.loadFortune(
+                    weatherManager.currentWeather,
+                    weatherManager.currentTemperature
+                )
             }
         }
     }

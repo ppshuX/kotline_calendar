@@ -46,6 +46,12 @@ class WeatherManager(
     private val sharedPreferences: SharedPreferences = 
         context.getSharedPreferences("weather_prefs", Context.MODE_PRIVATE)
     
+    // 当前天气数据（供其他Manager使用）
+    var currentWeather: String? = null
+        private set
+    var currentTemperature: String? = null
+        private set
+    
     companion object {
         private const val TAG = "WeatherManager"
         private const val PREF_CITY = "selected_city"
@@ -75,6 +81,10 @@ class WeatherManager(
                 withContext(Dispatchers.Main) {
                     if (response.success && response.data != null) {
                         val weather = response.data
+                        
+                        // 保存当前天气数据
+                        currentWeather = weather.weather
+                        currentTemperature = weather.temperature
                         
                         // 更新UI并显示天气卡片
                         tvWeatherLocation.text = weather.location
