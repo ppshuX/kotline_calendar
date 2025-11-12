@@ -30,8 +30,23 @@
             android:layout_weight="1"
             android:layout_marginEnd="2dp"
             android:text="➕ 添加"
-            android:textSize="13sp"
+            android:textSize="12sp"
             app:cornerRadius="8dp"
+            app:iconGravity="textStart"
+            app:iconPadding="4dp" />
+
+        <!-- AI创建日程按钮 -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAICreate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="2dp"
+            android:text="✨ AI"
+            android:textSize="12sp"
+            app:cornerRadius="8dp"
+            app:backgroundTint="#f093fb"
             app:iconGravity="textStart"
             app:iconPadding="4dp" />
 

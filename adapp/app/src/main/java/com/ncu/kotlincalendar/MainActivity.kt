@@ -307,6 +307,11 @@ class MainActivity : AppCompatActivity() {
             showAddEventDialog()
         }
         
+        // 点击"AI创建日程"按钮
+        btnAICreate.setOnClickListener {
+            showAIEventDialog()
+        }
+        
         // 点击"订阅网络日历"按钮 - 打开订阅管理界面
         btnSubscribe.setOnClickListener {
             val intent = android.content.Intent(this, SubscriptionsActivity::class.java)
@@ -1420,5 +1425,164 @@ class MainActivity : AppCompatActivity() {
             putExtra("festivalDate", date)
         }
         startActivity(intent)
+    }
+    
+    /**
+     * 显示添加日程对话框（传统方式）
+     */
+    private fun showAddEventDialog() {
+        Toast.makeText(this, "传统添加日程功能（待实现）", Toast.LENGTH_SHORT).show()
+    }
+    
+    /**
+     * 显示AI创建日程对话框
+     */
+    private fun showAIEventDialog() {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_ai_event, null)
+        val dialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .create()
+        
+        // 获取视图元素
+        val etAIInput = dialogView.findViewById<TextInputEditText>(R.id.etAIInput)
+        val llParsedResult = dialogView.findViewById<LinearLayout>(R.id.llParsedResult)
+        val llLoading = dialogView.findViewById<LinearLayout>(R.id.llLoading)
+        val tvError = dialogView.findViewById<TextView>(R.id.tvError)
+        val btnCancel = dialogView.findViewById<Button>(R.id.btnCancel)
+        val btnParse = dialogView.findViewById<Button>(R.id.btnParse)
+        val btnConfirm = dialogView.findViewById<Button>(R.id.btnConfirm)
+        
+        val tvParsedTitle = dialogView.findViewById<TextView>(R.id.tvParsedTitle)
+        val tvParsedDate = dialogView.findViewById<TextView>(R.id.tvParsedDate)
+        val tvParsedTime = dialogView.findViewById<TextView>(R.id.tvParsedTime)
+        val tvParsedDesc = dialogView.findViewById<TextView>(R.id.tvParsedDesc)
+        val llParsedTime = dialogView.findViewById<LinearLayout>(R.id.llParsedTime)
+        val llParsedDesc = dialogView.findViewById<LinearLayout>(R.id.llParsedDesc)
+        
+        var parsedEventData: com.ncu.kotlincalendar.api.models.ParsedEvent? = null
+        
+        // 取消按钮
+        btnCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+        
+        // AI解析按钮
+        btnParse.setOnClickListener {
+            val userInput = etAIInput.text.toString().trim()
+            
+            if (userInput.isEmpty()) {
+                Toast.makeText(this, "请输入日程描述", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            
+            // 显示加载状态
+            llLoading.visibility = View.VISIBLE
+            llParsedResult.visibility = View.GONE
+            tvError.visibility = View.GONE
+            btnParse.isEnabled = false
+            
+            // 调用AI接口
+            lifecycleScope.launch(Dispatchers.IO) {
+                try {
+                    val request = com.ncu.kotlincalendar.api.models.ParseEventRequest(userInput)
+                    val response = RetrofitClient.api.parseEventFromText(request)
+                    
+                    withContext(Dispatchers.Main) {
+                        llLoading.visibility = View.GONE
+                        btnParse.isEnabled = true
+                        
+                        if (response.success && response.event != null) {
+                            // 解析成功
+                            val event = response.event
+                            parsedEventData = event
+                            
+                            tvParsedTitle.text = event.title
+                            tvParsedDate.text = event.date
+                            
+                            if (event.time != null) {
+                                tvParsedTime.text = event.time
+                                llParsedTime.visibility = View.VISIBLE
+                            } else {
+                                llParsedTime.visibility = View.GONE
+                            }
+                            
+                            if (!event.description.isNullOrEmpty()) {
+                                tvParsedDesc.text = event.description
+                                llParsedDesc.visibility = View.VISIBLE
+                            } else {
+                                llParsedDesc.visibility = View.GONE
+                            }
+                            
+                            // 显示解析结果
+                            llParsedResult.visibility = View.VISIBLE
+                            btnParse.visibility = View.GONE
+                            btnConfirm.visibility = View.VISIBLE
+                            
+                        } else {
+                            // 解析失败
+                            tvError.text = response.error ?: "AI解析失败，请尝试更清晰的描述"
+                            tvError.visibility = View.VISIBLE
+                        }
+                    }
+                    
+                } catch (e: Exception) {
+                    withContext(Dispatchers.Main) {
+                        llLoading.visibility = View.GONE
+                        btnParse.isEnabled = true
+                        tvError.text = "网络错误：${e.message}"
+                        tvError.visibility = View.VISIBLE
+                    }
+                }
+            }
+        }
+        
+        // 确认创建按钮
+        btnConfirm.setOnClickListener {
+            val eventData = parsedEventData
+            if (eventData == null) {
+                Toast.makeText(this, "没有解析结果", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            
+            // 构建事件数据
+            val title = eventData.title
+            val date = eventData.date
+            val time = eventData.time
+            val description = eventData.description ?: ""
+            
+            // 组装日期时间
+            val dateTime = if (time != null) {
+                "${date}T${time}:00"
+            } else {
+                "${date}T09:00:00"  // 默认早上9点
+            }
+            
+            // 创建Event对象
+            val event = Event(
+                id = 0,  // 新事件ID为0
+                title = title,
+                dateTime = Instant.parse(dateTime).toEpochMilli(),
+                description = description,
+                location = "",
+                isSubscribed = false,
+                calendarName = null
+            )
+            
+            // 保存到数据库
+            lifecycleScope.launch(Dispatchers.IO) {
+                eventDao.insert(event)
+                
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@MainActivity, "✅ 日程创建成功！", Toast.LENGTH_SHORT).show()
+                    dialog.dismiss()
+                    
+                    // 刷新界面
+                    loadAllEvents()
+                    updateCalendarDots()
+                }
+            }
+        }
+        
+        dialog.show()
     }
 }
