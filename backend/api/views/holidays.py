@@ -8,6 +8,9 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from django.core.cache import cache
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 # 节假日数据文件路径
@@ -275,4 +278,73 @@ def get_today_holidays(request):
         })
     
     return Response(result)
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_festival_detail(request):
+    """
+    获取节日详细信息（从本地JSON读取，不使用AI）
+    
+    GET /api/festivals/detail/?name=国庆节
+    或
+    GET /api/festivals/detail/?date=2025-10-01
+    
+    响应:
+    {
+        "name": "国庆节",
+        "emoji": "🇨🇳",
+        "type": "legal",
+        "introduction": "...",
+        "origin": "...",
+        "customs": [...],
+        "food": [...],
+        "activities": [...]
+    }
+    """
+    festival_name = request.GET.get('name')
+    festival_date = request.GET.get('date')
+    
+    if not festival_name and not festival_date:
+        return Response({'error': '请提供节日名称或日期'}, status=400)
+    
+    try:
+        # 加载节日信息数据
+        data_file = os.path.join(os.path.dirname(__file__), '..', 'data', 'festivals_info.json')
+        
+        if not os.path.exists(data_file):
+            logger.error(f"节日数据文件不存在: {data_file}")
+            return Response({'error': '节日数据文件不存在'}, status=500)
+        
+        with open(data_file, 'r', encoding='utf-8') as f:
+            festivals_data = json.load(f)
+        
+        # 如果提供了日期，先转换为MM-DD格式
+        if festival_date:
+            try:
+                target_date = datetime.strptime(festival_date, '%Y-%m-%d')
+                year = str(target_date.year)
+                month_day = target_date.strftime('%m-%d')
+                
+                if year in festivals_data and month_day in festivals_data[year]:
+                    festival_info = festivals_data[year][month_day]
+                    return Response(festival_info)
+            except ValueError:
+                return Response({'error': '日期格式错误'}, status=400)
+        
+        # 如果提供了名称，遍历查找
+        if festival_name:
+            for year_data in festivals_data.values():
+                for date_key, festival_info in year_data.items():
+                    if festival_info.get('name') == festival_name:
+                        return Response(festival_info)
+        
+        return Response({
+            'error': '未找到节日信息',
+            'message': f'未找到关于 {festival_name or festival_date} 的详细信息'
+        }, status=404)
+        
+    except Exception as e:
+        logger.error(f"获取节日详情失败: {e}")
+        return Response({'error': f'获取节日详情失败: {str(e)}'}, status=500)
 

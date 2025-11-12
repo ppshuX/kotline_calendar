@@ -337,15 +337,34 @@
                     android:padding="16dp"
                     android:visibility="gone">
 
-                    <TextView
-                        android:id="@+id/tvHolidayTitle"
+                    <!-- 标题栏：今日节日 + 提示文字 -->
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="🎊 今日节日"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:textColor="#6A1B9A"
-                        android:layout_marginBottom="12dp" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="12dp">
+
+                        <TextView
+                            android:id="@+id/tvHolidayTitle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="🎊 今日节日"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="#6A1B9A" />
+
+                        <TextView
+                            android:id="@+id/tvHolidayHint"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="💡 点击查看详情"
+                            android:textSize="12sp"
+                            android:textColor="#9575CD"
+                            android:visibility="gone" />
+
+                    </LinearLayout>
 
                     <!-- 节日内容卡片 -->
                     <com.google.android.material.card.MaterialCardView
@@ -361,9 +380,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="加载中..."
-                            android:textSize="16sp"
+                            android:textSize="20sp"
                             android:textColor="#4A148C"
-                            android:lineSpacingExtra="6dp"
+                            android:lineSpacingExtra="8dp"
                             android:minHeight="80dp"
                             android:gravity="top" />
 
