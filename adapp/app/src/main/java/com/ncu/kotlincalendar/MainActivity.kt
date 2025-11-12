@@ -42,6 +42,7 @@ import com.ncu.kotlincalendar.data.managers.ReminderManager
 import com.ncu.kotlincalendar.data.managers.SubscriptionManager
 import com.ncu.kotlincalendar.ui.managers.WeatherManager
 import com.ncu.kotlincalendar.ui.managers.HolidayManager
+import com.ncu.kotlincalendar.ui.managers.FortuneManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -102,6 +103,7 @@ class MainActivity : AppCompatActivity() {
     // UI管理器
     private lateinit var weatherManager: WeatherManager
     private lateinit var holidayManager: HolidayManager
+    private lateinit var fortuneManager: FortuneManager
     
     // 日历相关
     private var selectedDate: LocalDate? = LocalDate.now()
@@ -203,6 +205,9 @@ class MainActivity : AppCompatActivity() {
         holidayManager = HolidayManager(
             festivalCardsContainer, tvHolidayHint, this
         )
+        
+        // 初始化FortuneManager
+        fortuneManager = FortuneManager(this, tvFortuneContent)
         
         // 设置日程列表 RecyclerView
         adapter = EventAdapter(
@@ -944,12 +949,8 @@ class MainActivity : AppCompatActivity() {
                 loadHolidayInfo(date)
             }
             2 -> {
-                // 加载运势信息（暂未实现）
-                tvFortuneContent.text = "🌟 运势功能即将上线，敬请期待...\n\n" +
-                        "未来将提供：\n" +
-                        "• 每日运势\n" +
-                        "• 星座运程\n" +
-                        "• 吉凶宜忌"
+                // ✅ 使用 FortuneManager 加载今日运势
+                fortuneManager.loadFortune()
             }
         }
     }
@@ -1182,12 +1183,8 @@ class MainActivity : AppCompatActivity() {
                                     }
                                 }
                                 2 -> {
-                                    // 运势Tab：显示运势信息
-                                    tvFortuneContent.text = "🌟 运势功能即将上线，敬请期待...\n\n" +
-                                            "未来将提供：\n" +
-                                            "• 每日运势\n" +
-                                            "• 星座运程\n" +
-                                            "• 吉凶宜忌"
+                                    // ✅ 使用 FortuneManager 加载今日运势
+                                    fortuneManager.loadFortune()
                                 }
                             }
                         }
@@ -1318,11 +1315,8 @@ class MainActivity : AppCompatActivity() {
             0 -> loadEventsForSelectedDate(millis)
             1 -> loadHolidayInfo(millis)
             2 -> {
-                tvFortuneContent.text = "🌟 运势功能即将上线，敬请期待...\n\n" +
-                        "未来将提供：\n" +
-                        "• 每日运势\n" +
-                        "• 星座运程\n" +
-                        "• 吉凶宜忌"
+                // ✅ 使用 FortuneManager 加载今日运势
+                fortuneManager.loadFortune()
             }
         }
     }
