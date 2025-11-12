@@ -16,59 +16,58 @@
     </div>
 
     <!-- 天气信息 -->
-    <div v-else-if="weatherData" class="weather-bar-content" @click="showCityDialog = true">
-      <div class="weather-main">
-        <div class="weather-icon">{{ getWeatherIcon(weatherData.weather) }}</div>
-        <div class="weather-info">
-          <div class="weather-primary">
-            <span class="temperature">{{ weatherData.temperature }}°C</span>
-            <span class="weather-desc">{{ weatherData.weather }}</span>
-          </div>
-          <div class="weather-secondary">
-            <span v-if="weatherData.windDir !== '--'">{{ weatherData.windDir }}风</span>
-            <span v-if="weatherData.windScale !== '--'">{{ weatherData.windScale }}级</span>
-            <span v-if="weatherData.humidity !== '--'">湿度{{ weatherData.humidity }}%</span>
+    <div v-else-if="weatherData">
+      <div class="weather-bar-content" @click="showCityPanel = !showCityPanel">
+        <div class="weather-main">
+          <div class="weather-icon">{{ getWeatherIcon(weatherData.weather) }}</div>
+          <div class="weather-info">
+            <div class="weather-primary">
+              <span class="temperature">{{ weatherData.temperature }}°C</span>
+              <span class="weather-desc">{{ weatherData.weather }}</span>
+            </div>
+            <div class="weather-secondary">
+              <span v-if="weatherData.windDir !== '--'">{{ weatherData.windDir }}风</span>
+              <span v-if="weatherData.windScale !== '--'">{{ weatherData.windScale }}级</span>
+              <span v-if="weatherData.humidity !== '--'">湿度{{ weatherData.humidity }}%</span>
+            </div>
           </div>
         </div>
+        <div class="weather-location">
+          <i class="bi bi-geo-alt"></i>
+          <span>{{ weatherData.location }}</span>
+          <i :class="showCityPanel ? 'bi bi-chevron-up' : 'bi bi-chevron-down'"></i>
+        </div>
       </div>
-      <div class="weather-location">
-        <i class="bi bi-geo-alt"></i>
-        <span>{{ weatherData.location }}</span>
-        <i class="bi bi-chevron-down"></i>
+
+      <!-- 城市选择面板（展开/收起） -->
+      <div v-show="showCityPanel" class="city-panel-bar">
+        <div class="city-panel-title">选择城市</div>
+        
+        <div class="city-grid-bar">
+          <button
+            v-for="cityOption in popularCities"
+            :key="cityOption"
+            :class="['city-chip-bar', { active: city === cityOption }]"
+            @click="changeCity(cityOption)"
+          >
+            {{ cityOption }}
+          </button>
+        </div>
+        
+        <div class="custom-city-bar">
+          <input
+            v-model="customCity"
+            type="text"
+            placeholder="输入其他城市名称"
+            @keyup.enter="changeCity(customCity)"
+            class="city-input-bar"
+          />
+          <button @click="changeCity(customCity)" class="city-confirm-btn-bar">
+            确定
+          </button>
+        </div>
       </div>
     </div>
-
-    <!-- 城市选择对话框 -->
-    <el-dialog
-      v-model="showCityDialog"
-      title="选择城市"
-      width="90%"
-      :style="{ maxWidth: '500px' }"
-    >
-      <div class="city-grid">
-        <el-button
-          v-for="cityOption in popularCities"
-          :key="cityOption"
-          :type="city === cityOption ? 'primary' : 'default'"
-          @click="changeCity(cityOption)"
-          class="city-btn"
-        >
-          {{ cityOption }}
-        </el-button>
-      </div>
-      
-      <div class="custom-city mt-3">
-        <el-input
-          v-model="customCity"
-          placeholder="输入其他城市名称"
-          @keyup.enter="changeCity(customCity)"
-        >
-          <template #append>
-            <el-button @click="changeCity(customCity)">确定</el-button>
-          </template>
-        </el-input>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
@@ -83,7 +82,7 @@ const loading = ref(false)
 const error = ref(null)
 const city = ref('北京')
 const customCity = ref('')
-const showCityDialog = ref(false)
+const showCityPanel = ref(false)
 
 // 热门城市列表
 const popularCities = [
@@ -123,7 +122,7 @@ const changeCity = (newCity) => {
   }
   
   city.value = newCity.trim()
-  showCityDialog.value = false
+  showCityPanel.value = false
   customCity.value = ''
   loadWeather()
   ElMessage.success('已切换到 ' + newCity)
@@ -263,14 +262,97 @@ onMounted(() => {
   margin-left: 12px;
 }
 
-.city-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
+/* 城市选择面板 */
+.city-panel-bar {
+  margin-top: 12px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  animation: slideDown 0.3s ease;
 }
 
-.city-btn {
-  width: 100%;
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.city-panel-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #4A148C;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.city-grid-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.city-chip-bar {
+  padding: 8px 6px;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 20px;
+  font-size: 13px;
+  color: #4A148C;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.city-chip-bar:hover {
+  border-color: #667eea;
+  background: #f5f5ff;
+}
+
+.city-chip-bar.active {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border-color: transparent;
+}
+
+.custom-city-bar {
+  display: flex;
+  gap: 8px;
+}
+
+.city-input-bar {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.city-input-bar:focus {
+  border-color: #667eea;
+}
+
+.city-confirm-btn-bar {
+  padding: 8px 20px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.city-confirm-btn-bar:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
 }
 
 @media (max-width: 768px) {
@@ -313,8 +395,13 @@ onMounted(() => {
     padding: 4px 10px;
   }
 
-  .city-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .city-grid-bar {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .city-chip-bar {
+    font-size: 12px;
+    padding: 6px 4px;
   }
 }
 
@@ -343,6 +430,15 @@ onMounted(() => {
   .weather-location {
     font-size: 11px;
     padding: 3px 8px;
+  }
+  
+  .city-grid-bar {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .city-chip-bar {
+    font-size: 11px;
+    padding: 5px 4px;
   }
 }
 </style>
