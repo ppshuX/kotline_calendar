@@ -9,13 +9,13 @@ from ..views import (
     check_holiday,
     get_today_holidays,
 )
-from ..views import holidays
-from ..views.ai_assistant import (
+from ..views.external import holidays
+from ..views.ai.assistant import (
     parse_event_from_text,
     summarize_schedule,
     chat_with_assistant,
 )
-from ..views import weather
+from ..views.external import weather
 
 urlpatterns = [
     # 农历转换
