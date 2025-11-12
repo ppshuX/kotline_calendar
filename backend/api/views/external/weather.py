@@ -64,8 +64,15 @@ def get_weather(request):
             'key': api_key
         }
         
+        # 添加请求头，模拟从网站请求
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+            'Referer': 'https://app7626.acapp.acwing.com.cn/',
+            'Origin': 'https://app7626.acapp.acwing.com.cn'
+        }
+        
         logger.info(f'请求和风天气API: location={location}')
-        response = requests.get(url, params=params, timeout=10)
+        response = requests.get(url, params=params, headers=headers, timeout=10)
         response.raise_for_status()
         
         data = response.json()
@@ -175,7 +182,14 @@ def search_location(request):
             'key': api_key
         }
         
-        response = requests.get(url, params=params, timeout=10)
+        # 添加请求头
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+            'Referer': 'https://app7626.acapp.acwing.com.cn/',
+            'Origin': 'https://app7626.acapp.acwing.com.cn'
+        }
+        
+        response = requests.get(url, params=params, headers=headers, timeout=10)
         response.raise_for_status()
         
         data = response.json()
