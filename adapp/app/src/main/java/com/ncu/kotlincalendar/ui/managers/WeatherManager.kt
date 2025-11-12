@@ -76,8 +76,7 @@ class WeatherManager(
                     if (response.success && response.data != null) {
                         val weather = response.data
                         
-                        // 更新UI
-                        weatherCard.visibility = View.VISIBLE
+                        // 更新UI并显示天气卡片
                         tvWeatherLocation.text = weather.location
                         tvTemperature.text = "${weather.temperature}°"
                         tvWeatherDesc.text = weather.weather
@@ -85,17 +84,36 @@ class WeatherManager(
                         tvHumidity.text = "湿度 ${weather.humidity}%"
                         tvWind.text = "${weather.windDir} ${weather.windScale}级"
                         
+                        // ✅ 确保天气卡片可见
+                        weatherCard.visibility = View.VISIBLE
+                        
                         Log.d(TAG, "天气加载成功: ${weather.location} ${weather.temperature}° ${weather.weather}")
                     } else {
-                        // 加载失败，隐藏天气卡片
-                        weatherCard.visibility = View.GONE
+                        // 加载失败，也显示卡片但显示错误信息
+                        tvWeatherLocation.text = city
+                        tvTemperature.text = "--°"
+                        tvWeatherDesc.text = "加载失败"
+                        tvFeelsLike.text = "体感 --°"
+                        tvHumidity.text = "湿度 --%"
+                        tvWind.text = "-- --级"
+                        
+                        // ✅ 显示卡片以便用户知道天气功能存在
+                        weatherCard.visibility = View.VISIBLE
+                        
                         Log.e(TAG, "天气加载失败: ${response.error}")
                     }
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "获取天气失败", e)
                 withContext(Dispatchers.Main) {
-                    weatherCard.visibility = View.GONE
+                    // 即使失败也显示卡片，方便用户知道功能存在
+                    tvWeatherLocation.text = city
+                    tvTemperature.text = "--°"
+                    tvWeatherDesc.text = "网络错误"
+                    tvFeelsLike.text = "点击重试"
+                    tvHumidity.text = ""
+                    tvWind.text = ""
+                    weatherCard.visibility = View.VISIBLE
                 }
             }
         }

@@ -315,8 +315,11 @@ class MainActivity : AppCompatActivity() {
         
         Toast.makeText(this, "📅 日历已加载，数据会自动保存", Toast.LENGTH_SHORT).show()
         
-        // 加载天气信息（使用WeatherManager）
-        weatherManager.loadWeather(lifecycleScope)
+        // 加载天气信息（使用WeatherManager）- 延迟加载确保UI已初始化
+        lifecycleScope.launch {
+            delay(200) // 等待UI完全初始化
+            weatherManager.loadWeather(lifecycleScope)
+        }
         
         // 请求通知权限（Android 13+）
         requestNotificationPermission()
