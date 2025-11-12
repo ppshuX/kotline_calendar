@@ -1,0 +1,501 @@
+/**
+ * Ralendar 日历样式
+ */
+
+/* ==================== CSS 变量定义 ==================== */
+:root {
+  /* 主题�?*/
+  --ralendar-primary: #667eea;
+  --ralendar-primary-hover: #5568d3;
+  --ralendar-secondary: #764ba2;
+
+  /* 文字颜色 */
+  --ralendar-text-primary: #303133;
+  --ralendar-text-secondary: #606266;
+  --ralendar-text-muted: #909399;
+
+  /* 背景�?*/
+  --ralendar-bg-hover: rgba(102, 126, 234, 0.05);
+  --ralendar-bg-active: rgba(102, 126, 234, 0.12);
+  --ralendar-bg-today: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+
+  /* 边框�?*/
+  --ralendar-border-light: rgba(102, 126, 234, 0.3);
+  --ralendar-border-normal: rgba(102, 126, 234, 0.6);
+  --ralendar-border-strong: #667eea;
+
+  /* 阴影 */
+  --ralendar-shadow-sm: 0 2px 8px rgba(102, 126, 234, 0.15);
+  --ralendar-shadow-md: 0 4px 12px rgba(102, 126, 234, 0.2);
+  --ralendar-shadow-lg: 0 6px 20px rgba(102, 126, 234, 0.4);
+
+  /* FullCalendar 变量覆盖 */
+  --fc-border-color: #e4e7ed;
+  --fc-button-text-color: var(--ralendar-text-primary);
+  --fc-button-bg-color: transparent;
+  --fc-button-border-color: var(--ralendar-border-light);
+  --fc-button-hover-bg-color: var(--ralendar-bg-hover);
+  --fc-button-hover-border-color: var(--ralendar-border-normal);
+  --fc-button-active-bg-color: var(--ralendar-bg-active);
+  --fc-button-active-border-color: var(--ralendar-border-strong);
+  --fc-today-bg-color: transparent;
+}
+
+/* ==================== 日历容器 ==================== */
+.calendar-wrapper {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+}
+
+/* ==================== FullCalendar 基础样式 ==================== */
+
+/* 让 FullCalendar 自己处理布局 */
+.calendar-wrapper .fc {
+  /* 不设置任何 width/height，让库自己处理 */
+}
+
+/* 工具栏 */
+.calendar-wrapper .fc-header-toolbar {
+  margin-bottom: 15px;
+}
+
+/* 按钮样式 */
+.calendar-wrapper .fc-button {
+  border-radius: 8px;
+  font-weight: 500;
+  padding: 6px 12px;
+  transition: all 0.2s ease;
+}
+
+.calendar-wrapper .fc-button:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--ralendar-shadow-sm);
+}
+
+.calendar-wrapper .fc-button-active {
+  color: var(--ralendar-primary);
+  font-weight: 600;
+}
+
+/* 日期格子 */
+.calendar-wrapper .fc-daygrid-day {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  border: 1px solid rgba(228, 231, 237, 0.6);
+  /* 添加格子分割�?*/
+}
+
+.calendar-wrapper .fc-daygrid-day:hover {
+  background-color: var(--ralendar-bg-hover);
+}
+
+.calendar-wrapper .fc-daygrid-day-frame {
+  min-height: 80px;
+  /* 固定合适的高度 */
+}
+
+/* 周视图和日视图的格子更高 */
+.calendar-wrapper .fc-dayGridWeek-view .fc-daygrid-day-frame,
+.calendar-wrapper .fc-dayGridDay-view .fc-daygrid-day-frame {
+  min-height: 400px;
+}
+
+/* TimeGrid 视图（时间轴）- 防止溢出 */
+.calendar-wrapper .fc-timegrid {
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.calendar-wrapper .fc-timegrid-col {
+  overflow: visible;
+}
+
+/* TimeGrid 周视图 - 防止水平溢出 */
+.calendar-wrapper .fc-timeGridWeek-view {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* TimeGrid 日视图 - 限制高度 */
+.calendar-wrapper .fc-timeGridDay-view {
+  max-height: 650px;
+  overflow-y: auto;
+}
+
+/* 日期数字 - 根据格子大小自适应 */
+.calendar-wrapper .fc-daygrid-day-number {
+  cursor: pointer;
+  padding: 8px;
+  color: var(--ralendar-text-primary);
+  font-weight: 700;
+  font-size: calc(var(--fc-daygrid-cell-size, 100px) * 0.18);
+  /* 格子大小的 18% */
+  /* 居中对齐 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+/* 今天高亮 */
+.calendar-wrapper .fc-day-today {
+  background: var(--ralendar-bg-today);
+}
+
+.calendar-wrapper .fc-day-today .fc-daygrid-day-number {
+  color: var(--ralendar-primary);
+  font-weight: bold;
+}
+
+/* 选中日期的样式（使用 FullCalendar 原生的 .fc-highlight 类）*/
+.calendar-wrapper .fc-highlight {
+  background: var(--ralendar-bg-active) !important;
+  border: 2px solid var(--ralendar-border-strong) !important;
+  box-shadow: inset 0 0 0 1px var(--ralendar-primary);
+}
+
+.calendar-wrapper .fc-highlight .fc-daygrid-day-number {
+  color: var(--ralendar-primary);
+  font-weight: 700;
+  font-size: 1.1em;
+}
+
+/* 星期标题 */
+.calendar-wrapper .fc-col-header-cell-cushion {
+  color: var(--ralendar-text-primary);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* 事件样式 */
+.calendar-wrapper .fc-event {
+  cursor: pointer;
+  border-radius: 6px;
+  padding: 3px 8px;
+  margin: 3px 2px;
+  font-size: 12px;
+  background: linear-gradient(135deg, var(--ralendar-primary), var(--ralendar-secondary));
+  border: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.calendar-wrapper .fc-event:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--ralendar-shadow-sm);
+}
+
+.calendar-wrapper .fc-event-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+/* 事件数量提示 */
+.calendar-wrapper .fc-more-link {
+  text-decoration: none;
+  margin-top: 4px;
+  display: block;
+  color: var(--ralendar-primary);
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.calendar-wrapper .fc-more-link:hover {
+  color: var(--ralendar-primary-hover);
+  transform: translateY(-1px);
+}
+
+/* 节假日样�?*/
+.calendar-wrapper .fc-bg-event {
+  font-size: 13px;
+  font-weight: 600;
+  opacity: 0.4;
+  /* 从 1 降低到 0.4，整体更透明 */
+  padding-top: 30px;
+  text-align: center;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.calendar-wrapper .fc-bg-event.holiday-event {
+  /* 节假日特殊样式 - 极浅的红色背景 */
+  background-color: rgba(255, 107, 107, 0.03) !important;
+  /* 从 0.06 降低到 0.03，几乎透明，仅稍微可见 */
+}
+
+.calendar-wrapper .fc-bg-event.holiday-event .fc-event-title {
+  color: #e74c3c !important;
+  /* 鲜艳的红色文字 */
+}
+
+.calendar-wrapper .fc-bg-event .fc-event-title {
+  font-size: 13px;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  line-height: 1.4;
+  padding: 2px 4px;
+}
+
+/* 节假日日期数字样式优化 */
+.calendar-wrapper .fc-day-has-bg-event .fc-daygrid-day-number {
+  position: relative;
+  z-index: 5;
+  font-weight: 700;
+}
+
+/* ==================== 事件圆点指示器（GitHub 热力图风格）==================== */
+.event-dot {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  z-index: 10;
+  transition: transform 0.2s ease;
+  cursor: pointer;
+}
+
+.event-dot:hover {
+  transform: scale(1.5);
+}
+
+/* ==================== 移动端优化 ==================== */
+@media (max-width: 768px) {
+
+  /* 容器微调 - 确保有足够高度和间距 */
+  .calendar-wrapper {
+    padding: 12px 8px;
+    min-height: 500px;
+    margin-bottom: 16px;
+  }
+
+  /* 确保日历内容完整显示 */
+  .calendar-wrapper .fc {
+    min-height: 450px;
+    width: 100%;
+  }
+
+  /* 让日历格子有足够高度显示完整月份 */
+  .calendar-wrapper .fc-daygrid-day {
+    min-height: 60px;
+  }
+  
+  .calendar-wrapper .fc-daygrid-day-frame {
+    min-height: 60px;
+  }
+
+  /* 调整字体大小 */
+  .calendar-wrapper .fc-toolbar-title {
+    font-size: 18px;
+  }
+
+  .calendar-wrapper .fc-button {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+
+  /* 节假日文字稍小 */
+  .calendar-wrapper .fc-bg-event .fc-event-title {
+    font-size: 11px;
+  }
+
+  /* 事件圆点稍大 */
+  .calendar-wrapper .event-dot {
+    width: 7px;
+    height: 7px;
+  }
+  
+  /* 确保日历不被遮挡 */
+  .calendar-page {
+    padding-top: 0;
+  }
+}
+
+/* 小屏手机优化 */
+@media (max-width: 576px) {
+  .calendar-wrapper {
+    padding: 8px 4px;
+    min-height: 450px;
+  }
+  
+  .calendar-wrapper .fc {
+    min-height: 400px;
+  }
+  
+  .calendar-wrapper .fc-daygrid-day {
+    min-height: 50px;
+  }
+  
+  .calendar-wrapper .fc-daygrid-day-frame {
+    min-height: 50px;
+  }
+  
+  .calendar-wrapper .fc-toolbar-title {
+    font-size: 16px;
+  }
+  
+  .calendar-wrapper .fc-button {
+    font-size: 11px;
+    padding: 3px 6px;
+  }
+}
+
+/* ==================== 周视图和日视图事件样式优化 ==================== */
+
+/* 时间网格事件基础样式 */
+.fc-timegrid-event {
+  border-radius: 6px;
+  border: none;
+  box-shadow: 0 2px 6px rgba(102, 126, 234, 0.2);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 4px 6px;
+}
+
+/* 事件悬浮效果 */
+.fc-timegrid-event:hover {
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.35);
+  transform: translateY(-1px);
+  transition: all 0.2s ease;
+}
+
+/* 事件标题样式 */
+.fc-timegrid-event .fc-event-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: white;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+  word-break: break-word;
+}
+
+/* 事件时间样式 */
+.fc-timegrid-event .fc-event-time {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 2px;
+}
+
+/* 全天事件样式 */
+.fc-timegrid-event.fc-event-start.fc-event-end {
+  border-left: 3px solid rgba(255, 255, 255, 0.6);
+}
+
+/* 周视图事件间距 */
+.fc-timegrid-col-events {
+  margin: 0 2px;
+}
+
+/* 事件拖拽时的样式 */
+.fc-timegrid-event.fc-event-dragging {
+  opacity: 0.7;
+  box-shadow: 0 8px 16px rgba(102, 126, 234, 0.4);
+}
+
+/* 事件调整大小时的手柄 */
+.fc-timegrid-event .fc-event-resizer {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 0 0 6px 6px;
+}
+
+.fc-timegrid-event .fc-event-resizer:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* 全天槽样式优化 */
+.fc-timegrid-slot-label {
+  font-size: 12px;
+  color: var(--ralendar-text-secondary);
+  padding: 4px 8px;
+}
+
+/* 当前时间线样式 */
+.fc-timegrid-now-indicator-line {
+  border-color: #f56c6c;
+  border-width: 2px;
+}
+
+.fc-timegrid-now-indicator-arrow {
+  border-color: #f56c6c;
+  border-width: 6px;
+}
+
+/* 时间槽悬浮效果 */
+.fc-timegrid-slot:hover {
+  background: var(--ralendar-bg-hover);
+}
+
+/* 日视图事件宽度优化 */
+.fc-timeGridDay-view .fc-timegrid-event {
+  margin: 0 4px;
+  padding: 6px 10px;
+}
+
+.fc-timeGridDay-view .fc-event-title {
+  font-size: 14px;
+}
+
+/* 周视图紧凑布局 */
+.fc-timeGridWeek-view .fc-timegrid-event {
+  font-size: 12px;
+}
+
+/* 事件内容垂直居中 */
+.fc-timegrid-event .fc-event-main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+}
+
+/* 短时间事件（小于30分钟）样式优化 */
+.fc-timegrid-event.fc-event-short {
+  padding: 2px 4px;
+}
+
+.fc-timegrid-event.fc-event-short .fc-event-title {
+  font-size: 11px;
+}
+
+.fc-timegrid-event.fc-event-short .fc-event-time {
+  font-size: 10px;
+}
+
+/* 多个事件重叠时的样式 */
+.fc-timegrid-col-events .fc-timegrid-event {
+  z-index: 3;
+}
+
+.fc-timegrid-col-events .fc-timegrid-event + .fc-timegrid-event {
+  margin-left: 1px;
+}
+
+/* 移动端优化 */
+@media (max-width: 768px) {
+  .fc-timegrid-event {
+    padding: 3px 4px;
+    border-radius: 4px;
+  }
+  
+  .fc-timegrid-event .fc-event-title {
+    font-size: 11px;
+  }
+  
+  .fc-timegrid-event .fc-event-time {
+    font-size: 10px;
+  }
+  
+  .fc-timeGridDay-view .fc-timegrid-event {
+    margin: 0 2px;
+    padding: 4px 6px;
+  }
+}
