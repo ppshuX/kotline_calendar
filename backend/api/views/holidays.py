@@ -201,11 +201,33 @@ def check_holiday(request):
                 'type': 'traditional'
             })
     
+    # 获取农历信息
+    lunar_str = None
+    try:
+        from lunarcalendar import Converter, Solar
+        solar = Solar(target_date.year, target_date.month, target_date.day)
+        lunar = Converter.Solar2Lunar(solar)
+        
+        # 月份中文
+        month_cn = ['正', '二', '三', '四', '五', '六', '七', '八', '九', '十', '十一', '十二']
+        lunar_month = f"{month_cn[lunar.month - 1]}月"
+        
+        # 日期中文
+        day_cn = ['初一', '初二', '初三', '初四', '初五', '初六', '初七', '初八', '初九', '初十',
+                  '十一', '十二', '十三', '十四', '十五', '十六', '十七', '十八', '十九', '二十',
+                  '廿一', '廿二', '廿三', '廿四', '廿五', '廿六', '廿七', '廿八', '廿九', '三十']
+        lunar_day = day_cn[lunar.day - 1]
+        
+        lunar_str = f"{lunar_month}{lunar_day}"
+    except Exception as e:
+        logger.warning(f"获取农历失败: {e}")
+        lunar_str = "加载中..."
+    
     # 构建完整的节日信息（前端期望的数据结构）
     result = {
         'date': target_date.strftime('%Y-%m-%d'),
         'is_holiday': holiday_info['is_holiday'] if holiday_info else False,
-        'lunar': None,  # 农历信息可以通过 lunar API 获取
+        'lunar': lunar_str,
         'festivals': festivals_list if festivals_list else None
     }
     
