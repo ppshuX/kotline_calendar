@@ -8,7 +8,6 @@ export function useSidebarTabs(initialTab = 'events', isLoggedIn = false) {
     const baseTabs = [
       { id: 'fortune', label: '今日运势', icon: 'bi-stars' },
       { id: 'holiday', label: '今日节日', icon: 'bi-calendar-heart' },
-      { id: 'weather', label: '今日天气', icon: 'bi-cloud-sun' },
       { id: 'ai', label: 'AI助手', icon: 'bi-robot' }
     ]
     
