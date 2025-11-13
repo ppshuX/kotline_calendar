@@ -68,7 +68,6 @@
           <button class="city-btn" @click="changeCity('武汉市')">武汉</button>
           <button class="city-btn" @click="changeCity('西安市')">西安</button>
           <button class="city-btn" @click="changeCity('重庆市')">重庆</button>
-          <button class="city-btn" @click="changeCity('天津市')">天津</button>
         </div>
       </div>
     </div>
