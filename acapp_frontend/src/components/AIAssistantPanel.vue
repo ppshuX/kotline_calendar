@@ -23,29 +23,34 @@
       </div>
 
       <!-- 聊天记录 -->
-      <div class="chat-area" ref="chatArea">
-        <div
-          v-for="(msg, index) in chatHistory"
-          :key="index"
-          :class="['chat-message', msg.role]"
-        >
-          <div class="message-avatar">
-            {{ msg.role === 'user' ? '👤' : '🤖' }}
+      <div class="chat-container">
+        <div class="chat-area" ref="chatArea">
+          <div
+            v-for="(msg, index) in chatHistory"
+            :key="index"
+            :class="['chat-message', msg.role]"
+          >
+            <div v-if="msg.role === 'assistant'" class="message-avatar">
+              🤖
+            </div>
+            <div class="message-bubble">
+              {{ msg.content }}
+            </div>
+            <div v-if="msg.role === 'user'" class="message-avatar">
+              👤
+            </div>
           </div>
-          <div class="message-bubble">
-            {{ msg.content }}
-          </div>
-        </div>
 
-        <div v-if="loading" class="chat-message assistant">
-          <div class="message-avatar">🤖</div>
-          <div class="message-bubble loading">
-            思考中<span class="dots">...</span>
+          <div v-if="loading" class="chat-message assistant">
+            <div class="message-avatar">🤖</div>
+            <div class="message-bubble loading">
+              思考中<span class="dots">...</span>
+            </div>
           </div>
-        </div>
 
-        <div v-if="chatHistory.length === 0 && !loading" class="empty-state">
-          💬 你好！我是AI助手，有什么可以帮你的吗？
+          <div v-if="chatHistory.length === 0 && !loading" class="empty-state">
+            💬 你好！我是AI助手，有什么可以帮你的吗？
+          </div>
         </div>
       </div>
 
@@ -235,30 +240,44 @@ h2 {
   cursor: not-allowed;
 }
 
-/* 聊天区域 */
+/* 聊天容器 - 小卡片 */
+.chat-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  margin-bottom: 10px;
+}
+
 .chat-area {
   flex: 1;
   overflow-y: auto;
   background: white;
   border-radius: 8px;
-  padding: 10px;
-  margin-bottom: 10px;
+  padding: 8px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
   min-height: 0;
+  max-height: 100%;
 }
 
 .empty-state {
   text-align: center;
-  padding: 20px 10px;
+  padding: 15px 10px;
   color: #909399;
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .chat-message {
   display: flex;
-  gap: 8px;
-  margin-bottom: 10px;
+  gap: 6px;
+  margin-bottom: 8px;
   animation: fadeIn 0.3s;
+  align-items: flex-start;
+}
+
+.chat-message.user {
+  flex-direction: row-reverse;
+  justify-content: flex-start;
 }
 
 @keyframes fadeIn {
@@ -273,28 +292,36 @@ h2 {
 }
 
 .message-avatar {
-  font-size: 20px;
+  font-size: 18px;
   flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .message-bubble {
   padding: 6px 10px;
   border-radius: 8px;
-  max-width: 75%;
+  max-width: 70%;
   font-size: 11px;
   line-height: 1.4;
+  word-wrap: break-word;
 }
 
 .chat-message.user .message-bubble {
   background: linear-gradient(135deg, #667eea, #764ba2);
   color: white;
   border-bottom-right-radius: 4px;
+  margin-left: auto;
 }
 
 .chat-message.assistant .message-bubble {
   background: #f0f2f5;
   color: #303133;
   border-bottom-left-radius: 4px;
+  margin-right: auto;
 }
 
 .message-bubble.loading {
