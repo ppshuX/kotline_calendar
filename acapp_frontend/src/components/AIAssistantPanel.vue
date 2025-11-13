@@ -162,19 +162,20 @@ export default {
 .header {
   display: flex;
   align-items: center;
-  gap: 15px;
-  padding: 20px;
+  gap: 10px;
+  padding: 10px 15px;
   background: linear-gradient(135deg, #667eea, #764ba2);
   color: white;
+  flex-shrink: 0;
 }
 
 .back-btn {
-  padding: 8px 16px;
+  padding: 5px 10px;
   background: rgba(255, 255, 255, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 6px;
+  border-radius: 4px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 12px;
   color: white;
   transition: all 0.3s;
 }
@@ -184,7 +185,7 @@ export default {
 }
 
 h2 {
-  font-size: 24px;
+  font-size: 16px;
   margin: 0;
 }
 
@@ -192,32 +193,35 @@ h2 {
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  padding: 10px;
   overflow: hidden;
+  min-height: 0;
 }
 
 /* 快捷问题 */
 .quick-questions {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
+  flex-shrink: 0;
 }
 
 .section-title {
-  font-size: 14px;
+  font-size: 11px;
   font-weight: 600;
   color: #606266;
-  margin-bottom: 12px;
+  margin-bottom: 6px;
 }
 
 .quick-btn {
-  padding: 8px 16px;
-  margin: 0 8px 8px 0;
+  padding: 4px 10px;
+  margin: 0 4px 4px 0;
   background: white;
   border: 1px solid #dcdfe6;
-  border-radius: 20px;
+  border-radius: 12px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 11px;
   color: #606266;
   transition: all 0.3s;
+  white-space: nowrap;
 }
 
 .quick-btn:hover:not(:disabled) {
@@ -236,23 +240,24 @@ h2 {
   flex: 1;
   overflow-y: auto;
   background: white;
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  min-height: 0;
 }
 
 .empty-state {
   text-align: center;
-  padding: 40px 20px;
+  padding: 20px 10px;
   color: #909399;
-  font-size: 15px;
+  font-size: 12px;
 }
 
 .chat-message {
   display: flex;
-  gap: 12px;
-  margin-bottom: 20px;
+  gap: 8px;
+  margin-bottom: 10px;
   animation: fadeIn 0.3s;
 }
 
@@ -268,16 +273,16 @@ h2 {
 }
 
 .message-avatar {
-  font-size: 32px;
+  font-size: 20px;
   flex-shrink: 0;
 }
 
 .message-bubble {
-  padding: 12px 16px;
-  border-radius: 12px;
-  max-width: 70%;
-  font-size: 14px;
-  line-height: 1.6;
+  padding: 6px 10px;
+  border-radius: 8px;
+  max-width: 75%;
+  font-size: 11px;
+  line-height: 1.4;
 }
 
 .chat-message.user .message-bubble {
@@ -316,15 +321,16 @@ h2 {
 /* 输入区域 */
 .input-area {
   display: flex;
-  gap: 10px;
+  gap: 6px;
+  flex-shrink: 0;
 }
 
 .chat-input {
   flex: 1;
-  padding: 12px 16px;
+  padding: 6px 10px;
   border: 1px solid #dcdfe6;
-  border-radius: 8px;
-  font-size: 14px;
+  border-radius: 6px;
+  font-size: 11px;
   outline: none;
   transition: all 0.3s;
 }
@@ -339,15 +345,16 @@ h2 {
 }
 
 .send-btn {
-  padding: 12px 24px;
+  padding: 6px 16px;
   background: linear-gradient(135deg, #667eea, #764ba2);
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 11px;
   font-weight: 500;
   transition: all 0.3s;
+  white-space: nowrap;
 }
 
 .send-btn:hover:not(:disabled) {
