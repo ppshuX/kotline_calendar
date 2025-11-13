@@ -41,9 +41,11 @@ import com.ncu.kotlincalendar.data.models.Event
 import com.ncu.kotlincalendar.data.models.Subscription
 import com.ncu.kotlincalendar.data.managers.ReminderManager
 import com.ncu.kotlincalendar.data.managers.SubscriptionManager
+import com.ncu.kotlincalendar.data.repository.EventRepository
 import com.ncu.kotlincalendar.ui.managers.WeatherManager
 import com.ncu.kotlincalendar.ui.managers.HolidayManager
 import com.ncu.kotlincalendar.ui.managers.FortuneManager
+import com.ncu.kotlincalendar.utils.PreferenceManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -76,6 +78,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnAddEvent: Button
     private lateinit var btnAICreate: Button
     private lateinit var btnSubscribe: Button
+    private lateinit var btnSettings: ImageButton
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: EventAdapter
     
@@ -98,6 +101,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var database: AppDatabase
     private lateinit var eventDao: EventDao
     private lateinit var subscriptionDao: SubscriptionDao
+    
+    // Repository（统一本地/云端数据访问）
+    private lateinit var eventRepository: EventRepository
     private lateinit var reminderManager: ReminderManager
     private lateinit var subscriptionManager: SubscriptionManager
     private val eventsList = mutableListOf<Event>()
@@ -159,6 +165,9 @@ class MainActivity : AppCompatActivity() {
         database = AppDatabase.getDatabase(this)
         eventDao = database.eventDao()
         subscriptionDao = database.subscriptionDao()
+        
+        // 初始化Repository
+        eventRepository = EventRepository(this)
         reminderManager = ReminderManager(this)
         subscriptionManager = SubscriptionManager(
             subscriptionDao,
@@ -183,6 +192,7 @@ class MainActivity : AppCompatActivity() {
         btnAddEvent = findViewById(R.id.btnAddEvent)
         btnAICreate = findViewById(R.id.btnAICreate)
         btnSubscribe = findViewById(R.id.btnSubscribe)
+        btnSettings = findViewById(R.id.btnSettings)
         recyclerView = findViewById(R.id.recyclerView)
         tabLayout = findViewById(R.id.tabLayout)
         weatherCard = findViewById(R.id.weatherCard)
@@ -321,6 +331,12 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
         
+        // 点击"设置"按钮
+        btnSettings.setOnClickListener {
+            val intent = Intent(this, SettingsActivity::class.java)
+            startActivityForResult(intent, REQUEST_SETTINGS)
+        }
+        
         Toast.makeText(this, "📅 日历已加载，数据会自动保存", Toast.LENGTH_SHORT).show()
         
         // 加载天气信息（使用WeatherManager）- 延迟加载确保UI已初始化
@@ -386,7 +402,15 @@ class MainActivity : AppCompatActivity() {
             
             // 调用回调函数更新对话框
             onLocationSelectedCallback?.invoke(locationName, locationAddress, latitude, longitude)
+        } else if (requestCode == REQUEST_SETTINGS && resultCode == RESULT_OK) {
+            // 从设置页返回，重新加载所有事件（可能切换了模式）
+            loadAllEvents()
+            Toast.makeText(this, "已刷新数据", Toast.LENGTH_SHORT).show()
         }
+    }
+    
+    companion object {
+        private const val REQUEST_SETTINGS = 1002
     }
     
     // 弹出添加日程的对话框
