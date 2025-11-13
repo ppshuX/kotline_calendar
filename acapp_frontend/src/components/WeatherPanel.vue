@@ -138,17 +138,17 @@ export default {
 .header {
   display: flex;
   align-items: center;
-  gap: 15px;
-  margin-bottom: 20px;
+  gap: 10px;
+  margin-bottom: 12px;
 }
 
 .back-btn {
-  padding: 8px 16px;
+  padding: 4px 8px;
   background: white;
   border: 1px solid #dcdfe6;
-  border-radius: 6px;
+  border-radius: 4px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 11px;
   transition: all 0.3s;
 }
 
@@ -159,15 +159,15 @@ export default {
 }
 
 h2 {
-  font-size: 24px;
+  font-size: 18px;
   color: #303133;
   margin: 0;
 }
 
 .loading, .error {
   text-align: center;
-  padding: 40px;
-  font-size: 16px;
+  padding: 20px;
+  font-size: 14px;
   color: #606266;
 }
 
@@ -179,57 +179,57 @@ h2 {
 /* 当前天气 */
 .current-weather {
   background: white;
-  border-radius: 16px;
-  padding: 30px;
+  border-radius: 12px;
+  padding: 16px;
   text-align: center;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  border-left: 4px solid #3b82f6;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  border-left: 3px solid #3b82f6;
 }
 
 .city-name {
-  font-size: 22px;
+  font-size: 16px;
   font-weight: 600;
   color: #303133;
-  margin-bottom: 15px;
+  margin-bottom: 8px;
 }
 
 .temp-large {
-  font-size: 56px;
+  font-size: 36px;
   font-weight: 700;
   color: #3b82f6;
   line-height: 1;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
 }
 
 .weather-desc {
-  font-size: 18px;
+  font-size: 14px;
   color: #606266;
-  margin-bottom: 15px;
+  margin-bottom: 8px;
 }
 
 .weather-icon {
-  font-size: 42px;
+  font-size: 28px;
 }
 
 /* 详细信息 */
 .weather-details {
   background: white;
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  border-left: 4px solid #10b981;
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  border-left: 3px solid #10b981;
 }
 
 .detail-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px;
-  margin-bottom: 10px;
+  gap: 8px;
+  padding: 8px;
+  margin-bottom: 6px;
   background: #f5f7fa;
-  border-radius: 10px;
+  border-radius: 8px;
 }
 
 .detail-item:last-child {
@@ -237,17 +237,17 @@ h2 {
 }
 
 .detail-icon {
-  font-size: 24px;
+  font-size: 18px;
 }
 
 .detail-label {
   flex: 1;
-  font-size: 15px;
+  font-size: 12px;
   color: #606266;
 }
 
 .detail-value {
-  font-size: 16px;
+  font-size: 13px;
   font-weight: 600;
   color: #303133;
 }
@@ -256,17 +256,17 @@ h2 {
 .city-selector {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 6px;
   justify-content: center;
 }
 
 .city-btn {
-  padding: 8px 16px;
+  padding: 6px 12px;
   background: white;
   border: 1px solid #dcdfe6;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
   color: #606266;
   transition: all 0.3s;
