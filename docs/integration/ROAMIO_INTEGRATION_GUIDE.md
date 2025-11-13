@@ -332,7 +332,7 @@ REDIS_PASSWORD=  # 如果有密码
 ```bash
 # 7. Roamio 服务器信息
 ROAMIO_SERVER_IP=xxx.xxx.xxx.xxx
-ROAMIO_DOMAIN=app7508.acapp.acwing.com.cn
+ROAMIO_DOMAIN=roamio.cn
 ```
 
 ---

@@ -721,7 +721,7 @@ POST /api/v1/auth/token/refresh/
 **现象**: 
 ```
 Access to fetch at 'https://app7626.acapp.acwing.com.cn/api/v1/events/' 
-from origin 'https://app7508.acapp.acwing.com.cn' has been blocked by CORS policy
+from origin 'https://roamio.cn' has been blocked by CORS policy
 ```
 
 **解决方案**:
@@ -730,7 +730,7 @@ Ralendar 已配置允许 Roamio 的域名：
 ```python
 # Ralendar settings.py
 CORS_ALLOWED_ORIGINS = [
-    'https://app7508.acapp.acwing.com.cn',  # Roamio
+    'https://roamio.cn',  # Roamio
     'http://localhost:5173',
 ]
 ```

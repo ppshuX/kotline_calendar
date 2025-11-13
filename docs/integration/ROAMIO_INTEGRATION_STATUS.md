@@ -286,7 +286,7 @@ def create(self, request):
 CORS_ALLOWED_ORIGINS = [
     'https://app7626.acapp.acwing.com.cn',  # Ralendar
     'https://www.acwing.com',
-    'https://app7508.acapp.acwing.com.cn',  # 🆕 Roamio 生产环境
+    'https://roamio.cn',  # 🆕 Roamio 生产环境（已迁移）
     'http://localhost:8080',                 # 🆕 Roamio 开发环境
     'http://localhost:5173',                 # Ralendar 开发
 ]
@@ -484,7 +484,7 @@ class EventSerializer(serializers.ModelSerializer):
 CORS_ALLOWED_ORIGINS = [
     'https://app7626.acapp.acwing.com.cn',
     'https://www.acwing.com',
-    'https://app7508.acapp.acwing.com.cn',  # 🆕 Roamio
+    'https://roamio.cn',  # 🆕 Roamio（已迁移）
     'http://localhost:8080',                 # 🆕 Roamio 开发
     'http://localhost:5173',
 ]

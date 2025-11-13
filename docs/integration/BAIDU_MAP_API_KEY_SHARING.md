@@ -75,14 +75,14 @@ v3.0
 - `app7626.acapp.acwing.com.cn` (Ralendar)
 
 **需要添加**：
-- `app7508.acapp.acwing.com.cn` (Roamio)
+- `roamio.cn` (Roamio)
 
 **操作步骤**：
 ```
 1. 登录：https://lbsyun.baidu.com/apiconsole/key
 2. 找到对应的 AK
 3. 设置 → 白名单 → 添加域名
-4. 添加：app7508.acapp.acwing.com.cn
+4. 添加：roamio.cn
 5. 保存
 ```
 
@@ -293,7 +293,7 @@ AK: i8UmOotWSekjTJlPbydOk1xQZuUeGeE1
 1. 登录百度地图开放平台
 2. 找到 AK: i8UmOotWSekjTJlPbydOk1xQZuUeGeE1
 3. 设置 → 白名单
-4. 添加：app7508.acapp.acwing.com.cn
+4. 添加：roamio.cn
 5. 保存
 ```
 

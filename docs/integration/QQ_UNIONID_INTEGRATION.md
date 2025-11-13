@@ -13,7 +13,9 @@
 APP ID:  102813859
 APP Key: OddPvLYXHo69wTYO
 状态:    ✅ UnionID 已获取
-回调:    https://app7508.acapp.acwing.com.cn/api/v1/auth/qq/callback/
+网站地址: https://roamio.cn
+回调:    https://roamio.cn/settings/qq/receive_code
+备案号:  滇ICP备2025073012号-1
 ```
 
 ### Ralendar QQ 应用
