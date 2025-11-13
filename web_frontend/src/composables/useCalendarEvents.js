@@ -165,11 +165,26 @@ export function useCalendarEvents({ applyHolidayEvents, onDateSelect } = {}) {
   }
 
   const updateCalendarEvents = () => {
-    // 新设计：不在日历上直接显示事件，改为在 dayCellDidMount 中显示圆点
-    // 但是节假日需要显示在日历上（作为背景事件）
-    let events = []
+    // 将用户事件转换为 FullCalendar 格式
+    const userEvents = eventsList.value.map(event => ({
+      id: event.id,
+      title: event.title,
+      start: event.start_time,
+      end: event.end_time || null,
+      allDay: event.all_day || false,
+      backgroundColor: '#667eea',
+      borderColor: '#5568d3',
+      textColor: '#ffffff',
+      extendedProps: {
+        ...event,
+        description: event.description || '',
+        location: event.location || '',
+        reminder_minutes: event.reminder_minutes || 15
+      }
+    }))
 
-    // 如果提供了 applyHolidayEvents 函数，则合并节假日事件
+    // 合并节假日事件（如果提供了 applyHolidayEvents 函数）
+    let events = [...userEvents]
     if (applyHolidayEvents) {
       events = applyHolidayEvents(events)
     }
