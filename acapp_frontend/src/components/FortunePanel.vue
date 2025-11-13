@@ -180,6 +180,7 @@ export default {
   border-radius: 10px;
   padding: 12px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  min-height: calc(100vh - 120px); /* 确保内容至少占满可用空间 */
 }
 
 .loading-state {
