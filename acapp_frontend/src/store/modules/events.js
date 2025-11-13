@@ -143,9 +143,11 @@ const actions = {
 
 const getters = {
     /**
-     * 事件数量
+     * 事件数量（只统计用户创建的日程，不包括节日）
      */
-    eventCount: (state) => state.events.length,
+    eventCount: (state) => {
+        return state.events.filter(event => !event.is_public_calendar).length
+    },
 
     /**
      * 根据 ID 获取事件

@@ -86,6 +86,7 @@ class EventSerializer(serializers.ModelSerializer):
     map_url = serializers.CharField(read_only=True, allow_null=True)
     has_location = serializers.BooleanField(read_only=True)
     is_from_roamio = serializers.BooleanField(read_only=True)
+    is_public_calendar = serializers.SerializerMethodField(read_only=True)
     
     class Meta:
         model = Event
@@ -99,10 +100,14 @@ class EventSerializer(serializers.ModelSerializer):
             # 提醒配置字段
             'email_reminder', 'notification_sent',
             # 派生字段
-            'is_from_roamio'
+            'is_from_roamio', 'is_public_calendar'
         ]
         read_only_fields = ['id', 'username', 'created_at', 'updated_at', 
-                            'map_url', 'has_location', 'is_from_roamio']
+                            'map_url', 'has_location', 'is_from_roamio', 'is_public_calendar']
+    
+    def get_is_public_calendar(self, obj):
+        """判断是否是公开日历事件（节日）"""
+        return obj.calendars.exists()
     
     def validate(self, data):
         """验证数据"""

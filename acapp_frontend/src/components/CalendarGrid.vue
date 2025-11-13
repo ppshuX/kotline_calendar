@@ -201,13 +201,13 @@ export default {
     },
 
     getEventCountByDate(dateStr) {
-      // 只统计用户创建的日程，不包括订阅的节日（subscriptionId不为null的是订阅的节日）
+      // 只统计用户创建的日程，不包括订阅的节日
       return this.events.filter(event => {
         if (!event.start_time || !event.start_time.startsWith(dateStr)) {
           return false
         }
-        // 排除订阅的节日事件（subscriptionId不为null）
-        return !event.subscription_id
+        // 排除订阅的节日事件
+        return !event.is_public_calendar
       }).length
     },
 

@@ -47,9 +47,9 @@ export default {
       loading: state => state.events.loading
     }),
     
-    // 只显示用户创建的日程，不包括订阅的节日（subscription_id不为null的是订阅的节日）
+    // 只显示用户创建的日程，不包括订阅的节日
     events() {
-      return this.allEvents.filter(event => !event.subscription_id)
+      return this.allEvents.filter(event => !event.is_public_calendar)
     },
   },
   
