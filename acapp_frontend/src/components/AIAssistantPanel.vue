@@ -22,6 +22,33 @@
         </button>
       </div>
 
+      <!-- 事件预览卡片 -->
+      <div v-if="showEventPreview" class="event-preview">
+        <div class="preview-title">📅 日程预览</div>
+        <div class="preview-fields">
+          <div class="field-row">
+            <span class="field-label">标题:</span>
+            <input v-model="eventTitle" class="field-input" />
+          </div>
+          <div class="field-row">
+            <span class="field-label">日期:</span>
+            <input v-model="eventDate" type="date" class="field-input" />
+          </div>
+          <div class="field-row">
+            <span class="field-label">时间:</span>
+            <input v-model="eventTime" type="time" class="field-input" />
+          </div>
+          <div class="field-row">
+            <span class="field-label">地点:</span>
+            <input v-model="eventLocation" class="field-input" placeholder="可选" />
+          </div>
+        </div>
+        <div class="preview-actions">
+          <button @click="cancelEvent" class="btn-cancel">取消</button>
+          <button @click="confirmEvent" class="btn-confirm">✓ 确认创建</button>
+        </div>
+      </div>
+
       <!-- 聊天记录（小卡片） -->
       <div class="chat-card">
         <div class="chat-area" ref="chatArea">
