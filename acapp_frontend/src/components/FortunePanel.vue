@@ -150,8 +150,10 @@ export default {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  max-height: 100vh;
   background: #f5f7fa;
   overflow: hidden;
+  position: relative;
 }
 
 .header {
@@ -166,11 +168,13 @@ export default {
 
 .scroll-container {
   flex: 1;
-  overflow-y: scroll !important;
+  overflow-y: auto !important;
   overflow-x: hidden;
   padding: 12px;
   -webkit-overflow-scrolling: touch;
   min-height: 0;
+  max-height: 100%;
+  position: relative;
 }
 
 .content-card {
@@ -180,7 +184,7 @@ export default {
   border-radius: 10px;
   padding: 12px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
-  min-height: calc(100vh - 120px); /* 确保内容至少占满可用空间 */
+  /* 移除min-height，让内容自然撑开 */
 }
 
 .loading-state {

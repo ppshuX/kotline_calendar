@@ -78,8 +78,23 @@ export default {
           throw new Error('获取天气失败')
         }
 
-        const data = await response.json()
-        this.weather = data
+        const result = await response.json()
+        // API返回格式是 {success: true, data: {...}}
+        if (result.success && result.data) {
+          const data = result.data
+          // 映射字段名：API返回windDir/windScale，组件使用windDirection/windPower
+          this.weather = {
+            temperature: data.temperature,
+            weather: data.weather,
+            feelsLike: data.feelsLike,
+            humidity: data.humidity,
+            windDirection: data.windDir || data.windDirection,
+            windPower: data.windScale || data.windPower,
+            location: data.location
+          }
+        } else {
+          throw new Error(result.error || '天气数据格式错误')
+        }
       } catch (err) {
         console.error('天气加载错误:', err)
         this.error = '获取天气信息失败，请稍后重试'
