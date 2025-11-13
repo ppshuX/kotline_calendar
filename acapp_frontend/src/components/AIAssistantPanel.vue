@@ -88,7 +88,15 @@ export default {
         '本周的日程安排',
         '推荐一些时间管理技巧',
         '如何提高工作效率？'
-      ]
+      ],
+      // 事件解析相关
+      parsedEvent: null,
+      showEventPreview: false,
+      eventTitle: '',
+      eventDate: '',
+      eventTime: '',
+      eventDescription: '',
+      eventLocation: ''
     }
   },
   methods: {
@@ -113,26 +121,13 @@ export default {
       })
 
       try {
-        const response = await fetch('https://app7626.acapp.acwing.com.cn/api/ai/chat/', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            message: userMessage
-          })
-        })
-
-        if (!response.ok) {
-          throw new Error('AI请求失败')
+        // 先尝试解析为日程事件
+        if (this.mightBeEvent(userMessage)) {
+          await this.tryParseEvent(userMessage)
+        } else {
+          // 普通聊天
+          await this.normalChat(userMessage)
         }
-
-        const data = await response.json()
-        
-        this.chatHistory.push({
-          role: 'assistant',
-          content: data.reply || '抱歉，我暂时无法回答这个问题。'
-        })
       } catch (error) {
         console.error('AI错误:', error)
         this.chatHistory.push({
@@ -150,6 +145,127 @@ export default {
       const chatArea = this.$refs.chatArea
       if (chatArea) {
         chatArea.scrollTop = chatArea.scrollHeight
+      }
+    },
+    
+    // 判断是否可能是创建日程的意图
+    mightBeEvent(text) {
+      const keywords = ['明天', '后天', '下周', '今天', '点', '会议', '约会', '提醒', '安排', '预约', '开会']
+      return keywords.some(keyword => text.includes(keyword))
+    },
+    
+    // 尝试解析为事件
+    async tryParseEvent(text) {
+      try {
+        const response = await fetch('https://app7626.acapp.acwing.com.cn/api/ai/parse-event/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text })
+        })
+        
+        if (response.ok) {
+          const data = await response.json()
+          if (data.success && data.event) {
+            // 解析成功，显示预览
+            this.parsedEvent = data.event
+            this.eventTitle = data.event.title || ''
+            this.eventDate = data.event.date || ''
+            this.eventTime = data.event.time || ''
+            this.eventDescription = data.event.description || ''
+            this.eventLocation = ''
+            this.showEventPreview = true
+            
+            this.chatHistory.push({
+              role: 'assistant',
+              content: `我帮您解析出一个日程：\n📅 ${data.event.title}\n🕐 ${data.event.date} ${data.event.time || ''}\n请在下方确认或修改后创建。`
+            })
+          } else {
+            // 解析失败，退回普通聊天
+            await this.normalChat(text)
+          }
+        } else {
+          await this.normalChat(text)
+        }
+      } catch (error) {
+        console.error('解析事件失败:', error)
+        await this.normalChat(text)
+      }
+    },
+    
+    // 普通聊天
+    async normalChat(text) {
+      const response = await fetch('https://app7626.acapp.acwing.com.cn/api/ai/chat/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: text })
+      })
+      
+      if (!response.ok) {
+        throw new Error('AI请求失败')
+      }
+      
+      const data = await response.json()
+      this.chatHistory.push({
+        role: 'assistant',
+        content: data.reply || '抱歉，我暂时无法回答这个问题。'
+      })
+    },
+    
+    // 取消创建事件
+    cancelEvent() {
+      this.showEventPreview = false
+      this.parsedEvent = null
+      this.chatHistory.push({
+        role: 'assistant',
+        content: '已取消创建日程。还有什么可以帮您的吗？'
+      })
+    },
+    
+    // 确认创建事件
+    async confirmEvent() {
+      if (!this.eventTitle || !this.eventDate) {
+        alert('标题和日期不能为空')
+        return
+      }
+      
+      try {
+        const token = this.$store.state.user.accessToken
+        const headers = { 'Content-Type': 'application/json' }
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`
+        }
+        
+        const startTime = this.eventTime 
+          ? `${this.eventDate}T${this.eventTime}:00`
+          : `${this.eventDate}T00:00:00`
+        
+        const response = await fetch('https://app7626.acapp.acwing.com.cn/api/events/', {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({
+            title: this.eventTitle,
+            description: this.eventDescription,
+            start_time: startTime,
+            location: this.eventLocation,
+            reminder_minutes: 15
+          })
+        })
+        
+        if (response.ok) {
+          this.showEventPreview = false
+          this.parsedEvent = null
+          this.chatHistory.push({
+            role: 'assistant',
+            content: '✅ 日程创建成功！已添加到您的日历中。'
+          })
+          // 刷新事件列表
+          this.$store.dispatch('fetchEvents')
+        } else {
+          throw new Error('创建失败')
+        }
+      } catch (error) {
+        console.error('创建事件失败:', error)
+        alert('创建日程失败，请稍后重试')
       }
     }
   }
@@ -423,6 +539,92 @@ h2 {
 .send-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+/* 事件预览卡片 */
+.event-preview {
+  flex-shrink: 0;
+  background: #fff7ed;
+  border: 2px solid #fb923c;
+  border-radius: 8px;
+  padding: 8px;
+  margin-bottom: 6px;
+}
+
+.preview-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: #ea580c;
+  margin-bottom: 6px;
+  text-align: center;
+}
+
+.preview-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+
+.field-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.field-label {
+  font-size: 10px;
+  color: #606266;
+  width: 40px;
+  flex-shrink: 0;
+}
+
+.field-input {
+  flex: 1;
+  padding: 4px 6px;
+  border: 1px solid #dcdfe6;
+  border-radius: 4px;
+  font-size: 10px;
+  outline: none;
+}
+
+.field-input:focus {
+  border-color: #fb923c;
+}
+
+.preview-actions {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+.btn-cancel,
+.btn-confirm {
+  padding: 4px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-cancel {
+  background: #f5f5f5;
+  color: #606266;
+}
+
+.btn-cancel:hover {
+  background: #e0e0e0;
+}
+
+.btn-confirm {
+  background: linear-gradient(135deg, #fb923c, #f97316);
+  color: white;
+}
+
+.btn-confirm:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(251, 146, 60, 0.4);
 }
 </style>
 
