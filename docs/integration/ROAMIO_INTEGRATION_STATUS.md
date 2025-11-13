@@ -194,7 +194,7 @@ SECRET_KEY = os.environ.get('SHARED_SECRET_KEY', 'your-shared-secret-key')
 ```python
 # Ralendar 调用 Roamio API 验证 Token
 response = requests.get(
-    'https://roamio.com/api/auth/verify-token/',
+    'https://roamio.cn/api/auth/verify-token/',
     headers={'Authorization': f'Bearer {token}'}
 )
 ```
@@ -368,7 +368,7 @@ CORS_ALLOWED_ORIGINS = [
    ```python
    # Roamio 调用
    response = requests.post(
-       'https://app7626.acapp.acwing.com.cn/api/events/',
+       'https://app7626.acapp.acwing.com.cn/api/events/',  # Ralendar API地址保持不变
        headers={'Authorization': f'Bearer {token}'},
        json={
            'title': 'Visit Eiffel Tower',

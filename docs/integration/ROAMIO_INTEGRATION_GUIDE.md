@@ -74,13 +74,13 @@
 
 ```sql
 -- 在 Roamio 数据库中创建新用户
-CREATE USER 'ralendar_user'@'81.71.138.122' IDENTIFIED BY 'ralendar_secure_password';
+CREATE USER 'ralendar_user'@'47.121.137.60' IDENTIFIED BY 'ralendar_secure_password';
 
 -- 授予必要权限
-GRANT SELECT, INSERT, UPDATE, DELETE ON roamio_production.* TO 'ralendar_user'@'81.71.138.122';
+GRANT SELECT, INSERT, UPDATE, DELETE ON roamio_production.* TO 'ralendar_user'@'47.121.137.60';
 
 -- 特别注意：需要访问 auth_user 表
-GRANT ALL ON roamio_production.auth_user TO 'ralendar_user'@'81.71.138.122';
+GRANT ALL ON roamio_production.auth_user TO 'ralendar_user'@'47.121.137.60';
 ```
 
 **提供给 Ralendar：**
@@ -113,14 +113,14 @@ SECRET_KEY = 'django-insecure-xxxxxx'  # 就是这个！
 **在腾讯云控制台添加 Ralendar 服务器 IP：**
 
 ```
-81.71.138.122  # Ralendar 服务器 IP
+47.121.137.60  # Ralendar 服务器 IP（已迁移到阿里云）
 ```
 
 **步骤：**
 1. 登录腾讯云控制台
 2. 进入云数据库 → 实例列表
 3. 找到 Roamio 使用的数据库实例
-4. 安全组/白名单 → 添加 IP：`81.71.138.122`
+4. 安全组/白名单 → 添加 IP：`47.121.137.60`
 
 ---
 
@@ -349,7 +349,7 @@ ROAMIO_DOMAIN=app7508.acapp.acwing.com.cn
 4. 安全组设置 → 入站规则
 5. **添加 Ralendar 服务器 IP：**
    ```
-   81.71.138.122  (Ralendar 服务器)
+   47.121.137.60  (Ralendar 服务器，已迁移到阿里云)
    ```
 
 ---
@@ -361,17 +361,17 @@ ROAMIO_DOMAIN=app7508.acapp.acwing.com.cn
 ```sql
 -- 连接到 Roamio 数据库
 -- 创建 Ralendar 专用用户
-CREATE USER 'ralendar'@'81.71.138.122' IDENTIFIED BY 'secure_password_here';
+CREATE USER 'ralendar'@'47.121.137.60' IDENTIFIED BY 'secure_password_here';
 
 -- 授予必要权限
 -- 需要读写 auth_user 表（用户表）
-GRANT ALL ON roamio_production.auth_user TO 'ralendar'@'81.71.138.122';
-GRANT ALL ON roamio_production.auth_permission TO 'ralendar'@'81.71.138.122';
-GRANT ALL ON roamio_production.auth_group TO 'ralendar'@'81.71.138.122';
-GRANT ALL ON roamio_production.django_session TO 'ralendar'@'81.71.138.122';
+GRANT ALL ON roamio_production.auth_user TO 'ralendar'@'47.121.137.60';
+GRANT ALL ON roamio_production.auth_permission TO 'ralendar'@'47.121.137.60';
+GRANT ALL ON roamio_production.auth_group TO 'ralendar'@'47.121.137.60';
+GRANT ALL ON roamio_production.django_session TO 'ralendar'@'47.121.137.60';
 
 -- Ralendar 自己的表（可以完全控制）
-GRANT ALL ON roamio_production.api_* TO 'ralendar'@'81.71.138.122';
+GRANT ALL ON roamio_production.api_* TO 'ralendar'@'47.121.137.60';
 
 -- 刷新权限
 FLUSH PRIVILEGES;
@@ -696,7 +696,7 @@ mysqldump -h DB_HOST -u DB_USER -p DB_NAME > backup.sql
 - [ ] 阅读本对接指南
 - [ ] 提供数据库连接信息
 - [ ] 提供 SECRET_KEY
-- [ ] 配置腾讯云数据库白名单（添加 81.71.138.122）
+- [ ] 配置数据库白名单（添加 47.121.137.60）
 - [ ] 确认 QQ UnionID 权限状态
 - [ ] 确定对接开始时间
 

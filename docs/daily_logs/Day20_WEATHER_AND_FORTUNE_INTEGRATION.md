@@ -238,7 +238,7 @@ class WeatherManager {
   app7626.acapp.acwing.com.cn
   *.acwing.com.cn
   ```
-- 或设置**IP白名单**：`81.71.138.122`
+- 或设置**IP白名单**：`47.121.137.60`（已迁移到阿里云）
 
 ### **Key管理最佳实践：**
 

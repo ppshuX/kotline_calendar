@@ -35,7 +35,7 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
     'app7626.acapp.acwing.com.cn',  # 生产域名
-    '81.71.138.122',  # 服务器 IP
+    '47.121.137.60',  # 服务器 IP（已迁移到阿里云）
 ]
 
 

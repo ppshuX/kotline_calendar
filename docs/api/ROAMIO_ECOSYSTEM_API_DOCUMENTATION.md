@@ -109,7 +109,7 @@ Authorization: Bearer <access_token>
 
 ## 🌏 Roamio API
 
-**Base URL**: `https://roamio.com/api/v1/`
+**Base URL**: `https://roamio.cn/api/v1/`
 
 ### 1. 认证接口 (Auth)
 
@@ -1719,7 +1719,7 @@ def create_trip(request):
 ```nginx
 server {
     listen 443 ssl;
-    server_name roamio.com;
+    server_name roamio.cn;
     
     # SSL 证书
     ssl_certificate /path/to/cert.pem;
@@ -1769,7 +1769,7 @@ server {
 # Django
 SECRET_KEY=your-secret-key-here
 DEBUG=False
-ALLOWED_HOSTS=roamio.com,*.roamio.com
+ALLOWED_HOSTS=roamio.cn,*.roamio.cn
 
 # Database
 DB_ENGINE=postgresql
@@ -1796,7 +1796,7 @@ EMAIL_HOST_USER=your-email@qq.com
 EMAIL_HOST_PASSWORD=your-smtp-password
 
 # Ralendar API（用于跨项目调用）
-RALENDAR_API_BASE=https://roamio.com/api/calendar/
+RALENDAR_API_BASE=https://roamio.cn/api/calendar/
 ```
 
 #### Ralendar
@@ -1807,7 +1807,7 @@ RALENDAR_API_BASE=https://roamio.com/api/calendar/
 # Django
 SECRET_KEY=same-as-roamio  # 如果共享JWT，必须相同
 DEBUG=False
-ALLOWED_HOSTS=roamio.com,app7626.acapp.acwing.com.cn
+ALLOWED_HOSTS=roamio.cn,app7626.acapp.acwing.com.cn
 
 # Database（可以共享 Roamio 的数据库）
 DB_ENGINE=postgresql
@@ -1826,7 +1826,7 @@ QQ_APPID=102818448
 QQ_APPKEY=your-qq-appkey
 
 # Roamio API（用于跨项目调用）
-ROAMIO_API_BASE=https://roamio.com/api/v1/
+ROAMIO_API_BASE=https://roamio.cn/api/v1/
 ```
 
 ---
@@ -1924,7 +1924,7 @@ class EventViewSet(viewsets.ModelViewSet):
                     'title': trip_info['title'],
                     'start_date': trip_info['start_date'],
                     'end_date': trip_info['end_date'],
-                    'url': f'https://roamio.com/trips/{trip_info["slug"]}/'
+                    'url': f'https://roamio.cn/trips/{trip_info["slug"]}/'
                 }
             })
         
@@ -2057,8 +2057,8 @@ class EventViewSet(viewsets.ModelViewSet):
 **CORS 配置**：
 ```python
 CORS_ALLOWED_ORIGINS = [
-    'https://roamio.com',
-    'https://www.roamio.com',
+    'https://roamio.cn',
+    'https://www.roamio.cn',
     'https://app7626.acapp.acwing.com.cn',
     'https://www.acwing.com',
 ]
@@ -2086,7 +2086,7 @@ CORS_ALLOWED_ORIGINS = [
 #### 环境变量
 
 ```
-ROAMIO_BASE_URL = https://roamio.com
+ROAMIO_BASE_URL = https://roamio.cn
 RALENDAR_BASE_URL = https://app7626.acapp.acwing.com.cn
 ACCESS_TOKEN = (登录后获取)
 ```
@@ -2118,7 +2118,7 @@ Headers: Authorization: Bearer {{ACCESS_TOKEN}}
 
 ### 使用 Swagger UI
 
-**Roamio**: https://roamio.com/api/docs/  
+**Roamio**: https://roamio.cn/api/docs/  
 **Ralendar**: (待集成 drf-yasg)
 
 ---
@@ -2164,15 +2164,15 @@ Headers: Authorization: Bearer {{ACCESS_TOKEN}}
 
 - **Roamio 项目**: https://github.com/yourusername/roamio
 - **Ralendar 项目**: https://github.com/yourusername/kotlin-calendar
-- **API 在线文档**: https://roamio.com/api/docs/
+- **API 在线文档**: https://roamio.cn/api/docs/
 - **问题反馈**: https://github.com/yourusername/roamio/issues
 
 ---
 
 ## 📞 联系方式
 
-**技术支持**: tech@roamio.com  
-**商务合作**: business@roamio.com  
+**技术支持**: tech@roamio.cn  
+**商务合作**: business@roamio.cn  
 **API 文档维护**: Roamio Team
 
 ---
