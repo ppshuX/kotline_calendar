@@ -256,7 +256,7 @@ export default {
       }
       
       try {
-        const token = this.$store.state.accessToken
+        const token = this.$store.state.user.accessToken
         const headers = { 'Content-Type': 'application/json' }
         if (token) {
           headers['Authorization'] = `Bearer ${token}`

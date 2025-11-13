@@ -45,8 +45,8 @@ const actions = {
         commit('SET_LOADING', true)
         try {
             const headers = { 'Content-Type': 'application/json' }
-            if (rootState.accessToken) {
-                headers['Authorization'] = `Bearer ${rootState.accessToken}`
+            if (rootState.user.accessToken) {
+                headers['Authorization'] = `Bearer ${rootState.user.accessToken}`
             }
 
             const response = await fetch('https://app7626.acapp.acwing.com.cn/api/events/', {
@@ -69,8 +69,8 @@ const actions = {
     async createEvent({ dispatch, rootState }, eventData) {
         try {
             const headers = { 'Content-Type': 'application/json' }
-            if (rootState.accessToken) {
-                headers['Authorization'] = `Bearer ${rootState.accessToken}`
+            if (rootState.user.accessToken) {
+                headers['Authorization'] = `Bearer ${rootState.user.accessToken}`
             }
 
             const response = await fetch('https://app7626.acapp.acwing.com.cn/api/events/', {
@@ -95,8 +95,8 @@ const actions = {
     async updateEvent({ dispatch, rootState }, { id, eventData }) {
         try {
             const headers = { 'Content-Type': 'application/json' }
-            if (rootState.accessToken) {
-                headers['Authorization'] = `Bearer ${rootState.accessToken}`
+            if (rootState.user.accessToken) {
+                headers['Authorization'] = `Bearer ${rootState.user.accessToken}`
             }
 
             const response = await fetch(`https://app7626.acapp.acwing.com.cn/api/events/${id}/`, {
