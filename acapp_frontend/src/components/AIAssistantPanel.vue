@@ -161,14 +161,16 @@ export default {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  max-height: 100vh;
   background: #f5f7fa;
+  overflow: hidden;
 }
 
 .header {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 15px;
+  gap: 8px;
+  padding: 8px 12px;
   background: linear-gradient(135deg, #667eea, #764ba2);
   color: white;
   flex-shrink: 0;
@@ -190,7 +192,7 @@ export default {
 }
 
 h2 {
-  font-size: 16px;
+  font-size: 14px;
   margin: 0;
 }
 
@@ -198,32 +200,34 @@ h2 {
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 8px;
+  padding: 6px;
   overflow: hidden;
   min-height: 0;
-  gap: 6px;
+  gap: 4px;
 }
 
 /* 快捷问题 */
 .quick-questions {
   flex-shrink: 0;
+  max-height: 50px;
+  overflow: hidden;
 }
 
 .section-title {
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 600;
   color: #606266;
-  margin-bottom: 3px;
+  margin-bottom: 2px;
 }
 
 .quick-btn {
-  padding: 3px 8px;
-  margin: 0 3px 3px 0;
+  padding: 2px 6px;
+  margin: 0 2px 2px 0;
   background: white;
   border: 1px solid #dcdfe6;
-  border-radius: 10px;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 10px;
+  font-size: 9px;
   color: #606266;
   transition: all 0.3s;
   white-space: nowrap;
@@ -242,15 +246,16 @@ h2 {
 
 /* 聊天卡片容器 */
 .chat-card {
-  flex: 1;
+  flex: 1 1 auto;
   display: flex;
   flex-direction: column;
   background: white;
-  border: 2px solid #e4e7ed;
-  border-radius: 8px;
-  padding: 6px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  min-height: 0;
+  border: 2px solid #667eea;
+  border-radius: 10px;
+  padding: 8px;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+  min-height: 100px;
+  max-height: calc(100vh - 200px);
   overflow: hidden;
 }
 
@@ -367,13 +372,14 @@ h2 {
 /* 输入区域 */
 .input-area {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   flex-shrink: 0;
+  flex-grow: 0;
   padding: 8px;
   background: white;
   border-radius: 8px;
-  border: 2px solid #e4e7ed;
-  box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.08);
+  border: 2px solid #667eea;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
 }
 
 .chat-input {
