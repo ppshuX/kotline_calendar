@@ -1,10 +1,7 @@
 <template>
   <div class="toolbar">
     <button class="tool-btn" @click="$emit('show-list')">
-      📝 我的日程 ({{ eventCount }})
-    </button>
-    <button class="tool-btn" @click="$emit('today')">
-      📅 今天
+      📝 日程 ({{ eventCount }})
     </button>
     <button class="tool-btn" @click="$emit('show-fortune')">
       🔮 运势
@@ -43,18 +40,17 @@ export default {
 
 .tool-btn {
   flex: 1;
-  min-width: 80px;
-  max-width: 120px;
-  padding: 10px 12px;
+  padding: 12px 16px;
   background: white;
   color: #606266;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 14px;
   transition: all 0.3s;
   text-align: center;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  white-space: nowrap;
 }
 
 .tool-btn:hover {

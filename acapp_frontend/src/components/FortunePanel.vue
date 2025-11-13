@@ -7,11 +7,12 @@
       <h2>🔮 今日运势</h2>
     </div>
 
-    <div class="content">
-      <div class="date">{{ currentDate }}</div>
+    <div class="scroll-container">
+      <div class="content-card">
+        <div class="date">{{ currentDate }}</div>
 
-      <!-- 运势指数 -->
-      <div class="fortune-card score-card">
+        <!-- 运势指数 -->
+        <div class="fortune-card score-card">
         <div class="card-title">
           <span class="icon">📊</span> 运势指数
         </div>
@@ -60,13 +61,14 @@
         </div>
       </div>
 
-      <!-- 温馨提示 -->
-      <div class="fortune-card tip-card">
-        <div class="card-title">
-          <span class="icon">💡</span> 温馨提示
-        </div>
-        <div class="tip-content">
-          {{ weekdayTip }}
+        <!-- 温馨提示 -->
+        <div class="fortune-card tip-card">
+          <div class="card-title">
+            <span class="icon">💡</span> 温馨提示
+          </div>
+          <div class="tip-content">
+            {{ weekdayTip }}
+          </div>
         </div>
       </div>
     </div>
@@ -344,26 +346,37 @@ export default {
 
 <style scoped>
 .fortune-panel {
-  padding: 20px;
-  background: #f5f7fa;
+  display: flex;
+  flex-direction: column;
   height: 100vh;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-.content {
-  max-width: 600px;
-  margin: 0 auto;
+  background: #f5f7fa;
+  overflow: hidden;
 }
 
 .header {
   display: flex;
   align-items: center;
   gap: 15px;
-  margin-bottom: 20px;
+  padding: 20px;
+  background: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  flex-shrink: 0;
+}
+
+.scroll-container {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 20px;
+}
+
+.content-card {
   max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 0 auto;
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .back-btn {
