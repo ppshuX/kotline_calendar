@@ -22,9 +22,13 @@
         </button>
       </div>
 
-      <!-- 聊天记录 -->
-      <div class="chat-container">
+      <!-- 聊天记录（小卡片） -->
+      <div class="chat-card">
         <div class="chat-area" ref="chatArea">
+          <div v-if="chatHistory.length === 0 && !loading" class="empty-state">
+            💬 你好！我是AI助手，有什么可以帮你的吗？
+          </div>
+
           <div
             v-for="(msg, index) in chatHistory"
             :key="index"
@@ -46,10 +50,6 @@
             <div class="message-bubble loading">
               思考中<span class="dots">...</span>
             </div>
-          </div>
-
-          <div v-if="chatHistory.length === 0 && !loading" class="empty-state">
-            💬 你好！我是AI助手，有什么可以帮你的吗？
           </div>
         </div>
       </div>
@@ -240,24 +240,26 @@ h2 {
   cursor: not-allowed;
 }
 
-/* 聊天容器 - 小卡片 */
-.chat-container {
+/* 聊天卡片容器 */
+.chat-card {
   flex: 1;
   display: flex;
   flex-direction: column;
-  min-height: 0;
+  background: white;
+  border: 1px solid #e4e7ed;
+  border-radius: 8px;
+  padding: 8px;
   margin-bottom: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  min-height: 0;
+  overflow: hidden;
 }
 
 .chat-area {
   flex: 1;
   overflow-y: auto;
-  background: white;
-  border-radius: 8px;
-  padding: 8px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  padding: 4px;
   min-height: 0;
-  max-height: 100%;
 }
 
 .empty-state {
@@ -272,11 +274,14 @@ h2 {
   gap: 6px;
   margin-bottom: 8px;
   animation: fadeIn 0.3s;
-  align-items: flex-start;
+  align-items: flex-end;
 }
 
 .chat-message.user {
-  flex-direction: row-reverse;
+  justify-content: flex-end;
+}
+
+.chat-message.assistant {
   justify-content: flex-start;
 }
 
@@ -304,24 +309,33 @@ h2 {
 .message-bubble {
   padding: 6px 10px;
   border-radius: 8px;
-  max-width: 70%;
+  max-width: 65%;
   font-size: 11px;
   line-height: 1.4;
   word-wrap: break-word;
+  flex-shrink: 1;
 }
 
 .chat-message.user .message-bubble {
   background: linear-gradient(135deg, #667eea, #764ba2);
   color: white;
   border-bottom-right-radius: 4px;
-  margin-left: auto;
+  order: 1;
+}
+
+.chat-message.user .message-avatar {
+  order: 2;
 }
 
 .chat-message.assistant .message-bubble {
   background: #f0f2f5;
   color: #303133;
   border-bottom-left-radius: 4px;
-  margin-right: auto;
+  order: 2;
+}
+
+.chat-message.assistant .message-avatar {
+  order: 1;
 }
 
 .message-bubble.loading {
