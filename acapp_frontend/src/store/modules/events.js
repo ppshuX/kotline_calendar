@@ -10,7 +10,8 @@ const state = {
 
 const mutations = {
     SET_EVENTS(state, events) {
-        state.events = events
+        // 确保events始终是数组
+        state.events = Array.isArray(events) ? events : []
     },
 
     SET_LOADING(state, loading) {
@@ -47,13 +48,27 @@ const actions = {
             const headers = { 'Content-Type': 'application/json' }
             if (rootState.user.accessToken) {
                 headers['Authorization'] = `Bearer ${rootState.user.accessToken}`
+            } else {
+                // 未登录，清空事件列表
+                commit('SET_EVENTS', [])
+                commit('SET_LOADING', false)
+                return
             }
 
             const response = await fetch('https://app7626.acapp.acwing.com.cn/api/events/', {
                 headers
             })
+            
+            if (!response.ok) {
+                // 请求失败（如401），清空事件列表
+                console.warn('获取事件失败:', response.status)
+                commit('SET_EVENTS', [])
+                commit('SET_LOADING', false)
+                return
+            }
+            
             const data = await response.json()
-            const events = data.results || data || []
+            const events = Array.isArray(data) ? data : (data.results || [])
             commit('SET_EVENTS', events)
         } catch (error) {
             console.error('获取事件失败:', error)
