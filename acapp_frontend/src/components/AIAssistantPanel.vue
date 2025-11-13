@@ -198,22 +198,22 @@ h2 {
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 10px;
+  padding: 8px;
   overflow: hidden;
   min-height: 0;
+  gap: 6px;
 }
 
 /* 快捷问题 */
 .quick-questions {
-  margin-bottom: 10px;
   flex-shrink: 0;
 }
 
 .section-title {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
   color: #606266;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .quick-btn {
@@ -246,10 +246,9 @@ h2 {
   display: flex;
   flex-direction: column;
   background: white;
-  border: 1px solid #e4e7ed;
+  border: 2px solid #e4e7ed;
   border-radius: 8px;
-  padding: 8px;
-  margin-bottom: 10px;
+  padding: 6px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   min-height: 0;
   overflow: hidden;
@@ -257,22 +256,23 @@ h2 {
 
 .chat-area {
   flex: 1;
-  overflow-y: auto;
-  padding: 4px;
+  overflow-y: auto !important;
+  padding: 6px;
   min-height: 0;
+  max-height: 100%;
 }
 
 .empty-state {
   text-align: center;
-  padding: 15px 10px;
+  padding: 10px 6px;
   color: #909399;
-  font-size: 11px;
+  font-size: 10px;
 }
 
 .chat-message {
   display: flex;
-  gap: 6px;
-  margin-bottom: 8px;
+  gap: 4px;
+  margin-bottom: 6px;
   animation: fadeIn 0.3s;
   align-items: flex-end;
   width: 100%;
@@ -302,21 +302,21 @@ h2 {
 }
 
 .message-avatar {
-  font-size: 18px;
+  font-size: 14px;
   flex-shrink: 0;
-  width: 24px;
-  height: 24px;
+  width: 18px;
+  height: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .message-bubble {
-  padding: 6px 10px;
-  border-radius: 8px;
-  max-width: 65%;
-  font-size: 11px;
-  line-height: 1.4;
+  padding: 4px 8px;
+  border-radius: 6px;
+  max-width: 70%;
+  font-size: 10px;
+  line-height: 1.3;
   word-wrap: break-word;
   flex-shrink: 1;
 }
@@ -369,14 +369,15 @@ h2 {
   display: flex;
   gap: 6px;
   flex-shrink: 0;
+  margin-top: 6px;
 }
 
 .chat-input {
   flex: 1;
-  padding: 6px 10px;
+  padding: 5px 8px;
   border: 1px solid #dcdfe6;
   border-radius: 6px;
-  font-size: 11px;
+  font-size: 10px;
   outline: none;
   transition: all 0.3s;
 }
@@ -391,13 +392,13 @@ h2 {
 }
 
 .send-btn {
-  padding: 6px 16px;
+  padding: 5px 12px;
   background: linear-gradient(135deg, #667eea, #764ba2);
   color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 500;
   transition: all 0.3s;
   white-space: nowrap;
