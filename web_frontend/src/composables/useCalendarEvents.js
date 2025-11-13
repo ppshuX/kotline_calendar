@@ -73,8 +73,26 @@ export function useCalendarEvents({ applyHolidayEvents, onDateSelect } = {}) {
         dayHeaderFormat: { weekday: 'short' }
       },
       timeGridWeek: {
-        dayHeaderFormat: { weekday: 'short', day: 'numeric' },
-        slotEventOverlap: false  // 时间冲突的事件并排显示
+        // 安卓风格：显示星期和日期
+        dayHeaderFormat: { 
+          weekday: 'short',  // 周一、周二
+          day: 'numeric',     // 13、14
+          omitCommas: true    // 不要逗号
+        },
+        slotEventOverlap: false,  // 时间冲突的事件并排显示
+        dayHeaderContent: (arg) => {
+          // 自定义日期头部内容（安卓风格）
+          const weekday = arg.text.split(' ')[0]  // 提取星期
+          const day = arg.date.getDate()           // 提取日期
+          return {
+            html: `
+              <div class="custom-day-header">
+                <div class="weekday">${weekday}</div>
+                <div class="day-number">${day}</div>
+              </div>
+            `
+          }
+        }
       },
       timeGridDay: {
         dayHeaderFormat: { weekday: 'long', month: 'long', day: 'numeric' },

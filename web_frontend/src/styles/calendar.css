@@ -532,35 +532,150 @@
 /* 时间网格列背景 */
 .fc-timegrid-col {
   background: white;
+  border-right: 1px solid #f5f5f5;
 }
 
-/* 今天的列高亮 */
+/* 今天的列高亮 - 安卓风格渐变 */
 .fc-day-today .fc-timegrid-col-frame {
-  background: rgba(102, 126, 234, 0.03);
+  background: linear-gradient(to bottom, 
+    rgba(102, 126, 234, 0.05), 
+    rgba(102, 126, 234, 0.02)
+  );
 }
 
 /* 时间网格头部样式 */
 .fc-timegrid-axis-frame {
-  background: #fafafa;
+  background: linear-gradient(to bottom, #ffffff, #f8f9fa);
   font-weight: 500;
 }
 
-/* 周/日视图的日期头部 */
+/* 周视图整体容器优化 */
+.fc-timeGridWeek-view {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* 周视图头部容器 */
+.fc-timeGridWeek-view .fc-col-header {
+  background: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* 周视图时间槽优化 */
+.fc-timeGridWeek-view .fc-timegrid-slot {
+  border-color: #fafafa;
+}
+
+.fc-timeGridWeek-view .fc-timegrid-slot:hover {
+  background: rgba(102, 126, 234, 0.02);
+}
+
+/* 周/日视图的日期头部 - 安卓风格优化 */
 .fc-col-header-cell {
-  padding: 10px 6px;
+  padding: 12px 8px;
   font-weight: 600;
-  font-size: 13px;
+  font-size: 14px;
   color: #606266;
-  background: #fafafa;
+  background: linear-gradient(to bottom, #ffffff, #f8f9fa);
   border-bottom: 2px solid #e4e7ed;
+  border-right: 1px solid #f0f0f0;
+  transition: all 0.3s ease;
 }
 
+.fc-col-header-cell:hover {
+  background: rgba(102, 126, 234, 0.05);
+}
+
+/* 今天的日期头部 - 蓝色圆形高亮（安卓风格）*/
 .fc-col-header-cell.fc-day-today {
-  background: rgba(102, 126, 234, 0.08);
-  color: #667eea;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.15));
+  position: relative;
 }
 
-/* 移动端优化 */
+.fc-col-header-cell.fc-day-today .fc-col-header-cell-cushion {
+  color: #667eea;
+  font-weight: 700;
+  position: relative;
+}
+
+/* 周视图日期数字样式优化 */
+.fc-timeGridWeek-view .fc-col-header-cell-cushion {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+/* 自定义日期头部样式（安卓风格）*/
+.custom-day-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 0;
+}
+
+.custom-day-header .weekday {
+  font-size: 12px;
+  font-weight: 500;
+  color: #909399;
+  letter-spacing: 0.5px;
+}
+
+.custom-day-header .day-number {
+  font-size: 18px;
+  font-weight: 700;
+  color: #303133;
+  line-height: 1;
+}
+
+/* 今天的自定义头部样式 */
+.fc-day-today .custom-day-header .weekday {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.fc-day-today .custom-day-header .day-number {
+  color: white;
+}
+
+/* 今天的日期数字添加圆形背景（安卓风格）*/
+.fc-timeGridWeek-view .fc-col-header-cell.fc-day-today .custom-day-header {
+  position: relative;
+  z-index: 1;
+}
+
+.fc-timeGridWeek-view .fc-col-header-cell.fc-day-today .custom-day-header::before {
+  content: '';
+  position: absolute;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  z-index: -1;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 3px 12px rgba(102, 126, 234, 0.5);
+  animation: pulse-circle 2s ease-in-out infinite;
+}
+
+/* 圆形背景脉冲动画 */
+@keyframes pulse-circle {
+  0%, 100% {
+    box-shadow: 0 3px 12px rgba(102, 126, 234, 0.5);
+  }
+  50% {
+    box-shadow: 0 3px 16px rgba(102, 126, 234, 0.7);
+  }
+}
+
+.fc-timeGridWeek-view .fc-col-header-cell.fc-day-today .fc-col-header-cell-cushion {
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* 移动端优化 - 安卓风格 */
 @media (max-width: 768px) {
   .fc-timegrid-event {
     padding: 5px 8px;
@@ -581,8 +696,35 @@
     padding: 8px 10px;
   }
   
+  /* 移动端周视图日期头部 */
   .fc-col-header-cell {
-    font-size: 12px;
-    padding: 8px 4px;
+    font-size: 13px;
+    padding: 10px 4px;
+  }
+  
+  /* 移动端今天的圆形高亮 */
+  .fc-timeGridWeek-view .fc-col-header-cell.fc-day-today .custom-day-header::before {
+    width: 36px;
+    height: 36px;
+  }
+  
+  /* 移动端自定义头部字体 */
+  .custom-day-header .weekday {
+    font-size: 11px;
+  }
+  
+  .custom-day-header .day-number {
+    font-size: 16px;
+  }
+  
+  /* 移动端周视图容器 */
+  .fc-timeGridWeek-view {
+    border-radius: 12px;
+  }
+  
+  /* 移动端时间标签 */
+  .fc-timeGridWeek-view .fc-timegrid-slot-label {
+    font-size: 11px;
+    padding: 2px 6px;
   }
 }
