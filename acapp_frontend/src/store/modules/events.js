@@ -121,8 +121,8 @@ const actions = {
     async deleteEvent({ dispatch, rootState }, eventId) {
         try {
             const headers = {}
-            if (rootState.accessToken) {
-                headers['Authorization'] = `Bearer ${rootState.accessToken}`
+            if (rootState.user.accessToken) {
+                headers['Authorization'] = `Bearer ${rootState.user.accessToken}`
             }
 
             const response = await fetch(`https://app7626.acapp.acwing.com.cn/api/events/${eventId}/`, {
