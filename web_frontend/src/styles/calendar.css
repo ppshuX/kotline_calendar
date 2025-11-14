@@ -284,13 +284,14 @@
 /* ==================== 移动端优化 ==================== */
 @media (max-width: 768px) {
 
-  /* 容器微调 - 缩小高度为下方栏腾出空间 */
+  /* 容器微调 - 缩小高度为下方栏腾出空间，更宽 */
   .calendar-wrapper {
-    padding: 10px 6px;
-    min-height: 320px;
-    max-height: 320px;
-    height: 320px;
+    padding: 8px 0;
+    min-height: 280px;
+    max-height: 280px;
+    height: 280px;
     margin-bottom: 12px;
+    width: 100%;
   }
 
   /* 确保日历内容完整显示 */
@@ -341,25 +342,27 @@
   }
 }
 
-/* 小屏手机优化 */
+/* 小屏手机优化 - 接近正方形 */
 @media (max-width: 576px) {
   .calendar-wrapper {
-    padding: 8px 4px;
-    min-height: 240px;
-    max-height: 240px;
-    height: 240px;
+    padding: 2px 0 !important;
+    min-height: 180px !important;
+    max-height: 180px !important;
+    height: 180px !important;
+    width: 100% !important;
+    margin: 0 !important;
   }
   
   .calendar-wrapper .fc {
-    min-height: 220px;
+    min-height: 176px !important;
   }
   
   .calendar-wrapper .fc-daygrid-day {
-    min-height: 32px;
+    min-height: 25px !important;
   }
   
   .calendar-wrapper .fc-daygrid-day-frame {
-    min-height: 32px;
+    min-height: 25px !important;
   }
   
   .calendar-wrapper .fc-toolbar-title {

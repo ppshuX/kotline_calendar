@@ -236,11 +236,11 @@ const handleTodayClick = async () => {
     calendarApi.unselect()  // 取消选中状态
   }
   
-  // 重置为今天的日期（而不是清空）
+  // 重置为今天的日期
   const today = new Date()
   const todayStr = today.toISOString().split('T')[0]
   
-  selectedDateForFilter.value = ''  // 清空过滤（显示所有日程）
+  selectedDateForFilter.value = todayStr  // 设置为今天的日期（显示今天的日程）
   selectedDateLabel.value = today.toLocaleDateString('zh-CN', {
     year: 'numeric',
     month: 'long',
@@ -755,23 +755,24 @@ const handleAICreate = async (eventData) => {
     padding-right: 4px;
   }
   
-  /* 日历高度进一步缩短，为下方栏腾出更多空间，但宽度更宽 */
+  /* 日历高度更短，宽度更宽（接近正方形） */
   .calendar-wrapper {
-    height: 240px;
-    max-height: 240px;
-    min-height: 240px;
-    margin: 0 2px;
-    width: calc(100% - 4px);
+    height: 180px !important;
+    max-height: 180px !important;
+    min-height: 180px !important;
+    margin: 0 !important;
+    width: 100% !important;
+    padding: 2px 0 !important;
   }
   
   /* 整体缩小间距和字体 */
   .calendar-page :deep(.fc) {
-    font-size: 12px;
+    font-size: 11px;
   }
   
   /* 日期单元格缩小 */
   .calendar-page :deep(.fc-daygrid-day) {
-    min-height: 42px;
+    min-height: 28px;
   }
   
   /* 周标题缩小 */
