@@ -762,14 +762,14 @@ const handleAICreate = async (eventData) => {
     padding-right: 4px;
   }
   
-  /* 日历高度适中，宽度更宽（接近正方形） */
-  .calendar-wrapper {
-    height: 320px !important;
-    max-height: 320px !important;
-    min-height: 320px !important;
-    margin: 0 !important;
-    width: 100% !important;
-    padding: 8px 0 !important;
+  /* 日历高度再增加一些，更容易阅读 */
+  .calendar-page .calendar-wrapper {
+    height: 360px;
+    max-height: 360px;
+    min-height: 360px;
+    margin: 0;
+    width: 100%;
+    padding: 10px 0;
   }
   
   /* 整体缩小间距和字体 */

@@ -286,10 +286,10 @@
 
   /* 容器微调 - 增加高度以便看清楚 */
   .calendar-wrapper {
-    padding: 8px 0;
-    min-height: 320px;
-    max-height: 320px;
-    height: 320px;
+    padding: 10px 0;
+    min-height: 360px;
+    max-height: 360px;
+    height: 360px;
     margin-bottom: 12px;
     width: 100%;
   }
@@ -302,11 +302,11 @@
 
   /* 增加日历格子高度以便看清 */
   .calendar-wrapper .fc-daygrid-day {
-    min-height: 48px;
+    min-height: 52px;
   }
   
   .calendar-wrapper .fc-daygrid-day-frame {
-    min-height: 48px;
+    min-height: 52px;
   }
 
   /* 调整字体大小 - 增大以便看清 */
