@@ -1351,12 +1351,22 @@ class MainActivity : AppCompatActivity() {
                     loadEventsForSelectedDate(millis)
                 }
                 1 -> {
-                    // 周视图：不改变eventsList（显示全部），只更新时间线显示
-                    updateWeekView()
+                    // 周视图：如果eventsList为空，需要加载所有事件
+                    // 否则直接更新时间线显示（loadAllEvents已在切换视图时调用）
+                    if (eventsList.isEmpty()) {
+                        loadAllEvents()
+                    } else {
+                        updateWeekView()
+                    }
                 }
                 2 -> {
-                    // 日视图：不改变eventsList（显示全部），只更新时间线显示
-                    updateDayView()
+                    // 日视图：如果eventsList为空，需要加载所有事件
+                    // 否则直接更新时间线显示（loadAllEvents已在切换视图时调用）
+                    if (eventsList.isEmpty()) {
+                        loadAllEvents()
+                    } else {
+                        updateDayView()
+                    }
                 }
             }
         }
