@@ -296,30 +296,31 @@
     width: 100%;
   }
 
-  /* 确保日历内容完整显示 */
+  /* 确保日历内容完整显示 - 移除height:100%让内容自然撑开 */
   .calendar-wrapper .fc {
-    height: 100% !important;
     width: 100%;
+    height: auto;
   }
   
   .calendar-wrapper .fc-view-harness {
-    height: 100% !important;
+    height: auto;
   }
   
   .calendar-wrapper .fc-scroller {
     overflow: visible !important;
+    height: auto;
   }
   
   .calendar-wrapper .fc-daygrid-body {
-    height: 100% !important;
+    height: auto;
   }
   
   .calendar-wrapper .fc-scrollgrid {
-    height: 100% !important;
+    height: auto;
   }
   
   .calendar-wrapper .fc-scrollgrid-sync-table {
-    height: 100% !important;
+    height: auto;
   }
 
   /* 显著增加日历格子高度确保内容完整显示 */

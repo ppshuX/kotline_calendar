@@ -21,9 +21,9 @@ export function useCalendarEvents({ applyHolidayEvents, onDateSelect } = {}) {
     plugins: [dayGridPlugin, timeGridPlugin, scrollGridPlugin, interactionPlugin],
     initialView: 'dayGridMonth',
     locale: 'zh-cn',
-    height: '100%',
+    height: 'auto',
     contentHeight: 'auto',
-    expandRows: true,
+    expandRows: false,
     headerToolbar: {
       left: 'prev,next today',
       center: 'title',  // 显示标题
