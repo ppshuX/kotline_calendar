@@ -159,8 +159,18 @@ const loadHolidaysForSelectedDate = async (dateStr) => {
   // 提取日期部分（YYYY-MM-DD），去掉时间和时区
   const dateOnly = dateStr.split('T')[0]
   
+  console.log('加载选中日期的节假日:', dateOnly)
   const holidays = await getHolidaysForDate(dateOnly)
   todayHolidays.value = holidays
+  console.log('节假日数据已更新:', holidays)
+  
+  // 强制刷新日历显示
+  if (fullCalendarRef.value) {
+    setTimeout(() => {
+      refreshEventDots()
+      fullCalendarRef.value.getApi().render()
+    }, 100)
+  }
 }
 
 const {
@@ -266,9 +276,16 @@ calendarOptions.value.dayCellDidMount = (arg) => {
   const day = String(arg.date.getDate()).padStart(2, '0')
   const dateStr = `${year}-${month}-${day}`
   
+  // 确保单元格是相对定位
+  arg.el.style.position = 'relative'
+  
   // 检查是否有节日，添加节日标签
   const holiday = holidaysMap.value[dateStr]
   if (holiday) {
+    // 移除可能存在的旧标签
+    const oldLabel = arg.el.querySelector('.holiday-label')
+    if (oldLabel) oldLabel.remove()
+    
     // 创建节日标签
     const holidayLabel = document.createElement('div')
     holidayLabel.className = 'holiday-label'
@@ -290,9 +307,10 @@ calendarOptions.value.dayCellDidMount = (arg) => {
       max-width: calc(100% - 4px);
       overflow: hidden;
       text-overflow: ellipsis;
+      pointer-events: none;
     `
-    arg.el.style.position = 'relative'
     arg.el.appendChild(holidayLabel)
+    console.log('添加节日标签:', dateStr, holiday.name)
   }
   
   const count = getEventsCountForDate(dateStr)
@@ -468,35 +486,37 @@ const refreshEventDots = () => {
           cell.appendChild(dot)
         }
         
-        // 添加节日标签
-        const dateAttr = cell.getAttribute('data-date')
-        if (dateAttr) {
+        // 添加节日标签（使用之前获取的 dateAttr）
+        if (dateAttr && holidaysMap.value[dateAttr]) {
           const holiday = holidaysMap.value[dateAttr]
-          if (holiday) {
-            const holidayLabel = document.createElement('div')
-            holidayLabel.className = 'holiday-label'
-            holidayLabel.textContent = `${holiday.emoji || '🎉'} ${holiday.name}`
-            holidayLabel.style.cssText = `
-              position: absolute;
-              top: 1px;
-              left: 2px;
-              font-size: 8px;
-              line-height: 1.1;
-              color: #e74c3c;
-              font-weight: 700;
-              text-shadow: 0 0 3px rgba(255, 255, 255, 1), 1px 1px 0 rgba(255, 255, 255, 0.9);
-              z-index: 3;
-              background: rgba(255, 255, 255, 0.7);
-              border-radius: 2px;
-              padding: 1px 2px;
-              white-space: nowrap;
-              max-width: calc(100% - 4px);
-              overflow: hidden;
-              text-overflow: ellipsis;
-            `
-            cell.style.position = 'relative'
-            cell.appendChild(holidayLabel)
-          }
+          // 确保单元格是相对定位
+          cell.style.position = 'relative'
+          
+          // 创建节日标签
+          const holidayLabel = document.createElement('div')
+          holidayLabel.className = 'holiday-label'
+          holidayLabel.textContent = `${holiday.emoji || '🎉'} ${holiday.name}`
+          holidayLabel.style.cssText = `
+            position: absolute;
+            top: 1px;
+            left: 2px;
+            font-size: 8px;
+            line-height: 1.1;
+            color: #e74c3c;
+            font-weight: 700;
+            text-shadow: 0 0 3px rgba(255, 255, 255, 1), 1px 1px 0 rgba(255, 255, 255, 0.9);
+            z-index: 3;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 2px;
+            padding: 1px 2px;
+            white-space: nowrap;
+            max-width: calc(100% - 4px);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            pointer-events: none;
+          `
+          cell.appendChild(holidayLabel)
+          console.log('刷新时添加节日标签:', dateAttr, holiday.name)
         }
       }
     })
@@ -510,10 +530,17 @@ watch(eventsList, () => {
 })
 
 // 监听节假日数据变化，自动更新日历和节日标签
-watch(holidaysMap, () => {
+watch(holidaysMap, (newMap) => {
+  console.log('节假日数据变化，更新日历:', Object.keys(newMap).length, '个节日')
   updateCalendarEvents()
-  refreshEventDots()  // 刷新时也会更新节日标签
-})
+  setTimeout(() => {
+    refreshEventDots()  // 刷新时也会更新节日标签
+    // 强制刷新日历
+    if (fullCalendarRef.value) {
+      fullCalendarRef.value.getApi().render()
+    }
+  }, 150)
+}, { deep: true })
 
 // 监听标签页切换，当切换到节假日标签时加载对应日期的数据
 watch(activeTab, async (newTab) => {
