@@ -126,15 +126,17 @@ const currentTab = computed({
 
 @media (max-width: 576px) {
   .right-sidebar {
-    height: calc(100vh - 200px);
-    max-height: calc(100vh - 200px);
-    min-height: 500px;
-    padding: 12px;
+    height: calc(100vh - 120px);
+    max-height: calc(100vh - 120px);
+    min-height: 600px;
+    padding: 10px;
+    margin-top: 12px;
   }
   
   .tab-content {
-    padding: 10px;
-    font-size: 12px;
+    padding: 8px;
+    font-size: 11px;
+    margin-top: 8px;
   }
 }
 </style>
