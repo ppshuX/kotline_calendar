@@ -293,18 +293,18 @@ calendarOptions.value.dayCellDidMount = (arg) => {
     holidayLabel.textContent = `${holiday.emoji || '🎉'} ${holiday.name}`
     holidayLabel.style.cssText = `
       position: absolute !important;
-      bottom: 2px !important;
+      bottom: 3px !important;
       left: 50% !important;
       transform: translateX(-50%) !important;
-      font-size: 9px !important;
-      line-height: 1.1 !important;
+      font-size: 10px !important;
+      line-height: 1.2 !important;
       color: #e74c3c !important;
       font-weight: 700 !important;
       text-shadow: 0 0 3px rgba(255, 255, 255, 1), 1px 1px 0 rgba(255, 255, 255, 1) !important;
       z-index: 100 !important;
       background: rgba(255, 255, 255, 0.85) !important;
-      border-radius: 2px !important;
-      padding: 1px 3px !important;
+      border-radius: 3px !important;
+      padding: 2px 4px !important;
       white-space: nowrap !important;
       max-width: 90% !important;
       overflow: hidden !important;
@@ -546,18 +546,18 @@ const refreshEventDots = () => {
         holidayLabel.textContent = `${holiday.emoji || '🎉'} ${holiday.name}`
         holidayLabel.style.cssText = `
           position: absolute !important;
-          bottom: 2px !important;
+          bottom: 3px !important;
           left: 50% !important;
           transform: translateX(-50%) !important;
-          font-size: 9px !important;
-          line-height: 1.1 !important;
+          font-size: 10px !important;
+          line-height: 1.2 !important;
           color: #e74c3c !important;
           font-weight: 700 !important;
           text-shadow: 0 0 3px rgba(255, 255, 255, 1), 1px 1px 0 rgba(255, 255, 255, 1) !important;
           z-index: 100 !important;
           background: rgba(255, 255, 255, 0.85) !important;
-          border-radius: 2px !important;
-          padding: 1px 3px !important;
+          border-radius: 3px !important;
+          padding: 2px 4px !important;
           white-space: nowrap !important;
           max-width: 90% !important;
           overflow: hidden !important;
@@ -764,12 +764,12 @@ const handleAICreate = async (eventData) => {
   
   /* 日历高度适中，宽度更宽（接近正方形） */
   .calendar-wrapper {
-    height: 220px !important;
-    max-height: 220px !important;
-    min-height: 220px !important;
+    height: 320px !important;
+    max-height: 320px !important;
+    min-height: 320px !important;
     margin: 0 !important;
     width: 100% !important;
-    padding: 4px 0 !important;
+    padding: 8px 0 !important;
   }
   
   /* 整体缩小间距和字体 */
