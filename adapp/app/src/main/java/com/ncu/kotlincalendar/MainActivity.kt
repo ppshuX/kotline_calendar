@@ -436,6 +436,10 @@ class MainActivity : AppCompatActivity() {
         val tvLocationDisplay = dialogView.findViewById<TextView>(R.id.tvLocationDisplay)
         val btnSelectLocation = dialogView.findViewById<Button>(R.id.btnSelectLocation)
         
+        // 确保地点选择功能在所有视图模式下都可见
+        tvLocationDisplay?.visibility = View.VISIBLE
+        btnSelectLocation?.visibility = View.VISIBLE
+        
         // 设置提醒选项
         val reminderOptions = arrayOf("不提醒", "提前5分钟", "提前15分钟", "提前30分钟", "提前1小时", "提前1天")
         val reminderMinutes = arrayOf(0, 5, 15, 30, 60, 24 * 60)
