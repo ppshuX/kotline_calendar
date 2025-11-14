@@ -579,16 +579,25 @@ const handleAICreate = async (eventData) => {
 
 /* 移动端：上下布局，日历和侧边栏都全宽 */
 @media (max-width: 767px) {
+  .row {
+    margin-left: 0;
+    margin-right: 0;
+  }
+  
   .row > div {
     flex: 0 0 100%;
     max-width: 100%;
+    padding-left: 4px;
+    padding-right: 4px;
   }
   
-  /* 日历高度缩小，为下方栏腾出更多空间 */
+  /* 日历高度缩小，为下方栏腾出更多空间，但宽度更宽 */
   .calendar-wrapper {
     height: 320px;
     max-height: 320px;
     min-height: 320px;
+    margin: 0 2px;
+    width: calc(100% - 4px);
   }
   
   /* 整体缩小间距和字体 */
