@@ -604,10 +604,25 @@ class MainActivity : AppCompatActivity() {
                 withContext(Dispatchers.Main) {
                     eventsList.clear()
                     eventsList.addAll(allEvents)
-                    updateEventsList()
                     updateCalendarDots()  // 更新日历标记
                     
-                    // 刷新周视图
+                    // 根据当前视图模式更新显示
+                    when (viewMode) {
+                        0 -> {
+                            // 月视图：更新事件列表
+                            updateEventsList()
+                        }
+                        1 -> {
+                            // 周视图：更新时间线
+                            updateWeekView()
+                        }
+                        2 -> {
+                            // 日视图：更新时间线
+                            updateDayView()
+                        }
+                    }
+                    
+                    // 刷新周视图日历
                     weekCalendarView.notifyCalendarChanged()
                 }
             } catch (e: Exception) {
@@ -1285,19 +1300,8 @@ class MainActivity : AppCompatActivity() {
                 // 滚动到选中日期所在的周
                 selectedDate?.let { weekCalendarView.scrollToWeek(it) }
                 
-                lifecycleScope.launch(Dispatchers.IO) {
-                    try {
-                        val events = subscriptionManager.getVisibleEvents()
-                        withContext(Dispatchers.Main) {
-                            eventsList.clear()
-                            eventsList.addAll(events)
-                            updateCalendarDots()
-                            updateWeekView()
-                        }
-                    } catch (e: Exception) {
-                        Log.e("MainActivity", "加载周视图事件失败", e)
-                    }
-                }
+                // 重新加载所有事件并更新时间线
+                loadAllEvents()
             }
             2 -> {
                 // 日视图：只显示时间线（不显示底部内容和天气）
