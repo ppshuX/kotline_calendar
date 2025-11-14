@@ -304,4 +304,86 @@ onMounted(() => {
   color: #606266;
   line-height: 1.8;
 }
+
+/* 移动端优化 */
+@media (max-width: 576px) {
+  .fortune-content {
+    gap: 10px;
+    padding-right: 4px;
+  }
+  
+  .sidebar-header h4 {
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+  
+  .sidebar-header p {
+    font-size: 10px;
+  }
+  
+  .fortune-card {
+    padding: 10px;
+    border-radius: 8px;
+  }
+  
+  .card-icon {
+    font-size: 18px;
+    margin-bottom: 6px;
+  }
+  
+  .card-title {
+    font-size: 13px;
+    margin-bottom: 8px;
+  }
+  
+  /* 运势指数 */
+  .score-display {
+    margin: 8px 0;
+  }
+  
+  .stars {
+    font-size: 18px;
+    margin-bottom: 4px;
+  }
+  
+  .score-value {
+    font-size: 20px;
+    margin-bottom: 6px;
+  }
+  
+  .fortune-desc {
+    font-size: 11px;
+  }
+  
+  /* 黄历宜忌 */
+  .almanac-item {
+    margin-bottom: 6px;
+    font-size: 11px;
+    line-height: 1.6;
+  }
+  
+  /* 幸运元素 */
+  .lucky-grid {
+    gap: 8px;
+  }
+  
+  .lucky-item {
+    padding: 8px;
+    border-radius: 6px;
+  }
+  
+  .lucky-label {
+    font-size: 11px;
+  }
+  
+  .lucky-value {
+    font-size: 13px;
+  }
+  
+  /* 温馨提示 */
+  .tip-text {
+    font-size: 11px;
+    line-height: 1.6;
+  }
+}
 </style>

@@ -345,21 +345,21 @@
 @media (max-width: 576px) {
   .calendar-wrapper {
     padding: 8px 4px;
-    min-height: 320px;
-    max-height: 320px;
-    height: 320px;
+    min-height: 280px;
+    max-height: 280px;
+    height: 280px;
   }
   
   .calendar-wrapper .fc {
-    min-height: 300px;
+    min-height: 260px;
   }
   
   .calendar-wrapper .fc-daygrid-day {
-    min-height: 42px;
+    min-height: 38px;
   }
   
   .calendar-wrapper .fc-daygrid-day-frame {
-    min-height: 42px;
+    min-height: 38px;
   }
   
   .calendar-wrapper .fc-toolbar-title {
@@ -377,8 +377,23 @@
   }
   
   .calendar-wrapper .fc-daygrid-day-number {
-    padding: 3px;
-    font-size: 11px;
+    padding: 2px;
+    font-size: 10px;
+  }
+  
+  /* 确保节日小字显示 */
+  .calendar-wrapper .fc-bg-event .fc-event-title {
+    font-size: 9px !important;
+    line-height: 1.2;
+    padding: 1px 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .calendar-wrapper .fc-daygrid-day-top {
+    flex-direction: row;
+    justify-content: space-between;
   }
 }
 
