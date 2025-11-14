@@ -126,13 +126,12 @@ def unbind_acwing(request):
     """解绑 AcWing 账号"""
     user = request.user
     
-    # 检查是否至少有一种登录方式
-    has_password = user.has_usable_password()
+    # 检查是否至少有一种登录方式（只支持OAuth，不再检查密码）
     has_qq = hasattr(user, 'qq_profile')
     
-    if not has_password and not has_qq:
+    if not has_qq:
         return Response({
-            'error': '无法解绑：请至少保留一种登录方式'
+            'error': '无法解绑：请至少保留一种登录方式（需要绑定QQ）'
         }, status=status.HTTP_400_BAD_REQUEST)
     
     # 删除 AcWing 绑定
@@ -151,13 +150,12 @@ def unbind_qq(request):
     """解绑 QQ 账号"""
     user = request.user
     
-    # 检查是否至少有一种登录方式
-    has_password = user.has_usable_password()
+    # 检查是否至少有一种登录方式（只支持OAuth，不再检查密码）
     has_acwing = hasattr(user, 'acwing_profile')
     
-    if not has_password and not has_acwing:
+    if not has_acwing:
         return Response({
-            'error': '无法解绑：请至少保留一种登录方式'
+            'error': '无法解绑：请至少保留一种登录方式（需要绑定AcWing）'
         }, status=status.HTTP_400_BAD_REQUEST)
     
     # 删除 QQ 绑定
