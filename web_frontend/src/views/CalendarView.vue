@@ -865,10 +865,16 @@ const handleAICreate = async (eventData) => {
   }
 }
 
+/* 桌面端日历容器 - 必须放在移动端media query之后 */
+@media (min-width: 768px) {
+  .calendar-page .calendar-wrapper {
+    height: 650px;
+    max-height: 650px;
+    min-height: 650px;
+  }
+}
+
 .calendar-page .calendar-wrapper {
-  height: 650px;
-  max-height: 650px;
-  min-height: 650px;
   width: 100%;
   max-width: 100%;
   overflow: visible;
