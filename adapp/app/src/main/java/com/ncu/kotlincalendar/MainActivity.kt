@@ -578,15 +578,32 @@ class MainActivity : AppCompatActivity() {
         editText?.setText(timeFormat.format(calendar.time))
     }
     
-    // 从数据库加载所有日程（使用订阅过滤）
+    // 从数据库/云端加载所有日程（根据模式自动切换）
     private fun loadAllEvents() {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                // 使用SubscriptionManager过滤可见事件
-                val events = subscriptionManager.getVisibleEvents()
+                val userEvents: List<Event>
+                
+                // 根据模式获取用户自己的事件
+                if (PreferenceManager.isCloudMode(this@MainActivity) && PreferenceManager.isLoggedIn(this@MainActivity)) {
+                    // 云端模式：从API获取
+                    val result = eventRepository.getAllEvents()
+                    userEvents = result.getOrElse { emptyList() }
+                } else {
+                    // 本地模式：从数据库获取
+                    userEvents = eventDao.getUserEvents()
+                }
+                
+                // 获取订阅的日历事件（订阅始终是本地存储的）
+                val subscriptionEvents = subscriptionManager.getVisibleEvents()
+                    .filter { it.subscriptionId != null } // 只要订阅的事件
+                
+                // 合并用户事件和订阅事件
+                val allEvents = userEvents + subscriptionEvents
+                
                 withContext(Dispatchers.Main) {
                     eventsList.clear()
-                    eventsList.addAll(events)
+                    eventsList.addAll(allEvents)
                     updateEventsList()
                     updateCalendarDots()  // 更新日历标记
                     
@@ -602,15 +619,33 @@ class MainActivity : AppCompatActivity() {
         }
     }
     
-    // 加载指定日期的日程（使用订阅过滤）
+    // 加载指定日期的日程（根据模式自动切换）
     private fun loadEventsForSelectedDate(date: Long) {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                // 使用SubscriptionManager过滤可见事件
-                val events = subscriptionManager.getVisibleEvents(date)
+                val userEvents: List<Event>
+                
+                // 根据模式获取用户自己的事件
+                if (PreferenceManager.isCloudMode(this@MainActivity) && PreferenceManager.isLoggedIn(this@MainActivity)) {
+                    // 云端模式：从API获取
+                    val result = eventRepository.getEventsForDate(date)
+                    userEvents = result.getOrElse { emptyList() }
+                } else {
+                    // 本地模式：从数据库获取
+                    userEvents = eventDao.getEventsForDate(date)
+                        .filter { it.subscriptionId == null } // 只要用户创建的
+                }
+                
+                // 获取订阅的日历事件（订阅始终是本地存储的）
+                val subscriptionEvents = subscriptionManager.getVisibleEvents(date)
+                    .filter { it.subscriptionId != null } // 只要订阅的事件
+                
+                // 合并用户事件和订阅事件
+                val allEvents = userEvents + subscriptionEvents
+                
                 withContext(Dispatchers.Main) {
                     eventsList.clear()
-                    eventsList.addAll(events)
+                    eventsList.addAll(allEvents)
                     updateEventsList()
                 }
             } catch (e: Exception) {
@@ -619,7 +654,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
     
-    // 添加日程
+    // 添加日程（根据模式自动切换本地/云端）
     private fun addEvent(
         title: String,
         description: String = "",
@@ -641,11 +676,18 @@ class MainActivity : AppCompatActivity() {
                     latitude = latitude,
                     longitude = longitude
                 )
-                val eventId = eventDao.insert(event)
+                
+                // 根据模式创建事件
+                val result = eventRepository.createEvent(event)
+                val savedEvent = result.getOrElse {
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(this@MainActivity, "保存失败: ${it.message}", Toast.LENGTH_SHORT).show()
+                    }
+                    return@launch
+                }
                 
                 // 设置提醒
                 if (reminderMinutes > 0) {
-                    val savedEvent = event.copy(id = eventId)
                     withContext(Dispatchers.Main) {
                         reminderManager.setReminder(savedEvent)
                         
@@ -660,7 +702,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
                 
-                // 重新加载数据（使用订阅过滤）
+                // 重新加载数据
                 selectedDate?.let { 
                     val millis = it.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
                     loadEventsForSelectedDate(millis)
@@ -680,7 +722,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
     
-    // 更新日程（只能更新用户创建的）
+    // 更新日程（只能更新用户创建的，根据模式自动切换本地/云端）
     private fun updateEvent(
         id: Long,
         title: String,
@@ -693,8 +735,16 @@ class MainActivity : AppCompatActivity() {
     ) {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                // 获取现有事件，确保subscriptionId为null
-                val existingEvent = eventDao.getAllEvents().find { it.id == id }
+                // 根据模式获取现有事件
+                val existingEvent: Event? = if (PreferenceManager.isCloudMode(this@MainActivity) && PreferenceManager.isLoggedIn(this@MainActivity)) {
+                    // 云端模式：从API获取
+                    val result = eventRepository.getAllEvents()
+                    result.getOrNull()?.find { it.id == id }
+                } else {
+                    // 本地模式：从数据库获取
+                    eventDao.getAllEvents().find { it.id == id }
+                }
+                
                 if (existingEvent == null) {
                     withContext(Dispatchers.Main) {
                         Toast.makeText(this@MainActivity, "日程不存在", Toast.LENGTH_SHORT).show()
@@ -725,7 +775,15 @@ class MainActivity : AppCompatActivity() {
                     latitude = latitude,
                     longitude = longitude
                 )
-                eventDao.update(event)
+                
+                // 根据模式更新事件
+                val result = eventRepository.updateEvent(event)
+                if (result.isFailure) {
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(this@MainActivity, "更新失败: ${result.exceptionOrNull()?.message}", Toast.LENGTH_SHORT).show()
+                    }
+                    return@launch
+                }
                 
                 // 设置新提醒
                 if (reminderMinutes > 0) {
@@ -734,7 +792,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
                 
-                // 重新加载数据（使用订阅过滤）
+                // 重新加载数据
                 selectedDate?.let { 
                     val millis = it.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
                     loadEventsForSelectedDate(millis)
@@ -889,7 +947,7 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
     
-    // 删除日程（只能删除用户创建的，不能删除订阅的）
+    // 删除日程（只能删除用户创建的，不能删除订阅的，根据模式自动切换本地/云端）
     private fun deleteEvent(event: Event) {
         // 检查是否是订阅的事件
         if (event.subscriptionId != null) {
@@ -904,10 +962,16 @@ class MainActivity : AppCompatActivity() {
                     reminderManager.cancelReminder(event.id)
                 }
                 
-                // 删除日程
-                eventDao.delete(event)
+                // 根据模式删除事件
+                val result = eventRepository.deleteEvent(event)
+                if (result.isFailure) {
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(this@MainActivity, "删除失败: ${result.exceptionOrNull()?.message}", Toast.LENGTH_SHORT).show()
+                    }
+                    return@launch
+                }
                 
-                // 重新加载（使用订阅过滤）
+                // 重新加载数据
                 selectedDate?.let { 
                     val millis = it.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
                     loadEventsForSelectedDate(millis)
@@ -1206,43 +1270,7 @@ class MainActivity : AppCompatActivity() {
                 switchContent(currentTab)
                 
                 // 重新加载所有事件并刷新显示
-                lifecycleScope.launch(Dispatchers.IO) {
-                    try {
-                        // 加载所有可见事件
-                        val events = subscriptionManager.getVisibleEvents()
-                        
-                        withContext(Dispatchers.Main) {
-                            // 更新事件列表
-                            eventsList.clear()
-                            eventsList.addAll(events)
-                            
-                            // 更新日历标记点
-                            updateCalendarDots()
-                            weekCalendarView.notifyCalendarChanged()
-                            
-                            // 刷新当前Tab的内容
-                            when (currentTab) {
-                                0 -> {
-                                    // 日程Tab：更新RecyclerView
-                                    updateEventsList()
-                                }
-                                1 -> {
-                                    // 节日Tab：重新加载节日信息
-                                    selectedDate?.let { date ->
-                                        val millis = date.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
-                                        loadHolidayInfo(millis)
-                                    }
-                                }
-                                2 -> {
-                                    // ✅ 使用 FortuneManager 加载今日运势
-                                    fortuneManager.loadFortune()
-                                }
-                            }
-                        }
-                    } catch (e: Exception) {
-                        Log.e("MainActivity", "加载事件失败", e)
-                    }
-                }
+                loadAllEvents()
             }
             1 -> {
                 // 周视图：横向7天选择器 + 时间线（不显示底部内容和天气）
@@ -1282,18 +1310,7 @@ class MainActivity : AppCompatActivity() {
                 btnViewSwitch.text = "📅 日"
                 
                 // 重新加载所有事件并更新时间线
-                lifecycleScope.launch(Dispatchers.IO) {
-                    try {
-                        val events = subscriptionManager.getVisibleEvents()
-                        withContext(Dispatchers.Main) {
-                            eventsList.clear()
-                            eventsList.addAll(events)
-                            updateDayView()
-                        }
-                    } catch (e: Exception) {
-                        Log.e("MainActivity", "加载日视图事件失败", e)
-                    }
-                }
+                loadAllEvents()
             }
         }
     }
@@ -1383,12 +1400,20 @@ class MainActivity : AppCompatActivity() {
     private fun updateCalendarDots() {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                // 获取所有可见的事件
-                val events = subscriptionManager.getVisibleEvents()
+                // 根据模式获取用户自己的事件
+                val userEvents: List<Event>
+                if (PreferenceManager.isCloudMode(this@MainActivity) && PreferenceManager.isLoggedIn(this@MainActivity)) {
+                    // 云端模式：从API获取
+                    val result = eventRepository.getAllEvents()
+                    userEvents = result.getOrElse { emptyList() }
+                } else {
+                    // 本地模式：从数据库获取
+                    userEvents = eventDao.getUserEvents()
+                }
                 
-                // 分类：用户日程（小点）vs 节日（显示名称）
-                val userEvents = events.filter { it.subscriptionId == null }
-                val festivalEvents = events.filter { it.subscriptionId != null }
+                // 获取订阅的日历事件（订阅始终是本地存储的）
+                val festivalEvents = subscriptionManager.getVisibleEvents()
+                    .filter { it.subscriptionId != null }
                 
                 // 转换为 LocalDate 集合
                 val newDatesWithEvents = userEvents.map { event ->
