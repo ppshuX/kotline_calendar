@@ -73,8 +73,10 @@ class LoginActivity : AppCompatActivity() {
         
         // 设置WebViewClient拦截回调URL
         webView.webViewClient = object : WebViewClient() {
-            override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
-                val url = request?.url?.toString() ?: return false
+            // 处理URL的逻辑（抽取为通用方法）
+            private fun handleUrl(url: String?): Boolean {
+                if (url == null) return false
+                
                 Log.d(TAG, "加载URL: $url")
                 
                 // 拦截QQ回调URL
@@ -83,7 +85,36 @@ class LoginActivity : AppCompatActivity() {
                     return true // 拦截，不继续加载
                 }
                 
+                // 处理QQ自定义协议（尝试打开QQ客户端）
+                if (url.startsWith("wtloginmqq://") || url.startsWith("mqqapi://") || url.startsWith("tencent://")) {
+                    try {
+                        val intent = Intent(Intent.ACTION_VIEW, android.net.Uri.parse(url))
+                        if (intent.resolveActivity(packageManager) != null) {
+                            startActivity(intent)
+                            return true // 拦截，已用Intent处理
+                        } else {
+                            // 如果没有安装QQ客户端，提示用户
+                            Toast.makeText(this@LoginActivity, "请先安装QQ客户端", Toast.LENGTH_LONG).show()
+                            return true
+                        }
+                    } catch (e: Exception) {
+                        Log.e(TAG, "打开QQ客户端失败", e)
+                        Toast.makeText(this@LoginActivity, "无法打开QQ客户端", Toast.LENGTH_SHORT).show()
+                        return true
+                    }
+                }
+                
                 return false // 继续加载其他URL
+            }
+            
+            override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+                val url = request?.url?.toString()
+                return handleUrl(url)
+            }
+            
+            // 兼容旧版本Android（API < 24）
+            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+                return handleUrl(url)
             }
             
             override fun onPageFinished(view: WebView?, url: String?) {
