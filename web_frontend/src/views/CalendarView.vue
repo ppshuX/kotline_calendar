@@ -625,7 +625,7 @@ const handleAICreate = async (eventData) => {
   
   /* 日期单元格缩小 */
   .calendar-page :deep(.fc-daygrid-day) {
-    min-height: 42px !important;
+    min-height: 42px;
   }
   
   /* 周标题缩小 */

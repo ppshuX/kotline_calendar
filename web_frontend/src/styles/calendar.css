@@ -382,64 +382,103 @@
   }
   
   /* 确保节日小字显示 - 移动端优化 */
-  .calendar-wrapper .fc-bg-event {
-    opacity: 0.6 !important;
-    padding-top: 0 !important;
-    padding: 2px 1px !important;
-    font-size: 9px !important;
-    min-height: auto !important;
-    height: auto !important;
+  .calendar-wrapper .fc-daygrid-day {
+    position: relative;
+    overflow: visible;
   }
   
-  .calendar-wrapper .fc-bg-event .fc-event-title {
-    font-size: 9px !important;
-    line-height: 1.2 !important;
-    padding: 0 1px !important;
-    white-space: nowrap !important;
-    overflow: visible !important;
-    text-overflow: clip !important;
-    display: block !important;
-    position: absolute !important;
-    top: 0 !important;
-    left: 1px !important;
-    right: 1px !important;
-    color: #e74c3c !important;
-    font-weight: 600 !important;
-    text-shadow: 0 0 2px rgba(255, 255, 255, 0.8) !important;
-    z-index: 3 !important;
+  .calendar-wrapper .fc-daygrid-day-frame {
+    position: relative;
+    overflow: visible;
+  }
+  
+  .calendar-wrapper .fc-daygrid-day-events {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: 0;
+  }
+  
+  .calendar-wrapper .fc-bg-event {
+    opacity: 1;
+    padding: 0;
+    font-size: 9px;
+    min-height: auto;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
   }
   
   .calendar-wrapper .fc-bg-event.holiday-event {
-    background-color: rgba(255, 107, 107, 0.08) !important;
-    opacity: 0.7 !important;
+    background-color: rgba(255, 107, 107, 0.1);
+    opacity: 1;
+  }
+  
+  .calendar-wrapper .fc-bg-event .fc-event-title {
+    font-size: 8px;
+    line-height: 1.1;
+    padding: 1px 2px;
+    white-space: nowrap;
+    overflow: visible;
+    text-overflow: clip;
+    display: inline-block;
+    position: absolute;
+    top: 1px;
+    left: 2px;
+    color: #e74c3c;
+    font-weight: 700;
+    text-shadow: 
+      0 0 3px rgba(255, 255, 255, 1),
+      0 0 3px rgba(255, 255, 255, 1),
+      1px 1px 0 rgba(255, 255, 255, 0.9);
+    z-index: 3;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 2px;
+    max-width: calc(100% - 4px);
+  }
+  
+  .calendar-wrapper .fc-bg-event.holiday-event .fc-event-title {
+    color: #e74c3c;
   }
   
   .calendar-wrapper .fc-daygrid-day-top {
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    position: relative !important;
-    min-height: 20px !important;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    position: relative;
+    min-height: 14px;
+    margin-bottom: 2px;
   }
   
   .calendar-wrapper .fc-daygrid-day-number {
-    position: absolute !important;
-    bottom: 2px !important;
-    right: 2px !important;
-    z-index: 4 !important;
+    position: absolute;
+    bottom: 1px;
+    right: 2px;
+    z-index: 5;
+    font-weight: 600;
   }
   
   /* 进一步缩小工具栏 */
   .calendar-wrapper .fc-header-toolbar {
-    margin-bottom: 0.3em !important;
+    margin-bottom: 0.3em;
   }
   
   .calendar-wrapper .fc-toolbar-title {
-    font-size: 13px !important;
+    font-size: 13px;
   }
   
   .calendar-wrapper .fc-button {
-    padding: 0.2em 0.4em !important;
-    font-size: 9px !important;
+    padding: 0.2em 0.4em;
+    font-size: 9px;
   }
 }
 
