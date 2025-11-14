@@ -284,29 +284,38 @@
 /* ==================== 移动端优化 ==================== */
 @media (max-width: 768px) {
 
-  /* 容器微调 - 大幅增加高度以便看清楚 */
+  /* 容器微调 - 大幅增加高度确保内容完整显示 */
   .calendar-wrapper {
-    padding: 12px 0;
-    min-height: 420px;
-    max-height: 420px;
-    height: 420px;
+    padding: 16px 0;
+    min-height: 500px;
+    max-height: 500px;
+    height: 500px;
     margin-bottom: 12px;
     width: 100%;
   }
 
   /* 确保日历内容完整显示 */
   .calendar-wrapper .fc {
-    min-height: 300px;
+    min-height: 450px;
     width: 100%;
   }
+  
+  .calendar-wrapper .fc-view-harness {
+    height: 100% !important;
+  }
+  
+  .calendar-wrapper .fc-daygrid-body {
+    height: auto !important;
+  }
 
-  /* 显著增加日历格子高度以便看清 */
+  /* 显著增加日历格子高度确保内容完整显示 */
   .calendar-wrapper .fc-daygrid-day {
-    min-height: 58px;
+    min-height: 65px;
   }
   
   .calendar-wrapper .fc-daygrid-day-frame {
-    min-height: 58px;
+    min-height: 65px;
+    overflow: visible;
   }
 
   /* 调整字体大小 - 显著增大以便看清 */

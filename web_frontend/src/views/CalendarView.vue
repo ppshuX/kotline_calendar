@@ -815,19 +815,24 @@ const handleAICreate = async (eventData) => {
     padding-right: 4px;
   }
   
-  /* 日历高度大幅增加，确保舒适阅读 */
+  /* 日历高度大幅增加，确保所有日期完整显示 */
   .calendar-page .calendar-wrapper {
-    height: 420px;
-    max-height: 420px;
-    min-height: 420px;
+    height: 500px;
+    max-height: 500px;
+    min-height: 500px;
     margin: 0;
     width: 100%;
-    padding: 12px 0;
+    padding: 16px 0;
   }
   
-  /* 日期单元格 - 显著增大 */
+  /* 日期单元格 - 显著增大以完整显示内容 */
   .calendar-page :deep(.fc-daygrid-day) {
-    min-height: 58px;
+    min-height: 65px;
+  }
+  
+  .calendar-page :deep(.fc-daygrid-day-frame) {
+    min-height: 65px;
+    overflow: visible;
   }
   
   /* 周标题 */
