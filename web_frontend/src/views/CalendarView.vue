@@ -772,40 +772,37 @@ const handleAICreate = async (eventData) => {
     padding: 10px 0;
   }
   
-  /* 整体缩小间距和字体 */
-  .calendar-page :deep(.fc) {
-    font-size: 12px;
-  }
-  
-  /* 日期单元格适中 */
+  /* 日期单元格 - 增大以便看清 */
   .calendar-page :deep(.fc-daygrid-day) {
-    min-height: 35px;
+    min-height: 52px;
   }
   
-  /* 周标题缩小 */
+  /* 周标题 */
   .calendar-page :deep(.fc-col-header-cell) {
-    padding: 5px 2px;
-    font-size: 11px;
+    padding: 6px 2px;
+    font-size: 13px;
   }
   
-  /* 工具栏缩小 */
+  /* 工具栏 */
   .calendar-page :deep(.fc-header-toolbar) {
-    margin-bottom: 0.5em !important;
+    margin-bottom: 8px;
   }
   
   .calendar-page :deep(.fc-toolbar-title) {
-    font-size: 1.1em !important;
+    font-size: 17px;
+    font-weight: 600;
   }
   
   .calendar-page :deep(.fc-button) {
-    padding: 0.3em 0.5em !important;
-    font-size: 0.85em !important;
+    padding: 5px 8px;
+    font-size: 13px;
   }
   
-  /* 日期数字缩小 */
+  /* 日期数字 - 增大字体 */
   .calendar-page :deep(.fc-daygrid-day-number) {
-    padding: 3px !important;
-    font-size: 11px !important;
+    padding: 6px;
+    font-size: 15px;
+    font-weight: 600;
   }
 }
 
