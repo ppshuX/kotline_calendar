@@ -1,0 +1,303 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>授权 - Ralendar</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            animation: slideUp 0.4s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .app-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .app-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            font-size: 40px;
+            color: white;
+        }
+
+        .app-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: #303133;
+            margin-bottom: 8px;
+        }
+
+        .app-description {
+            font-size: 14px;
+            color: #909399;
+        }
+
+        .auth-request h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #303133;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .request-description {
+            font-size: 14px;
+            color: #606266;
+            margin-bottom: 16px;
+        }
+
+        .scope-list {
+            background: #f5f7fa;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .scope-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+            font-size: 14px;
+            color: #606266;
+        }
+
+        .scope-icon {
+            color: #67c23a;
+            margin-right: 12px;
+            font-size: 16px;
+        }
+
+        .security-note {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px;
+            background: #ecf5ff;
+            border-radius: 8px;
+            border-left: 3px solid #409eff;
+            margin-bottom: 24px;
+        }
+
+        .security-note-icon {
+            font-size: 20px;
+            color: #409eff;
+        }
+
+        .security-note p {
+            font-size: 13px;
+            color: #606266;
+            line-height: 1.6;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 16px;
+            background: #f5f7fa;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            color: #606266;
+        }
+
+        .user-avatar {
+            font-size: 24px;
+            color: #909399;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            flex: 1;
+            height: 48px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-cancel {
+            background: #f5f7fa;
+            color: #606266;
+        }
+
+        .btn-cancel:hover {
+            background: #e4e7ed;
+        }
+
+        .btn-authorize {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-authorize:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .privacy-links {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 12px;
+            color: #909399;
+        }
+
+        .privacy-links a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .privacy-links a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 576px) {
+            .card {
+                padding: 24px;
+            }
+
+            .app-name {
+                font-size: 20px;
+            }
+
+            .auth-request h2 {
+                font-size: 16px;
+            }
+
+            .btn {
+                height: 44px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <!-- 应用Logo和名称 -->
+            <div class="app-header">
+                <div class="app-logo">
+                    {% if client.logo_url %}
+                        <img src="{{ client.logo_url }}" alt="{{ client.client_name }}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 16px;">
+                    {% else %}
+                        📱
+                    {% endif %}
+                </div>
+                <div class="app-name">{{ client.client_name }}</div>
+                {% if client.client_description %}
+                    <div class="app-description">{{ client.client_description }}</div>
+                {% endif %}
+            </div>
+
+            <!-- 授权请求说明 -->
+            <div class="auth-request">
+                <h2>{{ client.client_name }} 请求访问您的 Ralendar</h2>
+                <p class="request-description">该应用将获得以下权限：</p>
+                
+                <!-- 权限列表 -->
+                <div class="scope-list">
+                    {% for scope_desc in scope_descriptions %}
+                    <div class="scope-item">
+                        <span class="scope-icon">✓</span>
+                        <span>{{ scope_desc }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- 安全提示 -->
+                <div class="security-note">
+                    <div class="security-note-icon">🛡️</div>
+                    <p>
+                        授权后，{{ client.client_name }} 可以访问上述数据。<br>
+                        您可以随时在设置中撤销此授权。
+                    </p>
+                </div>
+            </div>
+
+            <!-- 用户信息 -->
+            <div class="user-info">
+                <div class="user-avatar">👤</div>
+                <span>以 {{ user.username }} 的身份授权</span>
+            </div>
+
+            <!-- 操作按钮 -->
+            <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="client_id" value="{{ client.client_id }}">
+                <input type="hidden" name="redirect_uri" value="{{ redirect_uri }}">
+                <input type="hidden" name="response_type" value="code">
+                <input type="hidden" name="state" value="{{ state }}">
+                <input type="hidden" name="scope" value="{{ scope }}">
+                
+                <div class="action-buttons">
+                    <button type="submit" name="action" value="deny" class="btn btn-cancel">
+                        取消
+                    </button>
+                    <button type="submit" name="action" value="authorize" class="btn btn-authorize">
+                        授权
+                    </button>
+                </div>
+            </form>
+
+            <!-- 隐私链接 -->
+            <div class="privacy-links">
+                <a href="/terms" target="_blank">用户协议</a>
+                <span>·</span>
+                <a href="/privacy" target="_blank">隐私政策</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

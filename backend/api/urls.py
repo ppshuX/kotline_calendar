@@ -26,6 +26,9 @@ urlpatterns = [
     # 用户中心路由
     path('user/', include('api.url_patterns.user')),
     
+    # OAuth 2.0 路由（第三方应用接入）
+    path('oauth/', include('api.url_patterns.oauth')),
+    
     # 融合功能路由 (Roamio × Ralendar)
     path('fusion/', include('api.url_patterns.fusion')),
     
