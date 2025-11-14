@@ -209,15 +209,15 @@ const showAIDialog = ref(false)
 
 // 注意：节日数据在 onMounted 中统一加载，避免重复调用
 
-// 过滤后的日程列表（根据选中日期）
+// 过滤后的日程列表（只显示今天的日程）
 const filteredEvents = computed(() => {
-  if (!selectedDateForFilter.value) {
-    return eventsList.value
-  }
+  // 始终只显示今天的日程
+  const today = new Date()
+  const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
   
   return eventsList.value.filter(event => {
     const eventDate = event.start_time.split('T')[0]
-    return eventDate === selectedDateForFilter.value
+    return eventDate === todayStr
   })
 })
 
