@@ -79,8 +79,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnCloudMode: Button
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: EventAdapter
-    private lateinit var fabAI: com.google.android.material.floatingactionbutton.FloatingActionButton
-    private lateinit var fabAdd: com.google.android.material.floatingactionbutton.FloatingActionButton
     
     // Tab 和内容视图
     private lateinit var tabLayout: com.google.android.material.tabs.TabLayout
