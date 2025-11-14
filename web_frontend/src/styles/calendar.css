@@ -58,11 +58,6 @@
 
 /* ==================== FullCalendar 基础样式 ==================== */
 
-/* 让 FullCalendar 自己处理布局 */
-.calendar-wrapper .fc {
-  /* 不设置任何 width/height，让库自己处理 */
-}
-
 /* 工具栏 */
 .calendar-wrapper .fc-header-toolbar {
   margin-bottom: 15px;
