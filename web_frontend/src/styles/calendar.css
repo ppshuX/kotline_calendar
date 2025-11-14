@@ -347,6 +347,23 @@
   .calendar-page {
     padding-top: 0;
   }
+  
+  /* 移动端周视图优化 */
+  .calendar-wrapper .fc-timeGridWeek-view .fc-col-header-cell {
+    padding: 8px 2px;
+  }
+  
+  .calendar-wrapper .fc-timeGridWeek-view .fc-col-header-cell-cushion {
+    font-size: 12px;
+  }
+  
+  .calendar-wrapper .fc-timeGridWeek-view .fc-timegrid-slot {
+    height: 35px;
+  }
+  
+  .calendar-wrapper .fc-timeGridWeek-view .fc-timegrid-slot-label {
+    font-size: 11px;
+  }
 }
 
 /* 小屏手机优化 - 接近正方形 */

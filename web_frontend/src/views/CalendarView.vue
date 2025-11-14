@@ -266,7 +266,7 @@ calendarOptions.value.customButtons = {
 calendarOptions.value.headerToolbar = {
   left: 'prev,next myToday',  // 使用自定义的 myToday 按钮
   center: 'title',
-  right: 'dayGridMonth,dayGridWeek,timeGridDay'
+  right: 'dayGridMonth,timeGridWeek,timeGridDay'
 }
 
 // 配置日期单元格渲染（添加圆点指示器和节日文字）
