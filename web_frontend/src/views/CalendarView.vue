@@ -14,8 +14,21 @@
       <div class="row g-3 justify-content-center">
         <!-- 日历：桌面端左侧，移动端上方全宽 -->
         <div class="col-lg-6 col-md-6 col-12">
-          <div class="calendar-wrapper">
+          <!-- 月视图和日视图 -->
+          <div v-if="currentView !== 'week'" class="calendar-wrapper">
             <FullCalendar ref="fullCalendarRef" :options="calendarOptions" />
+          </div>
+          
+          <!-- 周视图（自定义） -->
+          <div v-else class="calendar-wrapper">
+            <WeekView 
+              ref="weekViewRef"
+              :selected-date="selectedDateForFilter"
+              :events="eventsList"
+              @date-select="handleWeekDateSelect"
+              @event-click="handleEventClick"
+              @date-click="handleDateClick"
+            />
           </div>
         </div>
         
@@ -78,7 +91,8 @@ import { ref, computed, onMounted, watch } from 'vue'
 import FullCalendar from '@fullcalendar/vue3'
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
-import NavBar from '../components/NavBar.vue'
+import NavBar from '../components/layout/NavBar.vue'
+import WeekView from '@/components/calendar/WeekView.vue'
 import ContentField from '../components/ContentField.vue'
 import WeatherBar from '../components/calendar/WeatherBar.vue'
 import EventDialog from '../components/calendar/EventDialog.vue'
@@ -93,6 +107,8 @@ const router = useRouter()
 
 // FullCalendar 组件引用
 const fullCalendarRef = ref(null)
+const weekViewRef = ref(null)
+const currentView = ref('month') // 'month', 'week', 'day'
 
 // 检查登录状态
 const isLoggedIn = ref(false)
@@ -228,21 +244,37 @@ calendarOptions.value.dateClick = handleDateClick
 // 配置事件点击事件
 calendarOptions.value.eventClick = handleEventClick
 
+// 周视图日期选择处理
+const handleWeekDateSelect = async (dateStr) => {
+  selectedDateForFilter.value = dateStr
+  selectedDateLabel.value = new Date(dateStr).toLocaleDateString('zh-CN', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    weekday: 'long'
+  })
+  
+  // 加载选中日期的节假日
+  await loadHolidaysForSelectedDate(dateStr)
+}
+
 // 定义"今天"按钮的处理函数
 const handleTodayClick = async () => {
-  // 获取 FullCalendar API
-  if (fullCalendarRef.value) {
+  const todayStr = new Date().toISOString().split('T')[0]
+  
+  if (currentView.value === 'week') {
+    // 周视图：选中今天
+    handleWeekDateSelect(todayStr)
+  } else if (fullCalendarRef.value) {
+    // 月视图/日视图：使用 FullCalendar API
     const calendarApi = fullCalendarRef.value.getApi()
-    calendarApi.today()  // 跳转到今天
-    calendarApi.unselect()  // 取消选中状态
+    calendarApi.today()
+    calendarApi.unselect()
   }
   
-  // 重置为今天的日期
-  const today = new Date()
-  const todayStr = today.toISOString().split('T')[0]
-  
   selectedDateForFilter.value = todayStr  // 设置为今天的日期（显示今天的日程）
-  selectedDateLabel.value = today.toLocaleDateString('zh-CN', {
+  const todayDate = new Date(todayStr)
+  selectedDateLabel.value = todayDate.toLocaleDateString('zh-CN', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
@@ -266,7 +298,28 @@ calendarOptions.value.customButtons = {
 calendarOptions.value.headerToolbar = {
   left: 'prev,next myToday',  // 使用自定义的 myToday 按钮
   center: 'title',
-  right: 'dayGridMonth,timeGridWeek,timeGridDay'
+  right: 'dayGridMonth,customWeek,timeGridDay'
+}
+
+// 添加自定义周视图按钮
+calendarOptions.value.customButtons = {
+  ...calendarOptions.value.customButtons,
+  customWeek: {
+    text: '周',
+    click: () => {
+      currentView.value = 'week'
+    }
+  }
+}
+
+// 监听视图变化
+calendarOptions.value.viewDidMount = (info) => {
+  const viewType = info.view.type
+  if (viewType === 'dayGridMonth') {
+    currentView.value = 'month'
+  } else if (viewType === 'timeGridDay') {
+    currentView.value = 'day'
+  }
 }
 
 // 配置日期单元格渲染（添加圆点指示器和节日文字）
