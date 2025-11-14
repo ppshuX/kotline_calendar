@@ -569,8 +569,19 @@ onMounted(async () => {
   await loadHolidays()
   await loadTodayHolidays()
   
+  console.log('节假日数据已加载:', Object.keys(holidaysMap.value).length, '个节日')
+  console.log('节假日数据:', holidaysMap.value)
+  
   // 节假日加载后更新日历
   updateCalendarEvents()
+  
+  // 强制刷新日历显示节日标签
+  setTimeout(() => {
+    refreshEventDots()
+    if (fullCalendarRef.value) {
+      fullCalendarRef.value.getApi().render()
+    }
+  }, 300)
   
   // 只有登录后才加载用户事件
   if (isLoggedIn.value) {
