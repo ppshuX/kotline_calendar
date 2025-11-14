@@ -544,23 +544,26 @@ const refreshEventDots = () => {
         holidayLabel.className = 'holiday-label'
         holidayLabel.textContent = `${holiday.emoji || '🎉'} ${holiday.name}`
         holidayLabel.style.cssText = `
-          position: absolute;
-          top: 1px;
-          left: 2px;
-          font-size: 8px;
-          line-height: 1.1;
-          color: #e74c3c;
-          font-weight: 700;
-          text-shadow: 0 0 3px rgba(255, 255, 255, 1), 1px 1px 0 rgba(255, 255, 255, 0.9);
-          z-index: 3;
-          background: rgba(255, 255, 255, 0.7);
-          border-radius: 2px;
-          padding: 1px 2px;
-          white-space: nowrap;
-          max-width: calc(100% - 4px);
-          overflow: hidden;
-          text-overflow: ellipsis;
-          pointer-events: none;
+          position: absolute !important;
+          bottom: 2px !important;
+          left: 50% !important;
+          transform: translateX(-50%) !important;
+          font-size: 9px !important;
+          line-height: 1.1 !important;
+          color: #e74c3c !important;
+          font-weight: 700 !important;
+          text-shadow: 0 0 3px rgba(255, 255, 255, 1), 1px 1px 0 rgba(255, 255, 255, 1) !important;
+          z-index: 100 !important;
+          background: rgba(255, 255, 255, 0.85) !important;
+          border-radius: 2px !important;
+          padding: 1px 3px !important;
+          white-space: nowrap !important;
+          max-width: 90% !important;
+          overflow: hidden !important;
+          text-overflow: ellipsis !important;
+          pointer-events: none !important;
+          display: block !important;
+          visibility: visible !important;
         `
         cell.appendChild(holidayLabel)
         console.log('刷新时添加节日标签:', dateStr, holiday.name)
