@@ -3,7 +3,7 @@
     <div class="sidebar-header text-center mb-3">
       <h4>🤖 AI助手</h4>
       <p class="text-secondary small mb-0">
-        智能日程管理助手
+        智能问答助手（查询日程信息）
       </p>
     </div>
 
@@ -35,6 +35,7 @@
       <div v-if="chatHistory.length === 0 && !loading" class="empty-chat">
         <div class="empty-icon">💬</div>
         <p class="empty-text">向我提问吧！</p>
+        <p class="empty-hint">💡 我可以帮你查询日程、总结安排，但不能创建日程</p>
         <div class="example-questions">
           <button
             v-for="example in exampleQuestions"
@@ -53,7 +54,7 @@
       <input
         v-model="inputMessage"
         @keyup.enter="sendMessage()"
-        placeholder="输入问题或日程描述..."
+        placeholder="输入问题查询日程信息..."
         class="chat-input"
         :disabled="loading"
       />
@@ -79,9 +80,9 @@ const loading = ref(false)
 const chatHistoryRef = ref(null)
 
 const exampleQuestions = [
-  '明天下午3点开会',
   '这周有什么安排？',
-  '帮我总结今天的日程'
+  '帮我总结今天的日程',
+  '明天有哪些重要事件？'
 ]
 
 // 发送消息
@@ -266,6 +267,14 @@ const scrollToBottom = () => {
   font-size: 15px;
   color: #999;
   margin: 0;
+}
+
+.empty-hint {
+  font-size: 12px;
+  color: #aaa;
+  margin: 0;
+  padding: 0 20px;
+  text-align: center;
 }
 
 .example-questions {
