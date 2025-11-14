@@ -286,13 +286,13 @@
 /* ==================== 移动端优化 ==================== */
 @media (max-width: 768px) {
 
-  /* 容器微调 - 大幅增加高度确保内容完整显示 */
+  /* 容器微调 - 使用auto让内容自然撑开 */
   .calendar-wrapper {
-    padding: 16px 0;
-    min-height: 500px;
-    max-height: 500px;
-    height: 500px;
-    margin-bottom: 12px;
+    padding: 20px;
+    min-height: 600px;
+    height: auto;
+    max-height: none;
+    margin-bottom: 16px;
     width: 100%;
   }
 

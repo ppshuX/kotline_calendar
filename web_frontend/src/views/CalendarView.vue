@@ -817,12 +817,12 @@ const handleAICreate = async (eventData) => {
   
   /* 日历高度大幅增加，确保所有日期完整显示 */
   .calendar-page .calendar-wrapper {
-    height: 500px;
-    max-height: 500px;
-    min-height: 500px;
-    margin: 0;
+    height: auto;
+    max-height: none;
+    min-height: 600px;
+    margin: 0 0 16px 0;
     width: 100%;
-    padding: 16px 0;
+    padding: 20px;
   }
   
   /* 日期单元格 - 显著增大以完整显示内容 */
