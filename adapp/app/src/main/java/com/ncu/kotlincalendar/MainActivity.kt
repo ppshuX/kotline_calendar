@@ -1,22 +1,17 @@
 package com.ncu.kotlincalendar
 
 import android.Manifest
-import android.app.TimePickerDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.LinearLayout
-import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
-import com.google.android.material.textfield.TextInputEditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -45,6 +40,7 @@ import com.ncu.kotlincalendar.data.repository.EventRepository
 import com.ncu.kotlincalendar.ui.managers.WeatherManager
 import com.ncu.kotlincalendar.ui.managers.HolidayManager
 import com.ncu.kotlincalendar.ui.managers.FortuneManager
+import com.ncu.kotlincalendar.ui.dialogs.EventEditDialogHelper
 import com.ncu.kotlincalendar.utils.PreferenceManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -121,8 +117,8 @@ class MainActivity : AppCompatActivity() {
     private var currentTab: Int = 0  // 0=日程 1=节日 2=运势
     private var viewMode: Int = 0  // 0=月视图（默认） 1=周视图 2=日视图
     
-    // 地点选择回调
-    private var onLocationSelectedCallback: ((String, String, Double, Double) -> Unit)? = null
+    // 日程编辑对话框助手（可复用组件）
+    private lateinit var eventEditDialogHelper: EventEditDialogHelper
     
     // 月视图 DayViewContainer
     inner class DayViewContainer(view: View) : ViewContainer(view) {
@@ -278,6 +274,45 @@ class MainActivity : AppCompatActivity() {
             override fun onTabReselected(tab: com.google.android.material.tabs.TabLayout.Tab?) {}
         })
         
+        // 初始化日程编辑对话框助手（可复用组件）
+        eventEditDialogHelper = EventEditDialogHelper(this, object : EventEditDialogHelper.OnEventSaveCallback {
+            override fun onSave(
+                event: Event?,
+                title: String,
+                description: String,
+                dateTime: Long,
+                reminderMinutes: Int,
+                locationName: String,
+                latitude: Double,
+                longitude: Double
+            ) {
+                if (event != null) {
+                    // 编辑模式：更新现有日程
+                    updateEvent(
+                        event.id,
+                        title,
+                        description,
+                        dateTime,
+                        reminderMinutes,
+                        locationName,
+                        latitude,
+                        longitude
+                    )
+                } else {
+                    // 新增模式：添加新日程
+                    addEvent(
+                        title,
+                        description,
+                        dateTime,
+                        reminderMinutes,
+                        locationName,
+                        latitude,
+                        longitude
+                    )
+                }
+            }
+        })
+        
         // 设置日历
         setupCalendar()
         setupWeekCalendar()
@@ -404,8 +439,10 @@ class MainActivity : AppCompatActivity() {
             val latitude = data.getDoubleExtra("latitude", 0.0)
             val longitude = data.getDoubleExtra("longitude", 0.0)
             
-            // 调用回调函数更新对话框
-            onLocationSelectedCallback?.invoke(locationName, locationAddress, latitude, longitude)
+            // 处理地点选择结果（通过可复用的对话框组件）
+            if (::eventEditDialogHelper.isInitialized) {
+                eventEditDialogHelper.handleLocationResult(locationName, locationAddress, latitude, longitude)
+            }
         } else if (requestCode == REQUEST_SETTINGS && resultCode == RESULT_OK) {
             // 从设置页或登录页返回，重新加载所有事件（可能切换了模式）
             updateCloudModeButton()
@@ -426,160 +463,13 @@ class MainActivity : AppCompatActivity() {
     }
     
     // 弹出添加日程的对话框
+    /**
+     * 显示添加/编辑日程对话框（使用可复用的组件）
+     * 确保所有视图模式下使用相同的对话框组件和逻辑
+     */
     private fun showAddEventDialog(eventToEdit: Event? = null) {
-        // 加载自定义布局
-        val dialogView = layoutInflater.inflate(R.layout.dialog_add_event, null)
-        val etTitle = dialogView.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.etTitle)
-        val etTime = dialogView.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.etTime)
-        val etDesc = dialogView.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.etDescription)
-        val spinnerReminder = dialogView.findViewById<Spinner>(R.id.spinnerReminder)
-        val tvLocationDisplay = dialogView.findViewById<TextView>(R.id.tvLocationDisplay)
-        val btnSelectLocation = dialogView.findViewById<Button>(R.id.btnSelectLocation)
-        
-        // 确保地点选择功能在所有视图模式下都可见
-        tvLocationDisplay?.visibility = View.VISIBLE
-        btnSelectLocation?.visibility = View.VISIBLE
-        
-        // 设置提醒选项
-        val reminderOptions = arrayOf("不提醒", "提前5分钟", "提前15分钟", "提前30分钟", "提前1小时", "提前1天")
-        val reminderMinutes = arrayOf(0, 5, 15, 30, 60, 24 * 60)
-        spinnerReminder?.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, reminderOptions)
-        
-        // 用于存储选择的日期时间
-        val calendar = Calendar.getInstance()
-        
-        // 用于存储选择的地点信息
-        var selectedLocationName = ""
-        var selectedAddress = ""
-        var selectedLatitude = 0.0
-        var selectedLongitude = 0.0
-        
-        // 如果是编辑模式，填充现有数据
-        if (eventToEdit != null) {
-            // 检查是否是订阅的事件
-            if (eventToEdit.subscriptionId != null) {
-                Toast.makeText(this, "不能编辑订阅的日程，请在订阅管理中管理", Toast.LENGTH_LONG).show()
-                return
-            }
-            
-            etTitle?.setText(eventToEdit.title)
-            etDesc?.setText(eventToEdit.description)
-            calendar.timeInMillis = eventToEdit.dateTime
-            
-            // 填充地点信息
-            if (eventToEdit.locationName.isNotEmpty()) {
-                selectedLocationName = eventToEdit.locationName
-                selectedAddress = "" // Event没有存储详细地址，只有名称
-                selectedLatitude = eventToEdit.latitude
-                selectedLongitude = eventToEdit.longitude
-                tvLocationDisplay?.text = "📍 $selectedLocationName"
-            }
-            
-            // 设置提醒选项
-            val reminderIndex = reminderMinutes.indexOf(eventToEdit.reminderMinutes)
-            if (reminderIndex >= 0) {
-                spinnerReminder?.setSelection(reminderIndex)
-            }
-        } else {
-            // 新增模式，使用选中的日期
-            val selected = selectedDate ?: LocalDate.now()
-            calendar.timeInMillis = selected.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
-        }
-        
-        // 显示初始时间
-        updateTimeDisplay(etTime, calendar)
-        
-        // 点击时间输入框，弹出时间选择器
-        etTime?.setOnClickListener {
-            showTimePicker(calendar) { hour, minute ->
-                calendar.set(Calendar.HOUR_OF_DAY, hour)
-                calendar.set(Calendar.MINUTE, minute)
-                updateTimeDisplay(etTime, calendar)
-            }
-        }
-        
-        // 点击地点选择按钮，打开地图选择器
-        btnSelectLocation?.setOnClickListener {
-            // 设置回调函数，当从地图返回时更新对话框
-            onLocationSelectedCallback = { name, address, lat, lng ->
-                selectedLocationName = name
-                selectedAddress = address
-                selectedLatitude = lat
-                selectedLongitude = lng
-                tvLocationDisplay?.text = if (name.isNotEmpty()) {
-                    "📍 $name"
-                } else {
-                    "点击按钮在地图上选择地点"
-                }
-            }
-            
-            val intent = Intent(this, MapPickerActivity::class.java)
-            startActivityForResult(intent, MapPickerActivity.REQUEST_CODE_MAP_PICKER)
-        }
-        
-        // 创建对话框
-        val title = if (eventToEdit != null) "✏️ 编辑日程" else "📝 添加日程"
-        AlertDialog.Builder(this)
-            .setTitle(title)
-            .setView(dialogView)
-            .setPositiveButton("保存") { dialog, _ ->
-                val titleText = etTitle?.text.toString().trim()
-                val descText = etDesc?.text.toString().trim()
-                val selectedReminderMinutes = reminderMinutes[spinnerReminder?.selectedItemPosition ?: 0]
-                
-                if (titleText.isNotEmpty()) {
-                    if (eventToEdit != null) {
-                        // 编辑模式：更新现有日程
-                        updateEvent(
-                            eventToEdit.id,
-                            titleText,
-                            descText,
-                            calendar.timeInMillis,
-                            selectedReminderMinutes,
-                            selectedLocationName,
-                            selectedLatitude,
-                            selectedLongitude
-                        )
-                    } else {
-                        // 新增模式：添加新日程
-                        addEvent(
-                            titleText,
-                            descText,
-                            calendar.timeInMillis,
-                            selectedReminderMinutes,
-                            selectedLocationName,
-                            selectedLatitude,
-                            selectedLongitude
-                        )
-                    }
-                } else {
-                    Toast.makeText(this, "标题不能为空", Toast.LENGTH_SHORT).show()
-                }
-            }
-            .setNegativeButton("取消", null)
-            .show()
-    }
-    
-    // 显示时间选择器
-    private fun showTimePicker(calendar: Calendar, onTimeSelected: (Int, Int) -> Unit) {
-        val hour = calendar.get(Calendar.HOUR_OF_DAY)
-        val minute = calendar.get(Calendar.MINUTE)
-        
-        TimePickerDialog(
-            this,
-            { _, selectedHour, selectedMinute ->
-                onTimeSelected(selectedHour, selectedMinute)
-            },
-            hour,
-            minute,
-            true  // 24小时制
-        ).show()
-    }
-    
-    // 更新时间显示
-    private fun updateTimeDisplay(editText: com.google.android.material.textfield.TextInputEditText?, calendar: Calendar) {
-        val timeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
-        editText?.setText(timeFormat.format(calendar.time))
+        // 使用可复用的对话框组件，确保所有视图模式统一
+        eventEditDialogHelper.show(eventToEdit, selectedDate)
     }
     
     // 从数据库/云端加载所有日程（根据模式自动切换）
