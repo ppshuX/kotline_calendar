@@ -15,8 +15,9 @@
         android:id="@+id/toolbar_logo"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:src="@mipmap/ic_launcher"
-        android:scaleType="centerCrop"
+        android:src="@drawable/ralendar_logo"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
         android:contentDescription="Ralendar Logo"
         android:layout_marginEnd="12dp" />
 
