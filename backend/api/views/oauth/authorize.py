@@ -4,7 +4,7 @@ OAuth 2.0 授权端点
 """
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from urllib.parse import urlencode, parse_qs, urlparse
@@ -233,7 +233,11 @@ def oauth_authorize(request):
             
             redirect_url = f"{redirect_uri}?{urlencode(params)}"
             logger.info(f"[OAuth] ✅ Redirecting to {redirect_uri} with authorization code {auth_code.code[:20]}...")
-            return redirect(redirect_url)
+            logger.info(f"[OAuth] ✅ Full redirect URL: {redirect_url}")
+            logger.info(f"[OAuth] ✅ Redirect params: {params}")
+            
+            # 使用 HttpResponseRedirect 确保重定向执行
+            return HttpResponseRedirect(redirect_url)
         
         elif action == 'deny':
             # 用户拒绝授权
@@ -249,7 +253,10 @@ def oauth_authorize(request):
             
             redirect_url = f"{redirect_uri}?{urlencode(params)}"
             logger.info(f"[OAuth] Redirecting to {redirect_uri} with access_denied error")
-            return redirect(redirect_url)
+            logger.info(f"[OAuth] Full deny redirect URL: {redirect_url}")
+            
+            # 使用 HttpResponseRedirect 确保重定向执行
+            return HttpResponseRedirect(redirect_url)
         
         else:
             logger.warning(f"[OAuth] Invalid action: {action}")

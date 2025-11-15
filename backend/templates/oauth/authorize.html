@@ -305,7 +305,8 @@
                 {% csrf_token %}
                 <!-- 优先使用URL参数，确保参数不丢失 -->
                 <input type="hidden" name="client_id" value="{{ client_id_param|default:client.client_id|default:'' }}">
-                <input type="hidden" name="redirect_uri" value="{{ redirect_uri_param|default:redirect_uri|default:'' }}">
+                <input type="hidden" name="redirect_uri"
+                    value="{{ redirect_uri_param|default:redirect_uri|default:'' }}">
                 <input type="hidden" name="response_type" value="code">
                 <input type="hidden" name="state" value="{{ state_param|default:state|default:'' }}">
                 <input type="hidden" name="scope" value="{{ scope_param|default:scope|default:'' }}">
