@@ -43,7 +43,7 @@
 
 /* ==================== 日历容器 ==================== */
 .calendar-wrapper {
-  /* 移除卡片样式，让日历更宽敞 */
+  /* 日历容器本身保持透明，卡片样式在 .fc 上 */
   background: transparent;
   border-radius: 0;
   box-shadow: none;
@@ -55,11 +55,11 @@
 .calendar-wrapper .fc {
   flex: 1;
   min-height: 0;
-  /* 移除卡片样式，让日历直接显示 */
-  background: transparent;
-  border-radius: 0;
-  box-shadow: none;
-  padding: 0;
+  /* 日历本身保留白色卡片样式 */
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  padding: 20px;
 }
 
 /* ==================== FullCalendar 基础样式 ==================== */
@@ -301,11 +301,13 @@
     margin-bottom: 16px;
     width: 100%;
   }
-
-  /* 确保日历内容完整显示 - 移除height:100%让内容自然撑开 */
+  
+  /* 移动端日历卡片样式 */
   .calendar-wrapper .fc {
     width: 100%;
     height: auto;
+    padding: 16px;
+    border-radius: 12px;
   }
   
   .calendar-wrapper .fc-view-harness {
@@ -410,6 +412,8 @@
   
   .calendar-wrapper .fc {
     height: auto !important;
+    padding: 12px !important;
+    border-radius: 12px !important;
   }
   
   .calendar-wrapper .fc-daygrid-day {
