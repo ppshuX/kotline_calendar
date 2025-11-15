@@ -29,13 +29,21 @@ def oauth_userinfo(request):
     openid = None
     unionid = None
     
-    if hasattr(user, 'qq_profile'):
-        provider = 'qq'
-        openid = user.qq_profile.openid
-        unionid = user.qq_profile.unionid
-    elif hasattr(user, 'acwing_profile'):
-        provider = 'acwing'
-        openid = user.acwing_profile.openid
+    try:
+        if hasattr(user, 'qq_profile') and user.qq_profile:
+            provider = 'qq'
+            openid = user.qq_profile.openid
+            unionid = user.qq_profile.unionid or None
+    except Exception as e:
+        logger.warning(f"[OAuth UserInfo] Error accessing qq_profile for user {user.id}: {str(e)}")
+    
+    if not openid:
+        try:
+            if hasattr(user, 'acwing_profile') and user.acwing_profile:
+                provider = 'acwing'
+                openid = user.acwing_profile.openid
+        except Exception as e:
+            logger.warning(f"[OAuth UserInfo] Error accessing acwing_profile for user {user.id}: {str(e)}")
     
     # 构建响应数据
     user_data = {
@@ -47,10 +55,13 @@ def oauth_userinfo(request):
     }
     
     # 添加头像（如果有）
-    if hasattr(user, 'qq_profile') and user.qq_profile.photo:
-        user_data['avatar'] = user.qq_profile.photo
-    elif hasattr(user, 'acwing_profile') and user.acwing_profile.photo:
-        user_data['avatar'] = user.acwing_profile.photo
+    try:
+        if hasattr(user, 'qq_profile') and user.qq_profile and hasattr(user.qq_profile, 'photo_url') and user.qq_profile.photo_url:
+            user_data['avatar'] = user.qq_profile.photo_url
+        elif hasattr(user, 'acwing_profile') and user.acwing_profile and hasattr(user.acwing_profile, 'photo_url') and user.acwing_profile.photo_url:
+            user_data['avatar'] = user.acwing_profile.photo_url
+    except Exception as e:
+        logger.warning(f"[OAuth UserInfo] Error accessing avatar for user {user.id}: {str(e)}")
     
     # 添加第三方ID（如果scope包含相关权限）
     # 这里简化处理，直接返回
