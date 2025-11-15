@@ -239,23 +239,19 @@
   display: none !important;
 }
 
-/* 周视图和日视图的事件样式（保留原样式）*/
+/* 周视图和日视图：隐藏所有事件，不显示在日历上 */
 .calendar-wrapper .fc-dayGridWeek-view .fc-event,
-.calendar-wrapper .fc-timeGridDay-view .fc-event {
-  cursor: pointer;
-  border-radius: 6px;
-  padding: 3px 8px;
-  margin: 3px 2px;
-  font-size: 12px;
-  background: linear-gradient(135deg, var(--ralendar-primary), var(--ralendar-secondary));
-  border: none;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+.calendar-wrapper .fc-timeGridDay-view .fc-event,
+.calendar-wrapper .fc-timeGridWeek-view .fc-event,
+.calendar-wrapper .fc-timeGridDay-view .fc-timegrid-event {
+  display: none !important;
 }
 
-.calendar-wrapper .fc-dayGridWeek-view .fc-event:hover,
-.calendar-wrapper .fc-timeGridDay-view .fc-event:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--ralendar-shadow-sm);
+/* 周视图和日视图：隐藏事件容器 */
+.calendar-wrapper .fc-dayGridWeek-view .fc-daygrid-day-events,
+.calendar-wrapper .fc-timeGridWeek-view .fc-timegrid-col-events,
+.calendar-wrapper .fc-timeGridDay-view .fc-timegrid-col-events {
+  display: none !important;
 }
 
 .calendar-wrapper .fc-event-title {

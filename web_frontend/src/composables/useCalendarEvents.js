@@ -77,7 +77,9 @@ export function useCalendarEvents({ applyHolidayEvents, onDateSelect } = {}) {
         eventDisplay: 'none'
       },
       dayGridWeek: {
-        dayHeaderFormat: { weekday: 'short' }
+        dayHeaderFormat: { weekday: 'short' },
+        // 周视图：不显示事件块
+        eventDisplay: 'none'
       },
       timeGridWeek: {
         // 安卓风格：显示星期和日期
@@ -87,6 +89,8 @@ export function useCalendarEvents({ applyHolidayEvents, onDateSelect } = {}) {
           omitCommas: true    // 不要逗号
         },
         slotEventOverlap: false,  // 时间冲突的事件并排显示
+        // 周视图：不显示事件块
+        eventDisplay: 'none',
         dayHeaderContent: (arg) => {
           // 自定义日期头部内容（安卓风格）
           const weekday = arg.text.split(' ')[0]  // 提取星期
@@ -103,10 +107,12 @@ export function useCalendarEvents({ applyHolidayEvents, onDateSelect } = {}) {
       },
       timeGridDay: {
         dayHeaderFormat: { weekday: 'long', month: 'long', day: 'numeric' },
-        slotEventOverlap: false
+        slotEventOverlap: false,
+        // 日视图：不显示事件块
+        eventDisplay: 'none'
       }
     },
-    eventDisplay: 'block',  // 事件显示为块状
+    // 不设置全局 eventDisplay，让各视图自己控制
     displayEventTime: true,  // 显示事件时间
     displayEventEnd: true,  // 显示事件结束时间
     eventTimeFormat: {  // 事件时间格式
@@ -190,31 +196,16 @@ export function useCalendarEvents({ applyHolidayEvents, onDateSelect } = {}) {
   }
 
   const updateCalendarEvents = () => {
-    // 将用户事件转换为 FullCalendar 格式
-    const userEvents = eventsList.value.map(event => ({
-      id: event.id,
-      title: event.title,
-      start: event.start_time,
-      end: event.end_time || null,
-      allDay: event.all_day || false,
-      backgroundColor: '#667eea',
-      borderColor: '#5568d3',
-      textColor: '#ffffff',
-      extendedProps: {
-        ...event,
-        description: event.description || '',
-        location: event.location || '',
-        reminder_minutes: event.reminder_minutes || 15
-      }
-    }))
-
-    // 合并节假日事件（如果提供了 applyHolidayEvents 函数）
-    let events = [...userEvents]
-    if (applyHolidayEvents) {
-      events = applyHolidayEvents(events)
-    }
-
-    calendarOptions.value.events = events
+    // 不在日历上显示事件，所以不填充 events 数组
+    // 事件只在侧边栏的日程列表中显示
+    calendarOptions.value.events = []
+    
+    // 如果需要保留节假日事件（用于背景显示），可以通过 applyHolidayEvents 添加
+    // 但也要确保这些事件在视图中被隐藏（通过 eventDisplay: 'none'）
+    // if (applyHolidayEvents) {
+    //   const holidayEvents = applyHolidayEvents([])
+    //   calendarOptions.value.events = holidayEvents
+    // }
   }
 
   const loadEvents = async () => {
