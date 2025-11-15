@@ -1,6 +1,7 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -40,6 +41,7 @@
                 opacity: 0;
                 transform: translateY(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -222,6 +224,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="card">
@@ -229,16 +232,17 @@
             <div class="app-header">
                 <div class="app-logo">
                     {% if client and client.logo_url %}
-                        <img src="{{ client.logo_url }}" alt="{{ client.client_name|default:'未知应用' }}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 16px;">
+                    <img src="{{ client.logo_url }}" alt="{{ client.client_name|default:'未知应用' }}"
+                        style="width: 100%; height: 100%; object-fit: cover; border-radius: 16px;">
                     {% else %}
-                        📱
+                    📱
                     {% endif %}
                 </div>
                 <div class="app-name">{{ client.client_name|default:client_name|default:'未知应用' }}</div>
                 {% if client and client.client_description %}
-                    <div class="app-description">{{ client.client_description }}</div>
+                <div class="app-description">{{ client.client_description }}</div>
                 {% elif client_description %}
-                    <div class="app-description">{{ client_description }}</div>
+                <div class="app-description">{{ client_description }}</div>
                 {% endif %}
             </div>
 
@@ -246,14 +250,17 @@
             <!-- 未登录：显示登录选项 -->
             <div class="auth-request">
                 <h2>请先登录</h2>
-                <p class="request-description">{{ client.client_name|default:client_name|default:'未知应用' }} 请求访问您的 Ralendar，请先登录以继续授权。</p>
-                
+                <p class="request-description">{{ client.client_name|default:client_name|default:'未知应用' }} 请求访问您的
+                    Ralendar，请先登录以继续授权。</p>
+
                 <div class="login-options" style="margin-top: 24px;">
-                    <a href="/oauth/login?provider=acwing&next={{ next_url|urlencode }}" class="btn btn-authorize" style="text-decoration: none; display: block; margin-bottom: 12px;">
+                    <a href="/oauth/login?provider=acwing&next={{ next_url|urlencode }}" class="btn btn-authorize"
+                        style="text-decoration: none; display: block; margin-bottom: 12px;">
                         <span style="margin-right: 8px;">🎓</span>
                         AcWing 登录
                     </a>
-                    <a href="/oauth/login?provider=qq&next={{ next_url|urlencode }}" class="btn btn-authorize" style="text-decoration: none; display: block; background: linear-gradient(135deg, #12b7f5, #0d9cdb);">
+                    <a href="/oauth/login?provider=qq&next={{ next_url|urlencode }}" class="btn btn-authorize"
+                        style="text-decoration: none; display: block; background: linear-gradient(135deg, #12b7f5, #0d9cdb);">
                         <span style="margin-right: 8px;">🐧</span>
                         QQ 登录
                     </a>
@@ -264,7 +271,7 @@
             <div class="auth-request">
                 <h2>{{ client.client_name|default:client_name|default:'未知应用' }} 请求访问您的 Ralendar</h2>
                 <p class="request-description">该应用将获得以下权限：</p>
-                
+
                 <!-- 权限列表 -->
                 <div class="scope-list">
                     {% for scope_desc in scope_descriptions %}
@@ -301,7 +308,7 @@
                 <input type="hidden" name="response_type" value="code">
                 <input type="hidden" name="state" value="{{ state|default:'' }}">
                 <input type="hidden" name="scope" value="{{ scope|default:'' }}">
-                
+
                 <div class="action-buttons">
                     <button type="submit" name="action" value="deny" class="btn btn-cancel">
                         取消
@@ -322,5 +329,5 @@
         </div>
     </div>
 </body>
-</html>
 
+</html>

@@ -106,11 +106,56 @@ def oauth_authorize(request):
             else:
                 logger.info(f"[OAuth] Showing authorization page for user {request.user.id}, client {client.client_name}")
             
-            return render(request, 'oauth/authorize.html', context)
+            # 调试信息：检查模板是否存在
+            from django.template.loader import get_template
+            from django.conf import settings
+            import os
+            
+            logger.info(f"[OAuth] TEMPLATES DIRS: {settings.TEMPLATES[0]['DIRS']}")
+            logger.info(f"[OAuth] BASE_DIR: {settings.BASE_DIR}")
+            
+            # 检查模板文件是否存在
+            template_path = settings.BASE_DIR / 'templates' / 'oauth' / 'authorize.html'
+            logger.info(f"[OAuth] Template path: {template_path}")
+            logger.info(f"[OAuth] Template exists: {os.path.exists(template_path)}")
+            
+            try:
+                template = get_template('oauth/authorize.html')
+                logger.info(f"[OAuth] Template found: oauth/authorize.html")
+            except Exception as template_error:
+                logger.error(f"[OAuth] Template not found: {str(template_error)}")
+                import traceback
+                return HttpResponse(
+                    f'<h1>模板文件未找到</h1>'
+                    f'<p>模板路径: oauth/authorize.html</p>'
+                    f'<p>物理路径: {template_path}</p>'
+                    f'<p>文件存在: {os.path.exists(template_path)}</p>'
+                    f'<p>错误: {str(template_error)}</p>'
+                    f'<p>TEMPLATES DIRS: {settings.TEMPLATES[0]["DIRS"]}</p>'
+                    f'<pre>{traceback.format_exc()}</pre>',
+                    status=500
+                )
+            
+            try:
+                response = render(request, 'oauth/authorize.html', context)
+                logger.info(f"[OAuth] Template rendered successfully")
+                return response
+            except Exception as render_error:
+                logger.error(f"[OAuth] Template render error: {str(render_error)}")
+                import traceback
+                return HttpResponse(
+                    f'<h1>模板渲染出错</h1>'
+                    f'<p>错误: {str(render_error)}</p>'
+                    f'<pre>{traceback.format_exc()}</pre>',
+                    status=500
+                )
         except Exception as e:
             logger.error(f"[OAuth] Error rendering authorization page: {str(e)}", exc_info=True)
+            import traceback
+            traceback_str = traceback.format_exc()
             return HttpResponse(
                 f'渲染授权页面时出错: {str(e)}<br><br>'
+                f'<pre>{traceback_str}</pre><br><br>'
                 f'Client ID: {client_id}<br>'
                 f'Client: {client.client_name if client else "None"}<br>'
                 f'Authenticated: {request.user.is_authenticated}',
