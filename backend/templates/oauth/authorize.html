@@ -301,13 +301,14 @@
             {% endif %}
 
             <!-- 操作按钮 -->
-            <form method="POST">
+            <form method="POST" action="">
                 {% csrf_token %}
-                <input type="hidden" name="client_id" value="{{ client.client_id|default:'' }}">
-                <input type="hidden" name="redirect_uri" value="{{ redirect_uri|default:'' }}">
+                <!-- 优先使用URL参数，确保参数不丢失 -->
+                <input type="hidden" name="client_id" value="{{ client_id_param|default:client.client_id|default:'' }}">
+                <input type="hidden" name="redirect_uri" value="{{ redirect_uri_param|default:redirect_uri|default:'' }}">
                 <input type="hidden" name="response_type" value="code">
-                <input type="hidden" name="state" value="{{ state|default:'' }}">
-                <input type="hidden" name="scope" value="{{ scope|default:'' }}">
+                <input type="hidden" name="state" value="{{ state_param|default:state|default:'' }}">
+                <input type="hidden" name="scope" value="{{ scope_param|default:scope|default:'' }}">
 
                 <div class="action-buttons">
                     <button type="submit" name="action" value="deny" class="btn btn-cancel">

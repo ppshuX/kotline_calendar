@@ -100,7 +100,12 @@ def oauth_authorize(request):
                 'state': state,
                 'user': request.user if request.user.is_authenticated else None,
                 'is_authenticated': request.user.is_authenticated,
-                'next_url': request.get_full_path(),  # 授权完成后的回调URL
+                'next_url': request.get_full_path(),  # 授权完成后的回调URL（用于登录后重定向）
+                # 确保所有参数都被传递给模板，用于表单隐藏字段
+                'client_id_param': client_id,
+                'redirect_uri_param': redirect_uri,
+                'state_param': state,
+                'scope_param': scope,
             }
             
             # 如果未登录，模板会显示登录选项
