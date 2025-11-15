@@ -139,33 +139,32 @@
 }
 
 /* 滚动容器统一在 scroller 层级 */
-.calendar-wrapper .fc-scroller {
-  overflow-y: auto !important;
-  overflow-x: hidden !important;
-  /* 确保不超出卡片 */
+.calendar-wrapper .fc .fc-scroller {
+  overflow-y: auto;
+  overflow-x: hidden;
   max-width: 100%;
 }
 
-.calendar-wrapper .fc-timegrid-body {
-  overflow: visible !important;
+.calendar-wrapper .fc .fc-timegrid-body {
+  overflow: visible;
 }
 
-/* 确保表格不超出卡片 */
-.calendar-wrapper .fc-scrollgrid {
-  width: 100% !important;
-  max-width: 100%;
-  box-sizing: border-box;
-}
-
-.calendar-wrapper .fc-scrollgrid-sync-table {
-  width: 100% !important;
+/* 确保表格不超出卡片 - 使用更具体的选择器提高优先级 */
+.calendar-wrapper .fc .fc-scrollgrid {
+  width: 100%;
   max-width: 100%;
   box-sizing: border-box;
 }
 
-.calendar-wrapper .fc-col-header,
-.calendar-wrapper .fc-daygrid-body {
-  width: 100% !important;
+.calendar-wrapper .fc .fc-scrollgrid-sync-table {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.calendar-wrapper .fc .fc-col-header,
+.calendar-wrapper .fc .fc-daygrid-body {
+  width: 100%;
   max-width: 100%;
   box-sizing: border-box;
 }
@@ -197,9 +196,9 @@
 }
 
 /* 选中日期的样式（使用 FullCalendar 原生的 .fc-highlight 类）*/
-.calendar-wrapper .fc-highlight {
-  background: var(--ralendar-bg-active) !important;
-  border: 2px solid var(--ralendar-border-strong) !important;
+.calendar-wrapper .fc-daygrid-day.fc-highlight {
+  background: var(--ralendar-bg-active);
+  border: 2px solid var(--ralendar-border-strong);
   box-shadow: inset 0 0 0 1px var(--ralendar-primary);
 }
 
@@ -217,8 +216,8 @@
 }
 
 /* 月视图：隐藏事件块，只显示圆点 */
-.calendar-wrapper .fc-dayGridMonth-view .fc-event {
-  display: none !important;
+.calendar-wrapper .fc.fc-dayGridMonth-view .fc-daygrid-event {
+  display: none;
 }
 
 /* 周视图和日视图的事件样式（保留原样式）*/
@@ -275,14 +274,14 @@
   transition: all 0.2s ease;
 }
 
-.calendar-wrapper .fc-bg-event.holiday-event {
+.calendar-wrapper .fc-daygrid-day .fc-bg-event.holiday-event {
   /* 节假日特殊样式 - 极浅的红色背景 */
-  background-color: rgba(255, 107, 107, 0.03) !important;
+  background-color: rgba(255, 107, 107, 0.03);
   /* 从 0.06 降低到 0.03，几乎透明，仅稍微可见 */
 }
 
-.calendar-wrapper .fc-bg-event.holiday-event .fc-event-title {
-  color: #e74c3c !important;
+.calendar-wrapper .fc-daygrid-day .fc-bg-event.holiday-event .fc-event-title {
+  color: #e74c3c;
   /* 鲜艳的红色文字 */
 }
 
@@ -347,8 +346,8 @@
     height: auto;
   }
   
-  .calendar-wrapper .fc-scroller {
-    overflow: visible !important;
+  .calendar-wrapper .fc .fc-scroller {
+    overflow: visible;
     height: auto;
   }
   
@@ -374,44 +373,56 @@
     overflow: visible;
   }
 
-  /* 调整字体大小 - 显著增大以便看清 */
+  /* 调整字体大小 - 移动端字体稍小 */
   .calendar-wrapper .fc-toolbar-title {
-    font-size: 18px;
+    font-size: 14px;
     font-weight: 700;
   }
 
   .calendar-wrapper .fc-button {
-    font-size: 14px;
-    padding: 6px 10px;
+    font-size: 11px;
+    padding: 4px 8px;
   }
 
   /* 节假日文字 */
   .calendar-wrapper .fc-bg-event .fc-event-title {
-    font-size: 12px;
+    font-size: 10px;
   }
 
   /* 事件圆点稍小 */
   .calendar-wrapper .event-dot {
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
   }
   
-  /* 周标题 - 显著增大字体 */
+  /* 周标题 - 字体稍小 */
   .calendar-wrapper .fc-col-header-cell {
-    padding: 8px 2px;
-    font-size: 14px;
+    padding: 6px 2px;
+    font-size: 11px;
     font-weight: 600;
   }
   
-  /* 日期数字 - 显著增大字体 */
+  /* 日期数字 - 字体稍小 */
   .calendar-wrapper .fc-daygrid-day-number {
-    font-size: 17px;
+    font-size: 13px;
     font-weight: 700;
   }
   
-  /* 确保日历不被遮挡 */
+  /* 确保日历不被遮挡 - 添加顶部间距 */
   .calendar-page {
     padding-top: 0;
+  }
+  
+  .calendar-wrapper {
+    margin-top: 8px;
+  }
+  
+  /* 确保工具栏不被遮挡 */
+  .calendar-wrapper .fc-header-toolbar {
+    margin-top: 0;
+    padding-top: 0;
+    position: relative;
+    z-index: 10;
   }
   
   /* 移动端周视图优化 */
@@ -435,50 +446,59 @@
 /* 小屏手机优化 - 允许内容自然撑开 */
 @media (max-width: 576px) {
   .calendar-wrapper {
-    padding: 0 !important;
-    min-height: 500px !important;
-    height: auto !important;
-    max-height: none !important;
-    width: 100% !important;
-    margin: 0 0 12px 0 !important;
+    padding: 0;
+    min-height: 500px;
+    height: auto;
+    max-height: none;
+    width: 100%;
+    margin: 8px 0 12px 0;
   }
   
   .calendar-wrapper .fc {
-    height: auto !important;
-    padding: 12px !important;
-    border-radius: 12px !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    overflow-x: hidden !important;
-    overflow-y: visible !important;
-    box-sizing: border-box !important;
+    height: auto;
+    padding: 10px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    overflow-y: visible;
+    box-sizing: border-box;
   }
   
   .calendar-wrapper .fc-daygrid-day {
-    min-height: 55px !important;
+    min-height: 50px;
   }
   
   .calendar-wrapper .fc-daygrid-day-frame {
-    min-height: 55px !important;
+    min-height: 50px;
   }
   
   .calendar-wrapper .fc-toolbar-title {
-    font-size: 14px;
+    font-size: 12px;
   }
   
   .calendar-wrapper .fc-button {
-    font-size: 10px;
-    padding: 2px 5px;
+    font-size: 9px;
+    padding: 2px 4px;
   }
   
   .calendar-wrapper .fc-col-header-cell {
-    padding: 5px 2px;
-    font-size: 11px;
+    padding: 4px 2px;
+    font-size: 10px;
   }
   
   .calendar-wrapper .fc-daygrid-day-number {
     padding: 1px 2px;
-    font-size: 9px;
+    font-size: 11px;
+  }
+  
+  /* 确保工具栏不被遮挡 */
+  .calendar-wrapper .fc-header-toolbar {
+    margin-top: 0;
+    padding-top: 0;
+    margin-bottom: 8px;
+    position: relative;
+    z-index: 10;
   }
   
   /* 确保节日小字显示 - 移动端优化 */
