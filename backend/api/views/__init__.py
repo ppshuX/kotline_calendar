@@ -29,7 +29,7 @@ from .auth.oauth_callback import acwing_oauth_callback
 from .oauth.authorize import oauth_authorize
 from .oauth.token import oauth_token
 from .oauth.userinfo import oauth_userinfo
-from .oauth.revoke import oauth_revoke, get_authorized_apps
+from .oauth.revoke import oauth_revoke, oauth_authorized_apps
 
 # External Services
 from .external.lunar import get_lunar_date
@@ -75,7 +75,7 @@ __all__ = [
     'oauth_token',
     'oauth_userinfo',
     'oauth_revoke',
-    'get_authorized_apps',
+    'oauth_authorized_apps',
     # External Services
     'get_lunar_date',
     'get_holidays',
