@@ -26,69 +26,9 @@ def oauth_authorize(request):
     URL: /oauth/authorize?client_id=xxx&redirect_uri=xxx&response_type=code&state=xxx&scope=xxx
     """
     
-    # 调试：立即返回测试内容，确认路由是否工作
-    logger.info(f"[OAuth] ========== oauth_authorize CALLED! ==========")
-    logger.info(f"[OAuth] Method: {request.method}")
-    logger.info(f"[OAuth] Path: {request.path}")
-    logger.info(f"[OAuth] User: {request.user}")
-    logger.info(f"[OAuth] Authenticated: {request.user.is_authenticated if hasattr(request, 'user') else 'Unknown'}")
-    logger.info(f"[OAuth] GET params: {dict(request.GET)}")
+    # 日志记录
+    logger.info(f"[OAuth] oauth_authorize called - Method: {request.method}, Path: {request.path}, User: {request.user}")
     
-    # 临时：立即返回测试HTML，确认路由和视图函数工作
-    # 获取参数（但先不验证）
-    client_id = request.GET.get('client_id') or request.POST.get('client_id', 'NOT_PROVIDED')
-    try:
-        client = OAuthClient.objects.get(client_id=client_id, is_active=True) if client_id != 'NOT_PROVIDED' else None
-        client_name = client.client_name if client else 'None'
-    except:
-        client_name = 'Not Found'
-        client = None
-    
-    simple_test = HttpResponse(
-        f"""
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <meta charset="UTF-8">
-            <title>OAuth 测试 - 路由工作正常</title>
-            <style>
-                body {{ background: white; padding: 30px; font-family: Arial, sans-serif; }}
-                h1 {{ color: red; font-size: 28px; }}
-                .info {{ background: #f0f0f0; padding: 15px; margin: 10px 0; border-left: 4px solid #007bff; }}
-            </style>
-        </head>
-        <body>
-            <h1>✅ OAuth 视图函数已执行！</h1>
-            <div class="info">
-                <p><strong>请求路径:</strong> {request.path}</p>
-                <p><strong>请求方法:</strong> {request.method}</p>
-                <p><strong>用户:</strong> {request.user}</p>
-                <p><strong>已认证:</strong> {request.user.is_authenticated}</p>
-                <p><strong>Client ID:</strong> {client_id}</p>
-                <p><strong>Client Name:</strong> {client_name}</p>
-            </div>
-            <div class="info">
-                <h2>查询参数：</h2>
-                <pre>{dict(request.GET)}</pre>
-            </div>
-            <div style="background: #d4edda; padding: 15px; margin: 20px 0; border-left: 4px solid #28a745;">
-                <p><strong>✅ 如果你看到这个页面，说明：</strong></p>
-                <ul>
-                    <li>路由配置正确</li>
-                    <li>视图函数被调用</li>
-                    <li>Django 工作正常</li>
-                </ul>
-                <p style="color: blue;">现在可以移除这个测试响应，恢复正常的模板渲染。</p>
-            </div>
-        </body>
-        </html>
-        """,
-        content_type='text/html; charset=utf-8'
-    )
-    logger.info(f"[OAuth] Returning simple test HTML - route is working!")
-    return simple_test
-    
-    # 以下代码暂时不执行（上面的 return 会先执行）
     # 获取参数
     client_id = request.GET.get('client_id') or request.POST.get('client_id')
     redirect_uri = request.GET.get('redirect_uri') or request.POST.get('redirect_uri')
@@ -200,43 +140,10 @@ def oauth_authorize(request):
                 )
             
             try:
-                # 先返回最简单的HTML测试
-                simple_test = HttpResponse(
-                    f"""
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <meta charset="UTF-8">
-                        <title>OAuth 测试</title>
-                    </head>
-                    <body style="background: white; padding: 30px; font-family: Arial, sans-serif;">
-                        <h1 style="color: red; font-size: 24px;">✅ OAuth 视图函数已执行！</h1>
-                        <p><strong>请求路径:</strong> {request.path}</p>
-                        <p><strong>请求方法:</strong> {request.method}</p>
-                        <p><strong>用户:</strong> {request.user}</p>
-                        <p><strong>已认证:</strong> {request.user.is_authenticated}</p>
-                        <p><strong>Client:</strong> {client.client_name if client else 'None'}</p>
-                        <p><strong>Template路径:</strong> {template_path}</p>
-                        <p><strong>Template存在:</strong> {os.path.exists(template_path)}</p>
-                        <hr>
-                        <h2>查询参数：</h2>
-                        <pre>{dict(request.GET)}</pre>
-                        <hr>
-                        <p style="color: blue;">如果你看到这个页面，说明路由和视图函数都工作正常！</p>
-                        <p>现在正在尝试渲染实际模板...</p>
-                    </body>
-                    </html>
-                    """,
-                    content_type='text/html; charset=utf-8'
-                )
-                logger.info(f"[OAuth] Returning simple test HTML")
-                return simple_test  # 先返回测试，确认路由工作
-                
-                # 以下代码暂时不执行
-                # 直接渲染模板
-                # response = render(request, 'oauth/authorize.html', context)
-                # logger.info(f"[OAuth] Template rendered successfully, content length: {len(response.content)}")
-                # return response
+                # 渲染模板
+                response = render(request, 'oauth/authorize.html', context)
+                logger.info(f"[OAuth] Template rendered successfully, content length: {len(response.content)}")
+                return response
             except Exception as render_error:
                 logger.error(f"[OAuth] Template render error: {str(render_error)}")
                 import traceback
