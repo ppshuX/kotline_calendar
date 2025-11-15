@@ -4,7 +4,7 @@ OAuth 授权页面的登录处理
 """
 from django.shortcuts import redirect
 from django.contrib.auth import login as django_login
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import permission_classes
