@@ -260,9 +260,11 @@ def oauth_login_callback_qq(request):
                 logger.info(f"[QQ Callback] ✅ Recovered next_url from referer (fallback): {next_url}")
         
         # 如果还是没有 next_url，说明可能不是OAuth流程，或者参数丢失了
+        # 再次尝试从 referer 恢复（即使之前检查过，但可能在前面的逻辑中 next_url 被设置为None）
         if not next_url or not is_oauth_flow:
             # 尝试从请求头中获取原始授权页面的URL（如果浏览器保留了）
             referer = request.META.get('HTTP_REFERER', '')
+            logger.info(f"[QQ Callback] Last attempt - referer: {referer}")
             if referer and 'oauth/authorize' in referer:
                 # 即使之前失败了，再次尝试从referer恢复
                 from urllib.parse import urlparse, parse_qs
@@ -276,8 +278,14 @@ def oauth_login_callback_qq(request):
                     next_url = parsed.path
                 is_oauth_flow = True
                 logger.info(f"[QQ Callback] ✅ Recovered next_url from referer (last attempt): {next_url}")
-            else:
-                logger.warning(f"[QQ Callback] ❌ Could not recover next_url, user might stay at current page")
+            elif not next_url:
+                # 如果确实无法恢复 next_url，设置为默认值，但标记为OAuth流程
+                # 这样至少会重定向到授权页面，虽然可能缺少参数
+                logger.warning(f"[QQ Callback] ❌ Could not recover next_url, will redirect to default authorization page")
+                # 尝试从请求的原始URL中获取参数（如果有的话）
+                # 但这通常不可靠，因为回调请求是GET请求，参数已经被QQ处理了
+                next_url = '/oauth/authorize'  # 默认值，虽然缺少参数，但至少会显示错误信息
+                is_oauth_flow = True  # 假设这是OAuth流程，因为从授权页面来的
     
     QQ_APPID = getattr(settings, 'QQ_APPID', '')
     QQ_APPKEY = getattr(settings, 'QQ_APPKEY', '')
@@ -363,36 +371,62 @@ def oauth_login_callback_qq(request):
         logger.info(f"[QQ Callback] User {user.id} logged in via QQ, is_oauth_flow: {is_oauth_flow}, next_url: {next_url}")
         
         # 如果是OAuth流程，重定向回授权页面（带原始参数）
-        if is_oauth_flow:
+        if is_oauth_flow and next_url:
             # 确保 next_url 包含完整的OAuth授权URL和参数
             # next_url 应该已经是完整的URL，如 /oauth/authorize?client_id=xxx&...
             # 如果 next_url 是相对路径，确保它以 / 开头
             if not next_url.startswith('/'):
                 next_url = '/' + next_url
-            logger.info(f"[QQ Callback] Redirecting to authorization page: {next_url}")
+            
+            # 如果 next_url 不包含查询参数，尝试从其他来源恢复参数
+            # 但这通常不太可能，因为我们之前已经尝试从 referer 恢复了
+            if '?' not in next_url:
+                logger.warning(f"[QQ Callback] next_url does not contain query parameters: {next_url}")
+                # 即使没有参数，也重定向，让授权页面显示错误信息（这比停留在主界面好）
+            
+            logger.info(f"[QQ Callback] ✅ Redirecting to authorization page: {next_url}")
             return redirect(next_url)
         else:
-            # 如果不是OAuth流程，可能是普通QQ登录（API调用）
-            # 这种情况下，用户已经在主界面了，不需要重定向
-            # 或者重定向到默认授权页面（如果没有 next_url）
-            logger.warning(f"[QQ Callback] No OAuth flow detected, user might be at main interface")
-            # 不要重定向，让用户停留在当前页面（可能是主界面）
+            # 如果不是OAuth流程，或者无法恢复 next_url
+            # 显示一个提示页面，让用户手动返回授权页面
+            logger.warning(f"[QQ Callback] ⚠️ OAuth flow not detected or next_url missing. is_oauth_flow: {is_oauth_flow}, next_url: {next_url}")
+            
+            # 尝试从 referer 获取原始授权页面（最后一次尝试）
+            referer = request.META.get('HTTP_REFERER', '')
+            redirect_url = '/oauth/authorize'  # 默认值
+            
+            if referer and 'oauth/authorize' in referer:
+                # 从 referer 提取完整的授权URL
+                from urllib.parse import urlparse
+                parsed = urlparse(referer)
+                redirect_url = f"{parsed.path}?{parsed.query}" if parsed.query else parsed.path
+                logger.info(f"[QQ Callback] Using referer as redirect URL: {redirect_url}")
+            
+            # 显示提示页面，自动重定向
             return HttpResponse(
-                '''
+                f'''
+                <!DOCTYPE html>
                 <html>
-                <head><title>登录成功</title></head>
-                <body style="font-family: Arial; padding: 30px; text-align: center;">
-                    <h1>✅ QQ登录成功！</h1>
-                    <p>您已成功登录，请返回授权页面继续授权。</p>
-                    <p><a href="/oauth/authorize">返回授权页面</a></p>
+                <head>
+                    <meta charset="UTF-8">
+                    <title>QQ登录成功 - 正在返回授权页面</title>
+                    <meta http-equiv="refresh" content="2;url={redirect_url}">
+                </head>
+                <body style="font-family: Arial, sans-serif; padding: 30px; text-align: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0;">
+                    <div style="background: white; padding: 40px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2); max-width: 500px;">
+                        <h1 style="color: #28a745; font-size: 28px; margin-bottom: 20px;">✅ QQ登录成功！</h1>
+                        <p style="font-size: 16px; color: #606266; margin-bottom: 20px;">您已成功登录，正在返回授权页面...</p>
+                        <p style="font-size: 14px; color: #909399;">
+                            如果没有自动跳转，请
+                            <a href="{redirect_url}" style="color: #667eea; text-decoration: none;">点击这里</a>
+                            返回授权页面。
+                        </p>
+                    </div>
                     <script>
-                        // 尝试从 referer 获取原始授权页面
-                        const referer = document.referrer;
-                        if (referer && referer.includes('/oauth/authorize')) {
-                            setTimeout(() => {
-                                window.location.href = referer;
-                            }, 1000);
-                        }
+                        // 备用：如果 meta refresh 不工作，使用 JavaScript 重定向
+                        setTimeout(() => {{
+                            window.location.href = '{redirect_url}';
+                        }}, 2000);
                     </script>
                 </body>
                 </html>
