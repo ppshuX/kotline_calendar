@@ -9,6 +9,7 @@ API Views Package - 模块化视图导入
 - external/: 外部服务（holidays.py, lunar.py, weather.py）
 - ai/: AI助手（assistant.py）
 - integration/: 第三方集成（fusion.py）
+- oauth/: OAuth 2.0 服务器（authorize.py, token.py, userinfo.py, revoke.py）
 """
 
 # Calendar Core - ViewSets
@@ -23,6 +24,12 @@ from .auth.user import get_user_stats, get_bindings, update_profile, change_pass
 
 # OAuth Callback
 from .auth.oauth_callback import acwing_oauth_callback
+
+# OAuth 2.0 Server
+from .oauth.authorize import oauth_authorize
+from .oauth.token import oauth_token
+from .oauth.userinfo import oauth_userinfo
+from .oauth.revoke import oauth_revoke, get_authorized_apps
 
 # External Services
 from .external.lunar import get_lunar_date
@@ -45,20 +52,31 @@ from .integration.fusion import (
 
 # 导出所有视图
 __all__ = [
+    # Calendar
     'EventViewSet',
     'PublicCalendarViewSet',
+    # Authentication
     'get_current_user',
     'acwing_login',
     'qq_login',
     'get_acwing_login_url',
     'get_qq_login_url',
+    # User Profile
     'get_user_stats',
     'get_bindings',
     'update_profile',
     'change_password',
     'unbind_acwing',
     'unbind_qq',
+    # OAuth Callback
     'acwing_oauth_callback',
+    # OAuth 2.0 Server
+    'oauth_authorize',
+    'oauth_token',
+    'oauth_userinfo',
+    'oauth_revoke',
+    'get_authorized_apps',
+    # External Services
     'get_lunar_date',
     'get_holidays',
     'check_holiday',
