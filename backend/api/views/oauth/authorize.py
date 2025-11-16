@@ -36,43 +36,84 @@ def oauth_authorize(request):
     # 参数验证
     if not all([client_id, redirect_uri, response_type]):
         logger.warning(f"[OAuth] Missing required parameters")
-        return HttpResponse(
-            '缺少必需参数: client_id, redirect_uri, response_type',
-            status=400
-        )
+        # 对于普通用户显示友好的错误页；对第三方应用返回标准 400
+        if request.META.get('HTTP_ACCEPT', '').startswith('text/html'):
+            return render(
+                request,
+                'oauth/error.html',
+                {
+                    'title': '授权请求无效',
+                    'message': '当前授权链接缺少必要参数，无法继续。',
+                    'detail': '缺少必需参数：client_id、redirect_uri、response_type。'
+                },
+                status=400,
+            )
+        return HttpResponse('invalid_request: missing client_id / redirect_uri / response_type', status=400)
     
     if response_type != 'code':
         logger.warning(f"[OAuth] Unsupported response_type: {response_type}")
-        return HttpResponse(
-            f'不支持的 response_type: {response_type}，仅支持 "code"',
-            status=400
-        )
+        if request.META.get('HTTP_ACCEPT', '').startswith('text/html'):
+            return render(
+                request,
+                'oauth/error.html',
+                {
+                    'title': '不支持的授权类型',
+                    'message': '当前授权请求的 response_type 不被支持。',
+                    'detail': f'仅支持 response_type=code，当前为：{response_type}。'
+                },
+                status=400,
+            )
+        return HttpResponse(f'unsupported_response_type: {response_type}', status=400)
     
     # 验证客户端
     try:
         client = OAuthClient.objects.get(client_id=client_id, is_active=True)
     except OAuthClient.DoesNotExist:
         logger.warning(f"[OAuth] Invalid client_id: {client_id}")
-        return HttpResponse(
-            f'无效的 client_id: {client_id}',
-            status=400
-        )
+        if request.META.get('HTTP_ACCEPT', '').startswith('text/html'):
+            return render(
+                request,
+                'oauth/error.html',
+                {
+                    'title': '客户端标识无效',
+                    'message': '无法识别发起授权请求的客户端应用。',
+                    'detail': '请从合法的第三方应用（例如 Roamio）中重新点击“连接 Ralendar”。'
+                },
+                status=400,
+            )
+        return HttpResponse('invalid_client: client_id not found', status=400)
     
     # 验证 redirect_uri
     if not client.is_redirect_uri_allowed(redirect_uri):
         logger.warning(f"[OAuth] Invalid redirect_uri: {redirect_uri} for client {client.client_name}")
-        return HttpResponse(
-            f'redirect_uri 不在白名单内: {redirect_uri}',
-            status=400
-        )
+        if request.META.get('HTTP_ACCEPT', '').startswith('text/html'):
+            return render(
+                request,
+                'oauth/error.html',
+                {
+                    'title': '回调地址未被允许',
+                    'message': '当前授权请求的回调地址未在应用白名单中。',
+                    'detail': '请联系第三方应用开发者，确认其在 Ralendar 中配置了正确的 redirect_uri。'
+                },
+                status=400,
+            )
+        return HttpResponse('invalid_redirect_uri', status=400)
     
     # 验证 scope
     if not client.is_scope_allowed(scope):
         logger.warning(f"[OAuth] Invalid scope: {scope} for client {client.client_name}")
-        return HttpResponse(
-            f'请求的权限范围超出允许范围: {scope}',
-            status=400
-        )
+        if request.META.get('HTTP_ACCEPT', '').startswith('text/html'):
+            return render(
+                request,
+                'oauth/error.html',
+                {
+                    'title': '权限请求不被允许',
+                    'message': '该应用请求的权限超出了为其配置的范围。',
+                    'detail': '请联系第三方应用开发者，确认其在 Ralendar 中申请了正确的 scope。'
+                },
+                status=400,
+            )
+        return HttpResponse('invalid_scope', status=400)
     
     # GET 请求：显示授权页面
     if request.method == 'GET':
