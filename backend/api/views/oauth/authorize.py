@@ -76,94 +76,36 @@ def oauth_authorize(request):
     
     # GET 请求：显示授权页面
     if request.method == 'GET':
+        from ...models import get_scope_description
+
+        # 安全地获取 scope_descriptions
         try:
-            from ...models import get_scope_description
-            
-            # 安全地获取 scope_descriptions
-            try:
-                scope_descriptions = get_scope_description(scope)
-            except Exception as e:
-                logger.error(f"[OAuth] Error getting scope descriptions: {str(e)}")
-                scope_descriptions = ['读取日历', '读取用户信息']  # 默认值
-            
-            context = {
-                'client': client,
-                'client_name': client.client_name or '未知应用',
-                'client_description': client.client_description or '',
-                'logo_url': client.logo_url or '',
-                'scope': scope,
-                'scope_descriptions': scope_descriptions,
-                'redirect_uri': redirect_uri,
-                'state': state,
-                'user': request.user if request.user.is_authenticated else None,
-                'is_authenticated': request.user.is_authenticated,
-                'next_url': request.get_full_path(),  # 授权完成后的回调URL（用于登录后重定向）
-                # 确保所有参数都被传递给模板，用于表单隐藏字段
-                'client_id_param': client_id,
-                'redirect_uri_param': redirect_uri,
-                'state_param': state,
-                'scope_param': scope,
-            }
-            
-            # 如果未登录，模板会显示登录选项
-            if not request.user.is_authenticated:
-            
-            # 调试信息：检查模板是否存在
-            from django.template.loader import get_template
-            from django.conf import settings
-            import os
-            
-            logger.info(f"[OAuth] TEMPLATES DIRS: {settings.TEMPLATES[0]['DIRS']}")
-            logger.info(f"[OAuth] BASE_DIR: {settings.BASE_DIR}")
-            
-            # 检查模板文件是否存在
-            template_path = settings.BASE_DIR / 'templates' / 'oauth' / 'authorize.html'
-            logger.info(f"[OAuth] Template path: {template_path}")
-            logger.info(f"[OAuth] Template exists: {os.path.exists(template_path)}")
-            
-            try:
-                template = get_template('oauth/authorize.html')
-                logger.info(f"[OAuth] Template found: oauth/authorize.html")
-            except Exception as template_error:
-                logger.error(f"[OAuth] Template not found: {str(template_error)}")
-                import traceback
-                return HttpResponse(
-                    f'<h1>模板文件未找到</h1>'
-                    f'<p>模板路径: oauth/authorize.html</p>'
-                    f'<p>物理路径: {template_path}</p>'
-                    f'<p>文件存在: {os.path.exists(template_path)}</p>'
-                    f'<p>错误: {str(template_error)}</p>'
-                    f'<p>TEMPLATES DIRS: {settings.TEMPLATES[0]["DIRS"]}</p>'
-                    f'<pre>{traceback.format_exc()}</pre>',
-                    status=500
-                )
-            
-            try:
-                # 渲染模板
-                response = render(request, 'oauth/authorize.html', context)
-                logger.info(f"[OAuth] Template rendered successfully, content length: {len(response.content)}")
-                return response
-            except Exception as render_error:
-                logger.error(f"[OAuth] Template render error: {str(render_error)}")
-                import traceback
-                return HttpResponse(
-                    f'<h1>模板渲染出错</h1>'
-                    f'<p>错误: {str(render_error)}</p>'
-                    f'<pre>{traceback.format_exc()}</pre>',
-                    status=500
-                )
+            scope_descriptions = get_scope_description(scope)
         except Exception as e:
-            logger.error(f"[OAuth] Error rendering authorization page: {str(e)}", exc_info=True)
-            import traceback
-            traceback_str = traceback.format_exc()
-            return HttpResponse(
-                f'渲染授权页面时出错: {str(e)}<br><br>'
-                f'<pre>{traceback_str}</pre><br><br>'
-                f'Client ID: {client_id}<br>'
-                f'Client: {client.client_name if client else "None"}<br>'
-                f'Authenticated: {request.user.is_authenticated}',
-                status=500
-            )
+            logger.error(f"[OAuth] Error getting scope descriptions: {str(e)}")
+            scope_descriptions = ['读取日历', '读取用户信息']  # 默认值
+
+        context = {
+            'client': client,
+            'client_name': client.client_name or '未知应用',
+            'client_description': client.client_description or '',
+            'logo_url': client.logo_url or '',
+            'scope': scope,
+            'scope_descriptions': scope_descriptions,
+            'redirect_uri': redirect_uri,
+            'state': state,
+            'user': request.user if request.user.is_authenticated else None,
+            'is_authenticated': request.user.is_authenticated,
+            'next_url': request.get_full_path(),  # 授权完成后的回调URL（用于登录后重定向）
+            # 确保所有参数都被传递给模板，用于表单隐藏字段
+            'client_id_param': client_id,
+            'redirect_uri_param': redirect_uri,
+            'state_param': state,
+            'scope_param': scope,
+        }
+
+        # 渲染模板（如果模板不存在，让 Django 抛出标准错误，避免自制复杂 HTML）
+        return render(request, 'oauth/authorize.html', context)
     
     # POST 请求：处理授权决定
     if request.method == 'POST':
