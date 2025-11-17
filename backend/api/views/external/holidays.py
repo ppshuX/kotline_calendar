@@ -238,12 +238,20 @@ def check_holiday(request):
         logger.warning(f"获取农历失败: {e}")
         lunar_str = "加载中..."
     
+    # 将 festivals_list 按类型分组，以匹配前端期望的数据结构
+    traditional_festivals = [f for f in festivals_list if f.get('type') == 'traditional']
+    international_festivals = [f for f in festivals_list if f.get('type') == 'international']
+    legal_festivals = [f for f in festivals_list if f.get('type') == 'legal']
+    
     # 构建完整的节日信息（前端期望的数据结构）
     result = {
         'date': target_date.strftime('%Y-%m-%d'),
         'is_holiday': holiday_info['is_holiday'] if holiday_info else False,
         'lunar': lunar_str,
-        'festivals': festivals_list if festivals_list else None
+        'festivals': festivals_list if festivals_list else None,
+        # 为了兼容前端，也提供分组的数据
+        'traditional_festivals': traditional_festivals if traditional_festivals else [],
+        'international_festivals': international_festivals + legal_festivals if (international_festivals or legal_festivals) else []
     }
     
     return Response(result)

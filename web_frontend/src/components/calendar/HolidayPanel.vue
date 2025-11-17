@@ -98,9 +98,19 @@ const allFestivals = computed(() => {
   const festivals = []
   
   // 1. 从 API 返回的数据中获取传统节日和国际节日
-  const traditional = props.todayHolidays?.traditional_festivals || []
-  const international = props.todayHolidays?.international_festivals || []
-  festivals.push(...traditional, ...international)
+  // 优先使用分组的数据（traditional_festivals, international_festivals）
+  // 如果没有，则使用 festivals 数组
+  if (props.todayHolidays) {
+    if (props.todayHolidays.traditional_festivals || props.todayHolidays.international_festivals) {
+      // 使用分组数据
+      const traditional = props.todayHolidays.traditional_festivals || []
+      const international = props.todayHolidays.international_festivals || []
+      festivals.push(...traditional, ...international)
+    } else if (props.todayHolidays.festivals && Array.isArray(props.todayHolidays.festivals)) {
+      // 使用 festivals 数组（兼容旧格式）
+      festivals.push(...props.todayHolidays.festivals)
+    }
+  }
   
   // 2. 从 holidaysMap 中获取该日期的节日（法定节假日等）
   if (props.selectedDateLabel && props.holidaysMap) {
