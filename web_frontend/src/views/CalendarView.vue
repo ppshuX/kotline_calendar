@@ -171,6 +171,9 @@ const loadHolidaysForSelectedDate = async (dateStr) => {
     return
   }
   
+  // 先清空旧数据，避免显示上一个日期的节日信息
+  todayHolidays.value = null
+  
   // 提取日期部分（YYYY-MM-DD），去掉时间和时区
   const dateOnly = dateStr.split('T')[0]
   

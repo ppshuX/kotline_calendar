@@ -40,9 +40,21 @@
       </div>
     </div>
 
+    <!-- 加载中提示 -->
+    <div
+      v-if="todayHolidays === null"
+      class="holiday-card empty"
+    >
+      <div class="holiday-icon">⏳</div>
+      <div class="holiday-info">
+        <div class="holiday-name">加载中...</div>
+        <div class="holiday-type">正在获取节日信息</div>
+      </div>
+    </div>
+
     <!-- 无节日提示 -->
     <div
-      v-if="allFestivals.length === 0"
+      v-else-if="allFestivals.length === 0"
       class="holiday-card empty"
     >
       <div class="holiday-icon">📅</div>
