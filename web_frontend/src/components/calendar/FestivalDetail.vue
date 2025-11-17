@@ -20,7 +20,8 @@
         <div class="section-content">
           <div v-if="loadingIntro" class="loading-text">AI生成中...</div>
           <div v-else-if="introError" class="error-text">
-            <p>加载失败，但您仍可以在下方向AI提问！</p>
+            <p>加载失败: HTTP 404 Not Found</p>
+            <p class="error-hint">但你仍可以在下方向AI提问!</p>
           </div>
           <p v-else>{{ festivalIntro }}</p>
         </div>
@@ -338,12 +339,31 @@ onMounted(() => {
 
 .error-text {
   font-size: 13px;
-  color: #e74c3c;
+  color: #333;
   line-height: 1.6;
 }
 
 .error-text p {
   margin: 0;
+  margin-bottom: 8px;
+}
+
+.error-text p:first-child {
+  color: #e74c3c;
+  font-weight: 500;
+}
+
+.error-hint {
+  color: #666 !important;
+  font-size: 12px;
+  margin-left: 20px;
+  position: relative;
+}
+
+.error-hint::before {
+  content: '💬';
+  position: absolute;
+  left: -18px;
 }
 
 .quick-questions {
