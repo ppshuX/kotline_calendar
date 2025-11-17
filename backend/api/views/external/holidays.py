@@ -243,12 +243,15 @@ def check_holiday(request):
     international_festivals = [f for f in festivals_list if f.get('type') == 'international']
     legal_festivals = [f for f in festivals_list if f.get('type') == 'legal']
     
+    # 确保 festivals 始终是列表（Android端需要）
+    festivals_array = festivals_list if festivals_list else []
+    
     # 构建完整的节日信息（前端期望的数据结构）
     result = {
         'date': target_date.strftime('%Y-%m-%d'),
         'is_holiday': holiday_info['is_holiday'] if holiday_info else False,
         'lunar': lunar_str,
-        'festivals': festivals_list if festivals_list else None,
+        'festivals': festivals_array,  # 始终返回列表，即使是空列表
         # 为了兼容前端，也提供分组的数据
         'traditional_festivals': traditional_festivals if traditional_festivals else [],
         'international_festivals': international_festivals + legal_festivals if (international_festivals or legal_festivals) else []

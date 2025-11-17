@@ -94,7 +94,7 @@ class HolidayManager(
                     )
                     
                     // 添加法定节假日卡片
-                    if (response.is_holiday) {
+                    if (response.isHoliday) {
                         addFestivalCard(
                             "🎉 法定节假日",
                             "今日为国家法定节假日",
@@ -149,7 +149,7 @@ class HolidayManager(
                         tvHolidayHint.visibility = View.VISIBLE
                     } else {
                         // 没有节日，显示提示卡片（不重复显示农历）
-                        if (!response.is_holiday) {
+                        if (!response.isHoliday) {
                             addFestivalCard(
                                 "📅 今日无特殊节日",
                                 "享受平凡的一天 ☀️",
