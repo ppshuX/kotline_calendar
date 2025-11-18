@@ -395,14 +395,15 @@ class MainActivity : AppCompatActivity() {
      */
     override fun onResume() {
         super.onResume()
-        // 重新加载所有事件（包括新订阅的）
-        loadAllEvents()
-        // 刷新日历显示
-        updateCalendarDots()
+        // 优化：只刷新当前日期的数据，不重新加载所有事件
+        // 如果需要全量刷新（如从设置页返回），会在onActivityResult中处理
+        updateCalendarDots()  // 刷新日历标记（轻量操作）
         // 刷新当前日期的节日信息
         selectedDate?.let { date ->
             val millis = date.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
             loadHolidayInfo(millis)
+            // 只加载当前日期的事件，而不是所有事件
+            loadEventsForSelectedDate(millis)
         }
         // 刷新天气信息（使用WeatherManager）
         weatherManager.loadWeather(lifecycleScope)
