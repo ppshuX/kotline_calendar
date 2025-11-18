@@ -923,18 +923,56 @@ class MainActivity : AppCompatActivity() {
                     return@launch
                 }
                 
-                // 重新加载数据
+                // 立即从列表中移除，让UI立即更新
+                withContext(Dispatchers.Main) {
+                    // 从 eventsList 中移除删除的事件
+                    eventsList.removeAll { it.id == event.id }
+                    
+                    // 从 datesWithEvents 中移除对应的日期（如果该日期没有其他事件）
+                    val eventDate = Instant.ofEpochMilli(event.dateTime)
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDate()
+                    val hasOtherEventsOnDate = eventsList.any { e ->
+                        val eDate = Instant.ofEpochMilli(e.dateTime)
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDate()
+                        eDate == eventDate && e.subscriptionId == null
+                    }
+                    if (!hasOtherEventsOnDate) {
+                        datesWithEvents.remove(eventDate)
+                    }
+                    
+                    // 立即更新UI（让用户立即看到删除效果）
+                    updateEventsList()
+                    
+                    // 根据当前视图模式更新相应的时间线
+                    when (viewMode) {
+                        1 -> {
+                            // 周视图：立即更新时间线
+                            updateWeekView()
+                        }
+                        2 -> {
+                            // 日视图：立即更新时间线
+                            updateDayView()
+                        }
+                    }
+                    
+                    // 刷新周视图日历
+                    weekCalendarView.notifyCalendarChanged()
+                    
+                    // 刷新日历视图
+                    calendarView.notifyCalendarChanged()
+                    
+                    Toast.makeText(this@MainActivity, "🗑️ 删除成功！", Toast.LENGTH_SHORT).show()
+                }
+                
+                // 异步刷新完整数据（确保数据一致性）
                 selectedDate?.let { 
                     val millis = it.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
                     loadEventsForSelectedDate(millis)
                 }
                 updateCalendarDots()  // 更新日历标记
                 
-                withContext(Dispatchers.Main) {
-                    // 刷新周视图
-                    weekCalendarView.notifyCalendarChanged()
-                    Toast.makeText(this@MainActivity, "🗑️ 删除成功！", Toast.LENGTH_SHORT).show()
-                }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(this@MainActivity, "删除失败: ${e.message}", Toast.LENGTH_SHORT).show()
