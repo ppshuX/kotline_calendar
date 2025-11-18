@@ -391,15 +391,15 @@
     overflow: visible;
   }
 
-  /* 调整字体大小 - 移动端字体稍小 */
+  /* 调整字体大小 - 移动端字体缩小 */
   .calendar-wrapper .fc-toolbar-title {
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 700;
   }
 
   .calendar-wrapper .fc-button {
-    font-size: 11px;
-    padding: 4px 8px;
+    font-size: 10px;
+    padding: 4px 6px;
   }
 
   /* 节假日文字 */
@@ -497,7 +497,7 @@
   }
   
   .calendar-wrapper .fc-toolbar-title {
-    font-size: 12px;
+    font-size: 11px;
   }
   
   .calendar-wrapper .fc-button {
