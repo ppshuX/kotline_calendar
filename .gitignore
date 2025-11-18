@@ -43,6 +43,12 @@ adapp/*
 # 但保留 README.md 说明文档
 !adapp/README.md
 
+# Android 签名文件（敏感信息，不要提交）
+adapp/*.keystore
+adapp/keystore.properties
+*.keystore
+keystore.properties
+
 # ==================== 文档 ====================
 # docs/ 目录已移除 ignore，文档需要提交到 Git
 # （之前错误地 ignore 了整个 docs/ 目录）

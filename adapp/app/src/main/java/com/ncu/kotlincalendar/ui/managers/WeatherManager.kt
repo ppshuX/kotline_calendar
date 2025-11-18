@@ -149,20 +149,47 @@ class WeatherManager(
             else -> etCityName.setText(currentCity)
         }
         
+        // 当用户在输入框中输入时，自动取消chip的选中状态
+        etCityName.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                chipGroup.clearCheck()
+            }
+        }
+        
+        // 监听输入框内容变化，如果有输入则取消chip选中
+        etCityName.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (s != null && s.isNotEmpty()) {
+                    chipGroup.clearCheck()
+                }
+            }
+            override fun afterTextChanged(s: android.text.Editable?) {}
+        })
+        
         val dialog = AlertDialog.Builder(context)
             .setView(dialogView)
             .create()
         
         // 确定按钮
         dialogView.findViewById<View>(R.id.btnConfirm).setOnClickListener {
-            val selectedCity = when (chipGroup.checkedChipId) {
-                R.id.chipBeijing -> "北京"
-                R.id.chipShanghai -> "上海"
-                R.id.chipGuangzhou -> "广州"
-                R.id.chipShenzhen -> "深圳"
-                R.id.chipHangzhou -> "杭州"
-                R.id.chipNanchang -> "南昌"
-                else -> etCityName.text?.toString()?.trim() ?: DEFAULT_CITY
+            // 优先使用输入框的值（如果输入框有内容）
+            val inputCity = etCityName.text?.toString()?.trim()
+            val selectedCity = if (inputCity != null && inputCity.isNotEmpty()) {
+                // 如果有输入，使用输入框的值，并取消chip的选中状态
+                chipGroup.clearCheck()
+                inputCity
+            } else {
+                // 如果没有输入，使用选中的chip值
+                when (chipGroup.checkedChipId) {
+                    R.id.chipBeijing -> "北京"
+                    R.id.chipShanghai -> "上海"
+                    R.id.chipGuangzhou -> "广州"
+                    R.id.chipShenzhen -> "深圳"
+                    R.id.chipHangzhou -> "杭州"
+                    R.id.chipNanchang -> "南昌"
+                    else -> DEFAULT_CITY
+                }
             }
             
             if (selectedCity.isNotEmpty()) {
