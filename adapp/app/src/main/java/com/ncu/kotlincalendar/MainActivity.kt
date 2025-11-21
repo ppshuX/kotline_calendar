@@ -216,7 +216,7 @@ class MainActivity : AppCompatActivity() {
         
         // 初始化HolidayManager
         holidayManager = HolidayManager(
-            festivalCardsContainer, tvHolidayHint, this
+            festivalCardsContainer, tvHolidayHint, this, subscriptionManager
         )
         
         // 初始化FortuneManager
@@ -523,7 +523,6 @@ class MainActivity : AppCompatActivity() {
                     weekCalendarView.notifyCalendarChanged()
                 }
             } catch (e: Exception) {
-                Log.e("MainActivity", "加载日程失败", e)
                 withContext(Dispatchers.Main) {
                     Toast.makeText(this@MainActivity, "加载失败: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
@@ -571,7 +570,6 @@ class MainActivity : AppCompatActivity() {
                     updateEventsList()
                 }
             } catch (e: Exception) {
-                Log.e("MainActivity", "加载日程失败", e)
             }
         }
     }
@@ -642,8 +640,8 @@ class MainActivity : AppCompatActivity() {
                     
                     val allEvents = userEvents + subscriptionEvents
                     
-                    withContext(Dispatchers.Main) {
-                        eventsList.clear()
+                withContext(Dispatchers.Main) {
+                    eventsList.clear()
                         eventsList.addAll(allEvents)
                         // 同步更新datesWithEvents以便日历标记正确显示
                         allEvents.forEach { event ->
@@ -654,7 +652,7 @@ class MainActivity : AppCompatActivity() {
                                 datesWithEvents.add(eventDate)
                             }
                         }
-                        updateEventsList()
+                    updateEventsList()
                     }
                 }
                 
@@ -1000,7 +998,6 @@ class MainActivity : AppCompatActivity() {
                     callback("${lunar.lunar_date} ${lunar.zodiac}年")
                 }
             } catch (e: Exception) {
-                Log.e("Network", "获取农历失败", e)
                 withContext(Dispatchers.Main) {
                     callback("")  // 失败就不显示
                 }
@@ -1064,7 +1061,8 @@ class MainActivity : AppCompatActivity() {
      */
     private fun loadHolidayInfo(date: Long) {
         // ✅ 使用 HolidayManager 处理节日信息加载
-        holidayManager.loadHolidayInfo(date, eventsList, lifecycleScope)
+        // 注意：HolidayManager内部会使用subscriptionManager.getVisibleEvents()来获取有效订阅事件
+        holidayManager.loadHolidayInfo(date, lifecycleScope)
     }
     
     // ✅ loadWeather() 已被 WeatherManager 替代，位于 ui/managers/WeatherManager.kt
@@ -1421,6 +1419,12 @@ class MainActivity : AppCompatActivity() {
                     date to name
                 }
                 
+                festivalEvents.forEach { event ->
+                    val date = Instant.ofEpochMilli(event.dateTime)
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDate()
+                }
+                
                 withContext(Dispatchers.Main) {
                     datesWithEvents.clear()
                     datesWithEvents.addAll(newDatesWithEvents)
@@ -1433,7 +1437,6 @@ class MainActivity : AppCompatActivity() {
                     weekCalendarView.notifyCalendarChanged()
                 }
             } catch (e: Exception) {
-                Log.e("MainActivity", "更新日历标记失败", e)
             }
         }
     }

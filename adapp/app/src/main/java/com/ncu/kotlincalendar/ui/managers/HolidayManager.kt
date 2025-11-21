@@ -2,7 +2,6 @@ package com.ncu.kotlincalendar.ui.managers
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -10,6 +9,7 @@ import androidx.lifecycle.LifecycleCoroutineScope
 import com.google.android.material.card.MaterialCardView
 import com.ncu.kotlincalendar.FestivalDetailActivity
 import com.ncu.kotlincalendar.api.client.RetrofitClient
+import com.ncu.kotlincalendar.data.managers.SubscriptionManager
 import com.ncu.kotlincalendar.data.models.Event
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -30,14 +30,15 @@ import java.util.*
  * 
  * 使用方式：
  * ```kotlin
- * val holidayManager = HolidayManager(festivalCardsContainer, tvHolidayHint, context)
- * holidayManager.loadHolidayInfo(dateMillis, eventsList, lifecycleScope)
+ * val holidayManager = HolidayManager(festivalCardsContainer, tvHolidayHint, context, subscriptionManager)
+ * holidayManager.loadHolidayInfo(dateMillis, lifecycleScope)
  * ```
  */
 class HolidayManager(
     private val festivalCardsContainer: LinearLayout,
     private val tvHolidayHint: TextView,
-    private val context: Context
+    private val context: Context,
+    private val subscriptionManager: SubscriptionManager
 ) {
     
     /**
@@ -45,7 +46,6 @@ class HolidayManager(
      */
     fun loadHolidayInfo(
         date: Long,
-        eventsList: List<Event>,
         lifecycleScope: LifecycleCoroutineScope
     ) {
         lifecycleScope.launch(Dispatchers.IO) {
@@ -55,18 +55,20 @@ class HolidayManager(
                 
                 // 1. 调用后端 API 获取节日信息
                 val response = RetrofitClient.api.checkHoliday(dateStr)
-                Log.d(TAG, "节日API响应: $response")
                 
-                // 2. 查询本地数据库中该日期的订阅节日事件
+                // 2. 从SubscriptionManager获取该日期的有效订阅节日事件
+                // 使用 getVisibleEvents 确保只获取有效且启用的订阅事件
+                val allVisibleEvents = subscriptionManager.getVisibleEvents(date)
                 val selectedDate = Instant.ofEpochMilli(date)
                     .atZone(ZoneId.systemDefault())
                     .toLocalDate()
                 
-                val subscribedEvents = eventsList.filter { event ->
+                // 过滤出该日期的订阅节日事件（subscriptionId != null）
+                val subscribedEvents = allVisibleEvents.filter { event ->
                     val eventDate = Instant.ofEpochMilli(event.dateTime)
                         .atZone(ZoneId.systemDefault())
                         .toLocalDate()
-                    // 只获取订阅的事件（subscriptionId != null）
+                    // 只获取订阅的事件（subscriptionId != null），且订阅必须是有效且启用的
                     eventDate == selectedDate && event.subscriptionId != null
                 }
                 
@@ -104,26 +106,21 @@ class HolidayManager(
                         )
                     }
                     
-                    // 收集API返回的节日
-                    response.festivals?.forEach { festival ->
-                        allFestivals.add(
-                            FestivalItem(festival.name, festival.emoji, "api")
-                        )
-                    }
-                    
-                    // 收集订阅的节日（去重）
+                    // 只显示订阅的节日，不显示API返回的节日（除非用户订阅了相关日历）
+                    // 如果用户想要显示API返回的节日，需要订阅相应的日历
                     subscribedEvents.forEach { event ->
                         // 提取emoji和名称
                         val emoji = event.title.takeWhile { !it.isLetter() }.trim()
                         val name = event.title.dropWhile { !it.isLetter() }.trim()
                         
-                        // 如果这个节日不在API节日列表中，添加它
-                        if (allFestivals.none { it.name == name }) {
-                            allFestivals.add(
-                                FestivalItem(name, emoji, "subscribed")
-                            )
-                        }
+                        // 添加订阅的节日
+                        allFestivals.add(
+                            FestivalItem(name, emoji, "subscribed")
+                        )
                     }
+                    
+                    // 注意：API返回的节日不再自动显示，只有订阅的节日才会显示
+                    // 这样可以确保用户只看到他们订阅的日历内容
                     
                     // 为每个节日创建独立的小卡片（使用不同颜色区分）
                     if (allFestivals.isNotEmpty()) {
@@ -162,7 +159,6 @@ class HolidayManager(
                     }
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "加载节日信息失败", e)
                 withContext(Dispatchers.Main) {
                     festivalCardsContainer.removeAllViews()
                     addFestivalCard(
@@ -263,8 +259,5 @@ class HolidayManager(
         festivalCardsContainer.addView(cardView)
     }
     
-    companion object {
-        private const val TAG = "HolidayManager"
-    }
 }
 

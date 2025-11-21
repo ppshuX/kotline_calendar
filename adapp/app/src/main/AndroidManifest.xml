@@ -31,10 +31,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.KotlinCalendar">
         
-        <!-- 百度地图 AK（需要替换为你的Android SDK AK） -->
+        <!-- 百度地图 AK -->
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="YOUR_BAIDU_MAP_ANDROID_AK_HERE" />
+            android:value="mUnZYwAnnBBeu8Qv0rmD0PIUoKqfXxrb" />
         
         <activity
             android:name=".MainActivity"
