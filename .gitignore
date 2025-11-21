@@ -42,6 +42,10 @@ backend/env/
 adapp/*
 # 但保留 README.md 说明文档
 !adapp/README.md
+# 保留产品报告和作业要求检查报告
+!adapp/产品报告/
+!adapp/产品报告/**
+!adapp/作业要求检查报告.md
 
 # Android 签名文件（敏感信息，不要提交）
 adapp/*.keystore
