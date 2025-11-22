@@ -24,8 +24,8 @@ class UserSerializer(serializers.ModelSerializer):
                 return obj.acwing_profile.photo_url or None
             elif hasattr(obj, 'qq_profile') and obj.qq_profile:
                 return obj.qq_profile.photo_url or None
-        except Exception as e:
-            print(f"Error getting photo: {e}")
+        except Exception:
+            pass
         return None
     
     def get_acwing_openid(self, obj):
@@ -33,8 +33,8 @@ class UserSerializer(serializers.ModelSerializer):
         try:
             if hasattr(obj, 'acwing_profile') and obj.acwing_profile:
                 return obj.acwing_profile.openid or None
-        except Exception as e:
-            print(f"Error getting acwing_openid: {e}")
+        except Exception:
+            pass
         return None
     
     def get_qq_openid(self, obj):
@@ -42,16 +42,15 @@ class UserSerializer(serializers.ModelSerializer):
         try:
             if hasattr(obj, 'qq_profile') and obj.qq_profile:
                 return obj.qq_profile.openid or None
-        except Exception as e:
-            print(f"Error getting qq_openid: {e}")
+        except Exception:
+            pass
         return None
     
     def get_has_password(self, obj):
         """判断用户是否设置了密码"""
         try:
             return obj.has_usable_password()
-        except Exception as e:
-            print(f"Error checking password: {e}")
+        except Exception:
             return False
 
 

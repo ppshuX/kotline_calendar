@@ -36,8 +36,4 @@ app.conf.beat_schedule = {
 app.conf.timezone = 'Asia/Shanghai'
 
 
-@app.task(bind=True, ignore_result=True)
-def debug_task(self):
-    """调试任务"""
-    print(f'Request: {self.request!r}')
 

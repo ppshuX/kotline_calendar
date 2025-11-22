@@ -44,5 +44,4 @@ urlpatterns = [
 ]
 
 # 提供静态文件（在生产环境也需要）
-if settings.DEBUG or True:  # 在生产环境也提供静态文件
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.BASE_DIR / 'static')
+urlpatterns += static(settings.STATIC_URL, document_root=settings.BASE_DIR / 'static')

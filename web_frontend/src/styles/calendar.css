@@ -532,7 +532,7 @@
     overflow: hidden;
     box-sizing: border-box;
   }
-  
+
   /* 工具栏各个部分 */
   .calendar-wrapper .fc-header-toolbar .fc-toolbar-chunk {
     margin: 0;
@@ -542,13 +542,13 @@
     gap: 2px;
     align-items: center;
   }
-  
+
   /* 左侧按钮组 - 第一行左侧 */
   .calendar-wrapper .fc-header-toolbar .fc-toolbar-chunk:first-child {
     flex-shrink: 0;
     order: 1;
   }
-  
+
   /* 中间标题 - 单独占第二行，居中显示 */
   .calendar-wrapper .fc-header-toolbar .fc-toolbar-chunk:nth-child(2) {
     width: 100%;
@@ -557,14 +557,14 @@
     margin-top: 4px;
     margin-bottom: 2px;
   }
-  
+
   /* 右侧按钮组 - 第一行右侧 */
   .calendar-wrapper .fc-header-toolbar .fc-toolbar-chunk:last-child {
     flex-shrink: 0;
     order: 2;
     margin-left: auto;
   }
-  
+
   /* 日期标题 - 单独一行，字体更大 */
   .calendar-wrapper .fc-toolbar-title {
     font-size: 14px;
@@ -587,7 +587,7 @@
     border-radius: 4px;
     flex-shrink: 0;
   }
-  
+
   .calendar-wrapper .fc-button-group {
     display: flex;
     flex-wrap: nowrap;
@@ -595,7 +595,7 @@
     margin: 0;
     padding: 0;
   }
-  
+
   .calendar-wrapper .fc-button-group .fc-button {
     font-size: 10px;
     padding: 4px 6px;
@@ -603,15 +603,15 @@
     white-space: nowrap;
     border-radius: 0;
   }
-  
+
   .calendar-wrapper .fc-button-group .fc-button:first-child {
     border-radius: 4px 0 0 4px;
   }
-  
+
   .calendar-wrapper .fc-button-group .fc-button:last-child {
     border-radius: 0 4px 4px 0;
   }
-  
+
   .calendar-wrapper .fc-today-button {
     font-size: 10px;
     padding: 4px 6px;

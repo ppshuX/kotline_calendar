@@ -69,10 +69,9 @@ docs/
 ## 🚀 快速导航
 
 ### 🔰 新手入门
-1. [项目结构说明](../PROJECT_STRUCTURE.md) ⭐ - 了解项目整体结构
-2. [项目说明](./README.md) - 了解项目概况
-3. [系统架构](./architecture/ARCHITECTURE.md) - 理解整体设计
-4. [部署指南](./guides/DEPLOYMENT_GUIDE.md) - 快速部署上线
+1. [项目说明](./README.md) - 了解项目概况
+2. [系统架构](./architecture/ARCHITECTURE.md) - 理解整体设计
+3. [部署指南](./guides/DEPLOYMENT_GUIDE.md) - 快速部署上线
 
 ### 👨‍💻 开发者指南
 

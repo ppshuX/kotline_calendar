@@ -161,8 +161,8 @@ def get_today_fortune(request):
                     'weather': live.get('weather', '晴'),
                     'humidity': int(live.get('humidity', 60))
                 }
-    except Exception as e:
-        print(f"获取天气失败: {e}")
+    except Exception:
+        pass
     
     # 生成运势数据
     fortune_data = generate_fortune(year, month, day, weekday_num, solar_term_data, weather_data)
