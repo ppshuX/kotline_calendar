@@ -515,49 +515,87 @@
     min-height: 50px;
   }
   
+  /* 工具栏 - 缩小间距，防止换行 */
+  .calendar-wrapper .fc-header-toolbar {
+    margin-top: 0;
+    padding-top: 0;
+    margin-bottom: 4px;
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 2px;
+    white-space: nowrap;
+  }
+  
+  /* 工具栏各个部分缩小间距 */
+  .calendar-wrapper .fc-header-toolbar .fc-toolbar-chunk {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 2px;
+    align-items: center;
+  }
+  
   .calendar-wrapper .fc-toolbar-title {
-    font-size: 7px;
+    font-size: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+    margin: 0 4px;
+    line-height: 1.2;
   }
   
   .calendar-wrapper .fc-button {
-    font-size: 6px;
-    padding: 1px 2px;
+    font-size: 8px;
+    padding: 2px 4px;
+    margin: 0;
+    white-space: nowrap;
+    line-height: 1.2;
+    min-width: auto;
+    border-radius: 4px;
+  }
+  
+  .calendar-wrapper .fc-button-group {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 1px;
+    margin: 0;
   }
   
   .calendar-wrapper .fc-button-group .fc-button {
-    font-size: 6px;
+    font-size: 8px;
+    padding: 2px 4px;
+    margin: 0;
+    white-space: nowrap;
   }
   
   .calendar-wrapper .fc-today-button {
-    font-size: 6px;
+    font-size: 8px;
+    padding: 2px 4px;
+    white-space: nowrap;
+    margin: 0;
   }
   
   .calendar-wrapper .fc-col-header-cell {
-    padding: 4px 2px;
-    font-size: 10px;
+    padding: 3px 1px;
+    font-size: 9px;
   }
   
   .calendar-wrapper .fc-col-header-cell-cushion {
-    font-size: 10px;
+    font-size: 9px;
+    white-space: nowrap;
   }
   
   .calendar-wrapper .fc-daygrid-day-number {
     padding: 1px 2px;
-    font-size: 11px;
+    font-size: 10px;
+    white-space: nowrap;
     /* 移动端居中显示 */
     text-align: center;
     display: flex;
     align-items: center;
     justify-content: center;
-  }
-  
-  /* 确保工具栏不被遮挡 */
-  .calendar-wrapper .fc-header-toolbar {
-    margin-top: 0;
-    padding-top: 0;
-    margin-bottom: 8px;
-    position: relative;
-    z-index: 10;
   }
   
   /* 移动端事件显示优化 */
@@ -639,12 +677,6 @@
     font-weight: 600;
   }
   
-  /* 进一步缩小工具栏 */
-  .calendar-wrapper .fc-header-toolbar {
-    margin-bottom: 0.3em;
-  }
-  
-  /* 注意：fc-toolbar-title 和 fc-button 的字体大小已在上面定义，此处不再重复定义 */
 }
 
 /* ==================== 周视图和日视图事件样式优化 ==================== */
